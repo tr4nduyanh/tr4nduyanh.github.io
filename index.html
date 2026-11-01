@@ -1638,6 +1638,9 @@ dialog::backdrop{background:var(--scrim)}
 
 
 
+/* ---- v49: no zoom ---- */
+.shot-img,.zi-b{cursor:default}
+.shot-img:hover img,.zi-b:hover img{transform:none}
 /* ---- v48: two summer camps ---- */
 .camps{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:760px){.camps{grid-template-columns:1fr}}
@@ -2708,7 +2711,7 @@ function ph(m){
     const img=`<img src="${m.src}" alt="${esc(m.alt||m.label)}"${m.w?` width="${m.w}" height="${m.h}"`:''} loading="lazy" decoding="async">`;
     return `<figure class="shot">
       ${m.frame?`<div class="shot-bar" aria-hidden="true"><i></i><i></i><i></i><span>${esc(m.frame)}</span></div>`:''}
-      <button type="button" class="shot-img" data-zoom="${esc(m.src)}" data-zoom-alt="${esc(m.alt||m.label)}" aria-label="Enlarge: ${esc(m.label)}" style="aspect-ratio:${m.ratio}">${img}<span class="zoom-ic" aria-hidden="true">${icon('i-zoom')}</span></button>
+      <div class="shot-img" style="aspect-ratio:${m.ratio}">${img}</div>
       ${m.caption?`<figcaption>${esc(m.caption)}</figcaption>`:''}
     </figure>`;
   }
@@ -3265,7 +3268,7 @@ function slot(kind,label,ratio){
   const k=kind==='video'?'Video coming soon':kind==='scan'?'Scan coming soon':'Photo coming soon';
   return `<figure class="slot${kind==='video'?' slot-v':''}" style="aspect-ratio:${ratio||'4/3'}" role="img" aria-label="${esc(k+': '+label)}"><span class="slot-in" aria-hidden="true"><span class="slot-ic">${icon(ic)}</span><span class="slot-l">${esc(label)}</span><span class="slot-k">${k}</span></span></figure>`;
 }
-function zimg(s){ return `<figure class="zi"><button type="button" class="zi-b" data-zoom="${s.src}" data-zoom-alt="${esc(s.alt)}" aria-label="Enlarge: ${esc(s.cap||s.alt)}"><img src="${s.src}" width="${s.w}" height="${s.h}" alt="${esc(s.alt)}" loading="lazy" decoding="async"><span class="zoom-ic" aria-hidden="true">${icon('i-zoom')}</span></button>${s.cap?`<figcaption>${esc(s.cap)}</figcaption>`:''}</figure>`; }
+function zimg(s){ return `<figure class="zi"><div class="zi-b"><img src="${s.src}" width="${s.w}" height="${s.h}" alt="${esc(s.alt)}" loading="lazy" decoding="async"></div>${s.cap?`<figcaption>${esc(s.cap)}</figcaption>`:''}</figure>`; }
 function thumb(src,w,h,alt){ return `<span class="rc-img"><img src="${src}" width="${w}" height="${h}" alt="${esc(alt)}" loading="lazy" decoding="async"></span>`; }
 function rcard(id,o){
   const it=ITEM[id]; if(!it) return '';
