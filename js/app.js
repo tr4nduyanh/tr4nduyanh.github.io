@@ -1,4 +1,19 @@
-/* Trần Duy Anh · Behind the screen · content, search, router and interactions */
+/* =====================================================================
+   Trần Duy Anh · Behind the screen · app.js
+
+   1. CONTENT        every project, award and activity as data (edit here)
+   2. SEARCH ENGINE  normalise, tokenise, score and rank pages
+   3. STATE          what the visitor has done (look, eggs found, last search)
+   4. VIEWS          one function per page; each returns HTML
+                     homepage story, rooms, project pages, Nét Mơ,
+                     FCT, FUNiX, fire alarm, About, search results
+   5. DEMOS          vocabulary quiz, V-SWAP flow, Build your city,
+                     fire simulator, FCT turtle track
+   6. EXTRAS         command menu, terminal, light/dark curtain
+   7. EASTER EGGS    walking turtle, dots, secret searches, hatching egg
+   8. ROUTER         reads #page from the URL, renders it, wires events
+   ===================================================================== */
+
 (function(){
 'use strict';
 
@@ -6,15 +21,13 @@
    CONTENT — edit these records to update the site.
    Field values in `sections` can be:
      'plain text'      → confirmed fact, shown as written
-     D('text')         → draft wording composed from supplied facts; shown with a "confirm" chip in preview
-     G('prompt')       → missing content; shown as a "Needs content" box only while "Show content gaps" is on
+     G('prompt')       → missing content; shown only while content gaps are on (terminal: gaps on)
      [ ... ]           → several of the above in order
    media:    { label, ratio:'16/10', type:'screenshot', src:null, alt:'' }  → set src + alt to show a real image
    evidence: { label, url:null }  → set url to show a real link
    metrics:  { label, value:'', asOf:'' } → shown only when value is filled in
    boost:    optional number that lifts an item in broad searches (exact title matches always rank first)
    ===================================================================== */
-const D = t => ({draft:t});
 const G = t => ({gap:t});
 
 const PROFILE = {
@@ -421,14 +434,6 @@ const VOCAB = [
    why:'She named the problem plainly and explained it. Plain, direct honesty is what makes feedback candid.'}
 ];
 
-const RCOND = [
-  {id:'power',  label:'Power & network',          opts:[['reliable','Reliable'],['intermittent','Intermittent'],['unknown','Unknown']], def:'intermittent'},
-  {id:'maint',  label:'Maintenance capacity',     opts:[['team','Local team in place'],['none','No plan yet']], def:'none'},
-  {id:'people', label:'Household sorting habits', opts:[['established','Established'],['low','Low'],['unknown','Unknown']], def:'unknown'},
-  {id:'data',   label:'Data quality',             opts:[['baseline','Baseline data exists'],['none','No baseline']], def:'none'},
-  {id:'policy', label:'Policy & permissions',     opts:[['clear','Supportive & clear'],['unclear','Unclear']], def:'unclear'},
-  {id:'cost',   label:'Costs',                    opts:[['ongoing','Ongoing budget'],['pilot','Pilot funding only'],['none','No budget']], def:'pilot'}
-];
 const RQ = {
   'power:intermittent':'Can sensors store readings offline and sync later? What happens to collection routes when a bin goes silent?',
   'power:unknown':'Who can map outages and network coverage across the collection area?',
@@ -528,8 +533,7 @@ if(typeof document==='undefined'){ globalThis.__DAS={runSearch,suggest,relatedSe
    STATE
    ===================================================================== */
 const RM = (()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } })();
-const S = { q:'', cat:'all', resScroll:0, fresh:false, gaps:false, visited:{}, welcomed:false,
-            route:{stop:0, active:false, done:false, ret:'home'}, cur:null, prev:null };
+const S = { q:'', cat:'all', resScroll:0, fresh:false, gaps:false, visited:{}, cur:null, prev:null };
 try{ const saved=JSON.parse(sessionStorage.getItem('das-state')||'null'); if(saved) Object.assign(S,saved,{cur:null,prev:null}); }catch(e){}
 function save(){ try{ const {cur,prev,...keep}=S; sessionStorage.setItem('das-state',JSON.stringify(keep)); }catch(e){} }
 
@@ -542,10 +546,10 @@ const pageOf = it => it.page||it.id;
 const roomTok = cat => ROOM[cat]?ROOM[cat].id:'about';
 
 function go(tok){ if((location.hash.slice(1)||'home')===tok) render(); else location.hash=tok; }
-function isTourQ(n){ return n===norm(TOUR_Q)||/^(the )?story$/.test(n)||/^(the )?(5|five) ?min(ute|utes|s)?( tour| route)?$/.test(n)||/^(the )?(tour|route|5 minute tour|five minute tour)$/.test(n); }
+function isTourQ(n){ return /^(the )?story$/.test(n)||/^(the )?(5|five) ?min(ute|utes|s)?( tour| route)?$/.test(n)||/^(the )?(tour|route|5 minute tour|five minute tour)$/.test(n); }
 const NAME_KEYS=['tran duy anh','duy anh','duyanh','anh','tran anh','tda','who is duy anh'];
 function doSearch(q,cat){ q=String(q||'').trim(); if(!q) return; const n=norm(q);
-  if(isTourQ(n)){ S.route.done=false; S.route.stop=0; S.route.active=false; save(); go('tour'); return; }
+  if(isTourQ(n)){ go('tour'); return; }
   if(NAME_KEYS.includes(n)){ sayHi(); return; }
   S.q=q; S.cat=cat||'all'; S.fresh=true; save(); go('search'); }
 
@@ -598,25 +602,12 @@ function metricsBlock(ms){
   if(real.length) return `<div><p class="side-h">Usage</p>${statRow(ms)}</div>`;
   return '';
 }
-function relatedLinks(ids,title){
-  const rows=(ids||[]).map(id=>{
-    if(ITEM[id]){ const it=ITEM[id]; return `<li data-room="${it.cat}"><a href="#${pageOf(it)}"><span class="rk">${CATLABEL[it.cat]}</span><span class="rt">${it.title}</span></a></li>`; }
-    if(ROOM_BY_ID[id]){ const r=ROOM_BY_ID[id]; return `<li data-room="${r.cat}"><a href="#${r.id}"><span class="rk">${r.label}</span><span class="rt">${r.name}</span></a></li>`; }
-    return '';
-  }).join('');
-  return rows?`<div><p class="side-h">${title||'Connected pages'}</p><ul class="rel">${rows}</ul></div>`:'';
-}
-function connect(list){
-  return `<section class="connect" aria-label="Connections to other places">${list.map(c=>{const r=ROOM_BY_ID[c.to]||null; const it=ITEM[c.to]||null; const cat=r?r.cat:it.cat; const name=r?r.name:it.title;
-    return `<a class="conn" data-room="${cat}" href="#${c.to}"><span class="k"><i class="dot"></i>Connects to ${CATLABEL[cat]}</span><span class="q">${c.q}</span><span class="go">Go to ${name} →</span></a>`;}).join('')}</section>`;
-}
 function backToResults(){
   return S.prev==='search'||S.fromSearch?`<button type="button" class="back-res" data-back-results>← Back to results for “${esc(S.q)}”</button>`:'';
 }
 
 /* ---------- search box ---------- */
 let sbCount=0;
-const TOUR_Q='Trần Duy Anh in 5 minutes';
 function searchBox(size,preset){
   const id='sb'+(++sbCount);
   return `<form class="sb sb-${size}" role="search" data-sb novalidate>
@@ -650,7 +641,7 @@ function bindSearch(form){
   };
   const choose=o=>{ close(); if(o.type==='term'){ input.value=o.label; doSearch(o.label); } else if(o.type==='all'){ doSearch(input.value); } else go(o.to); };
   input.addEventListener('input',()=>{ act=-1; draw(); });
-  input.addEventListener('focus',()=>{ if(input.value&&input.value!==TOUR_Q) draw(); });
+  input.addEventListener('focus',()=>{ if(input.value) draw(); });
   input.addEventListener('keydown',e=>{
     if(e.key==='ArrowDown'){ e.preventDefault(); if(list.hidden){ draw(); return; } act=(act+1)%opts.length; draw(); }
     else if(e.key==='ArrowUp'){ e.preventDefault(); if(list.hidden) return; act=act<=0?opts.length-1:act-1; draw(); }
@@ -661,9 +652,7 @@ function bindSearch(form){
   list.addEventListener('mousedown',e=>e.preventDefault());
   list.addEventListener('click',e=>{ const li=e.target.closest('li[data-i]'); if(li) choose(opts[+li.dataset.i]); });
   form.addEventListener('submit',e=>{ e.preventDefault(); const q=input.value.trim(); if(!q){ input.focus(); return; } close();
-    if(isTourQ(norm(q))&&S.cur==='home'&&!S.route.done&&$('#tour-sec')){ const t=$('#tour-sec'); if(t){ t.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'}); const h=$('#tour-h'); if(h) h.focus({preventScroll:true}); } return; }
     doSearch(q); });
-  input.addEventListener('focus',()=>{ if(input.value===TOUR_Q) input.select(); });
 }
 
 /* ---------- top bar ---------- */
@@ -713,14 +702,6 @@ function lifecycle(rows){ return `<ol class="lc">${rows.map(([k,v])=>`<li><span 
 
 /* deeper panels: opened beside the story, so readers keep their place */
 const DEEP={
-  learn:()=>({k:'Chapter 2 · Learning',t:'What learning properly looked like',html:`
-    <h3>The Digital Age Tortoise</h3><p>The philosophy of FPT Software’s Computer Talents Club: patience, independent reasoning, reflection and steady improvement.</p>
-    <h3>What I changed after a Bronze</h3><p>After a Bronze at the IMOCSEA National Round in October 2025, I changed how I practise:</p>
-    <ul class="tl-habits"><li>Try every problem myself first</li><li>Write down what failed</li><li>Compare methods only after trying</li><li>Understand why a method works</li></ul>
-    <h3>Results along the way</h3><div class="ev-list">${award('imocsea','s','Silver')}${award('imc-gold','g','Gold')}${award('isto-bronze','z','Bronze')}${award('fct-iot','p','2nd')}</div>
-    <h3>Technical training</h3><p>At FCT, from August 2023 to July 2026: 86 weeks of mentor-guided programming, algorithms and advanced maths, graduating with an A. At FUNiX, since September 2025: C, object-oriented programming, web development, computer architecture and operating systems.</p>
-    <p>At FCT Summer Camp 2024, our team built a Bluetooth-enabled IoT fire alarm, which placed second.</p>
-    <p class="dr-links"><a href="#replay">The full awards timeline →</a><a href="#fct">About FCT →</a></p>`}),
   ctx:()=>({k:'Chapter 4 · Contextuary',t:'Behind Contextuary',html:`
     <p>Built with React and Supabase. Every word carries its Vietnamese meaning, an SAT-style example and a memory hint, and the database keeps each word connected to its contexts. Learners practise with six question types, flashcards and a harder AI Challenge.</p>
     <div class="strip">${['ctx-words','ctx-word','ctx-practice'].map((k,i)=>zimg(STRIP('img/'+k+'.webp',['Daily Picks','Every word, explained','Practise your way'][i]))).join('')}</div>
@@ -736,22 +717,7 @@ const DEEP={
     <div class="strip s2">${zimg(PH.scres)}${zimg(PH.scteam)}</div>
     <h3>What I learned</h3><p>Spotting the signs of a scam isn’t enough. The tool has to explain its result so people understand it and know what to do next. It taught me to look beyond whether a system works and ask what makes it useful.</p>
     <div class="ev-list">${award('fct-scam','p','4th')}</div>
-    <p class="dr-links"><a href="#scamcheck">The full ScamCheck page →</a><a href="http://hk1.quvo.pro:15640/" target="_blank" rel="noopener">Try the demo ↗</a></p>`}),
-  collab:()=>({k:'Chapter 3 · Speaking up',t:'Who I work with, and what I do',html:`
-    <h3>Debate</h3><p>Team captain of the House Adventure debate team: 1st place among 8 teams. The next year, I coached 4 juniors over 4 months through mock debates and individual feedback, and they won too.</p>
-    <h3>Nét Mơ (Dream Strokes)</h3><p>A youth-led project bringing hands-on STEAM learning to children in shelters, older adults in care homes, and the wider community. As Head of Human Resources, I co-develop activities and coordinate 20+ volunteers across facilitation, materials and session timing. We reached about 200 children across six shelters, where participation rose from about half to nearly all, and 25 older adults through 8 care-home workshops. I also co-managed “Colors of the Pitch”, a football event with 10 teams and 1,000+ spectators, part of fundraising that raised about VND 70 million for workshops and partner support. Our journal lives in Together!.</p>
-    <h3>LSTS Advanced Math Community</h3><p>Weekly sessions with peers and teachers. I was the main peer mentor for IMOCSEA and IMC, guiding practice while competing alongside my classmates.</p>
-    <h3>Service learning</h3><p>Organising leader and head of logistics for annual first-aid, painting and craft workshops for 60–70 children from Hồng Quang Pagoda, leading 40+ volunteers.</p>
-    <h3>House Adventure Committee</h3><p>As Head of External Relations, I lead a media team of about 15 people. Our 10+ posts average about 10,000 views each.</p>
-    <h3>Leading teams</h3><div class="ev-list">${award('fptu-ai','p','4th<small>of 71</small>')}${award('icia','p','2nd')}</div>
-    <p class="dr-links"><a href="#common">The Common Room →</a><a href="#studio">Media work →</a></p>`}),
-  research:()=>({k:'Chapter 5 · Research',t:'Behind the research',html:`
-    <h3>In plain words</h3><p>Cities elsewhere use sensors, connected bins and AI to plan waste collection. My project reviews published work on these systems and asks what conditions would need to be in place before one could work in Vietnam. From that review I propose V-SWAP, to help decide whether to study, pilot, scale, or reject a system.</p><span class="draft-chip">Draft wording · confirm</span>
-    <h3>The research question</h3><p>What does the published literature report about AI- and IoT-enabled smart waste management, and which implementation conditions should shape decisions about adapting it for Vietnam?</p><span class="draft-chip">Draft wording · match to manuscript</span>
-    <h3>The approach</h3><p>A scoping review maps the range of existing research on a topic rather than testing one effect. Since June 2026, mentored by Dr. Nisha Rawindaran of the University of South Wales, I have reviewed 40+ studies found through Google Scholar, organising their findings, methods and recurring keywords in a literature matrix. I also compared existing decision-support frameworks and studies from developing countries.</p><span class="gap">Add from the manuscript: search dates and inclusion criteria.</span>
-    <h3>My own contribution</h3><p>Organising these conditions into a decision framework for Vietnam (V-SWAP) is my own synthesis, not a finding of the reviewed studies.</p>
-    <h3>Limits</h3><p>The framework comes from a literature review, so it reflects what has been published, not conditions measured on the ground in Vietnam. It has not been field-validated or evaluated with stakeholders, and it has no validated scoring weights or thresholds.</p>
-    <p class="dr-links"><a href="#lab">The research page →</a></p>`})
+    <p class="dr-links"><a href="#scamcheck">The full ScamCheck page →</a><a href="http://hk1.quvo.pro:15640/" target="_blank" rel="noopener">Try the demo ↗</a></p>`})
 };
 let deepOpener=null;
 function openDeep(key,btn){
@@ -1199,21 +1165,6 @@ function viewWorkshop(){
 }
 
 /* ===== Awards: a git-graph timeline with two lanes ===== */
-const TLG=[
-  {lane:'b',kind:'mile',date:'Aug 2023',t:'Joined FPT Software’s Computer Talents Club',s:'Mentor-guided programming, algorithms and maths.',to:'fct'},
-  {lane:'b',tier:'p',badge:'2nd',date:'2024',id:'fct-iot'},
-  {lane:'m',tier:'g',badge:'Gold',date:'2025',id:'imc-gold'},
-  {lane:'m',tier:'z',badge:'Bronze',date:'2025',id:'isto-bronze'},
-  {lane:'b',tier:'p',badge:'4th<small>of 71</small>',date:'2025',id:'fptu-ai'},
-  {lane:'b',tier:'p',badge:'2nd',date:'2025',id:'icia'},
-  {lane:'m',tier:'z',badge:'Bronze',date:'Oct 2025',t:'IMOCSEA',sub:'National Round',s:'The result showed me where my preparation was thin.',to:'imocsea'},
-  {lane:'m',kind:'note',t:'So I changed how I practise',habits:['Try every problem myself first','Write down what failed','Compare methods only after trying','Understand why a method works']},
-  {lane:'m',tier:'s',badge:'Silver',date:'2025',id:'imocsea',hl:'Bronze → Silver'},
-  {lane:'b',tier:'p',badge:'4th',date:'2026',id:'fct-scam'},
-  {lane:'b',kind:'mile',date:'Jul 2026',t:'Graduated from FCT with an A',s:'86 weeks of technical training.',to:'fct'},
-  {lane:'b',kind:'mile',date:'Aug 2026',t:'Launched Contextuary',s:'2,200+ visitors and 500+ users so far.',to:'contextuary'},
-  {kind:'merge',t:'Where both lines meet',s:'Failed attempts are useful when I write them down. Now I pass this habit on to younger students, in maths and in debate.',to:'math-community',link:'How I mentor →'}
-];
 const AW_MATH=[
   {id:'imc-gold',tier:'g',badge:'Gold',t:'International Math Challenge',s:'National Round · Top 6',y:'2025'},
   {id:'imocsea',tier:'s',badge:'Silver',t:'IMOCSEA',s:'International Round',y:'2025'},
@@ -1247,13 +1198,6 @@ function viewReplay(){
     ${whereNext([],'awards')}
   </div></div>`;
 }
-function litTimeline(){
-  const rows=$$('#tlg .tl-row'); if(!rows.length) return;
-  if(RM||!('IntersectionObserver' in window)){ rows.forEach(r=>r.classList.add('lit')); return; }
-  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('lit'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -18% 0px'});
-  rows.forEach(r=>io.observe(r));
-}
-
 /* ===== Research: the framework as a decision flow ===== */
 const GATES=[
   {q:'Do we know the local situation?',f:[['Data','data:none'],['People’s habits','people:low']],fail:'study'},
@@ -1317,7 +1261,7 @@ function mountReadiness(el){
     $('.vs-result',el).innerHTML=`<div class="vs-dec o-${out}"><span class="mini-k">Decision</span><b>${OUTS[out][0]}</b><span>${OUTS[out][1]}</span></div>
       <div class="vs-why">${fail<0?'<p>Every gate is open in this example. Scaling up would still depend on real results from a pilot.</p>':`<p class="mini-k">Stopped at gate ${fail+1}. Questions to answer first</p><ul class="mini-asks">${asks}</ul>`}</div>`;
   };
-  el.addEventListener('click',e=>{ const b=e.target.closest('[data-gate]'); if(!b) return; const i=+b.dataset.gate; st[i]=!st[i]; draw(); sig('research','you explored the V-SWAP framework',2); });
+  el.addEventListener('click',e=>{ const b=e.target.closest('[data-gate]'); if(!b) return; const i=+b.dataset.gate; st[i]=!st[i]; draw(); });
   draw();
 }
 
@@ -1377,22 +1321,6 @@ function viewStudio(){
     </section>
     ${whereNext([{to:'common',q:'Media coordination and volunteer coordination draw on the same communication work.'},{to:'workshop',q:'Designing an interface and editing a video both start with who the audience is.'}],'media')}
   </div></div>`;
-}
-
-function journeySteps(){
-  return [
-    {label:'First attempt', body:`<p class="st-big">Bronze</p><h3>IMOCSEA National Round, October 2025</h3><p>${D('The National Round result showed me where my preparation was thin.').draft}</p><span class="draft-chip">Draft wording · confirm</span><span class="gap">Add what you noticed about your preparation after this round.</span>`},
-    {label:'Changed practice', body:`<h3>What I changed in how I practise</h3>
-      <ul class="practice">
-        <li><b>Attempt independently</b><span>Work on a problem myself before looking at a method.</span></li>
-        <li><b>Record failed approaches</b><span>Write down what I tried and where it broke.</span></li>
-        <li><b>Compare strategies after trying</b><span>Look at other solutions only once I had my own attempt to compare.</span></li>
-        <li><b>Build understanding</b><span>Aim to know why a method works, so it transfers to new problems.</span></li>
-      </ul>`},
-    {label:'Improved performance', body:`<p class="st-big">Silver</p><h3>IMOCSEA International Round, 2025</h3><p>The same competition, one level up, with the changed practice in place.</p><span class="gap">Add the certificate scan to the evidence slot.</span>`},
-    {label:'What stayed with me', body:`<h3>What stayed with me</h3><p>${D('Failed attempts are information when I write them down. And the habit carries over: I try to pass on the same approach to younger students in the Advanced Math Community.').draft}</p><span class="draft-chip">Draft wording · confirm</span>
-      <p><a href="#math-community">See peer mentoring in the Common Room →</a></p>`}
-  ];
 }
 
 /* ----- Item page ----- */
@@ -1511,7 +1439,7 @@ function viewFct(it){
   </div></div>`;
 }
 function mountFct(){
-  $$('[data-run]').forEach(b=>b.addEventListener('click',()=>{ const c=b.closest('.camp'); c.classList.remove('run'); void c.offsetWidth; c.classList.add('run'); clearTimeout(c._t); c._t=setTimeout(()=>c.classList.remove('run'),4600); sig('build','you ran a summer camp demo',1); }));
+  $$('[data-run]').forEach(b=>b.addEventListener('click',()=>{ const c=b.closest('.camp'); c.classList.remove('run'); void c.offsetWidth; c.classList.add('run'); clearTimeout(c._t); c._t=setTimeout(()=>c.classList.remove('run'),4600); }));
   const el=$('#tt'); if(!el) return; let cur=0, touched=false;
   const tt=$('.tt-turtle',el), fill=$('.tt-fill',el), card=$('.tt-card',el), dots=$$('.tt-rail i',el), btns=$$('[data-tt]',el);
   const go=(i,instant)=>{
@@ -1593,12 +1521,12 @@ function viewFirealarm(it){
 function mountFirealarm(){
   const sim=$('#sim'); if(!sim) return;
   const room=$('.sim-room',sim), match=$('.sim-match',sim), spray=$('.sim-spray',sim), v=$('#sim-v',sim), st=$('.sim-status',sim), fl=$$('.fa-flow li',sim);
-  let lv=0, burning=false, raf=null, last=0, was=false, out=false;
+  let lv=0, burning=false, raf=null, last=0;
   const paint=()=>{ const n=Math.round(lv); v.textContent=n; sim.style.setProperty('--lv',(lv/100).toFixed(3));
     const on=n>=60; sim.classList.toggle('alarm',on); sim.classList.toggle('burning',burning);
     fl[0].classList.toggle('on',n>0); fl[1].classList.toggle('on',n>=35); fl[2].classList.toggle('on',on);
     st.textContent=on?'Fire detected! Buzzer on, LEDs flashing, phone notified.':burning?(n<30?'Something’s burning…':'Smoke is reaching the sensor…'):n>0?'Fire’s out. Clearing the smoke…':'All clear. Drag the match into the room.';
-    if(on&&!was) sig('build','you set off the fire alarm',1); was=on; };
+  };
   const tick=t=>{ const dt=Math.min(.1,(t-(last||t))/1000); last=t;
     lv=burning?Math.min(100,lv+dt*(lv<20?14:24)):Math.max(0,lv-dt*30); paint();
     raf=(burning||lv>0)?requestAnimationFrame(tick):null; if(!raf) last=0; };
@@ -1754,7 +1682,7 @@ function mountCity(el){
     else if(d.tech){ const k=d.tech; st.tech[k]=!st.tech[k]; focus=`[data-tech="${k}"]`; parts=[k==='lights'?'lamps':k==='wind'?'wind':'lots']; }
     else if(d.lot!=null){ st.lots[+d.lot]=null; focus='[data-add="house"]'; parts=['lots']; }
     else { st=fresh(); focus='[data-add="house"]'; }
-    sig('community','you built a city in the Nét Mơ demo',1);
+   
     draw(parts); const f=focus&&el.querySelector(focus); if(f) f.focus({preventScroll:true});
   };
   el.addEventListener('click',e=>act(e.target));
@@ -1773,12 +1701,8 @@ function viewItem(it){
   if(it.id==='funix') return viewFunix(it);
   if(it.id==='firealarm') return viewFirealarm(it);
   if(it.story) return storyView(it);
-  const isAward=!!it.award;
-  const a=it.award;
-  const meta=isAward?[['Competition',a.comp],['Round',a.round],['Result',a.result],['Year',a.year],['Role',a.role]]:[['Type',it.kind],['My role',it.role]];
-  const main = it.journey
-    ? `<section aria-labelledby="j-h"><h2 id="j-h" class="block-h">The journey</h2>${stepperHTML('imo2',journeySteps(),'IMOCSEA learning journey')}</section>`
-    : `<section aria-labelledby="cs-h"><h2 id="cs-h" class="block-h">${it.layout==='chain'?'Setting → responsibility → reflection':isAward?'Practice, feedback, growth':it.cat==='media'?'About this piece':'Case study'}</h2>${fields(it.sections,it.layout)}</section>`;
+  const meta=[['Type',it.kind],['My role',it.role]];
+  const main = `<section aria-labelledby="cs-h"><h2 id="cs-h" class="block-h">${it.layout==='chain'?'Setting → responsibility → reflection':it.cat==='media'?'About this piece':'Case study'}</h2>${fields(it.sections,it.layout)}</section>`;
   const realMedia=(it.media||[]).filter(m=>m.src).map(ph).join('');
   const media=(it.media||[]).filter(m=>!m.src).map(ph).join('');
   return `<div data-room="${it.cat}">
@@ -1858,78 +1782,6 @@ function viewAbout(){
   </div></div>`;
 }
 
-/* ----- Route ----- */
-const STOPS = [
-  {t:20, room:'about', title:'Hi, I’m Duy Anh', q:'Who is Duy Anh?', body:()=>`
-    <p>I’m a student at Lawrence S. Ting High School in Ho Chi Minh City, Class of 2027. I’m interested in computer science, AI, and practical problem-solving.</p>
-    <p>This tour makes six more stops and takes about five minutes. Press <b>Next</b> when you’re ready. If something catches your eye, follow its link; the tour will wait for you.</p>`, more:[['about','About Duy Anh']]},
-  {t:70, room:'build', title:'Build: Contextuary', q:'What does he build, and how?', body:()=>`
-    <p><b>Contextuary</b> is a SAT vocabulary-learning platform built with React and Supabase. I co-lead it and work as a full-stack developer on the database structure, interface design, contextual learning flows, and stability improvements.</p>
-    ${statRow(ITEM.contextuary.metrics)}
-    ${ph(ITEM.contextuary.media[0])}
-    <p>When traffic spikes before SAT test dates, I updated the caching and database so the site stays smooth instead of lagging or going down.</p>
-    <p>The idea is to learn a word from the sentence around it. Try one:</p>
-    <div class="demo" id="route-vocab" data-room="build"></div>`, more:[['contextuary','Contextuary case study'],['workshop','The Workshop']], ext:[['https://contextuary.app','contextuary.app ↗']]},
-  {t:60, room:'research', title:'Research: smart waste for Vietnam', q:'How does he decide whether technology fits a real place?', body:()=>`
-    <p class="close-line" style="font-size:clamp(24px,3.4vw,32px)">Can a smart waste system that works elsewhere work in Vietnam?</p>
-    <p>My scoping review looks at AI- and IoT-enabled waste management against practical conditions: infrastructure, costs, maintenance, behaviour, policy, and data. From it I propose <b>V-SWAP</b>, a framework that organises those conditions around four decisions.</p>
-    <ul class="options4"><li><b>Study</b></li><li><b>Pilot</b></li><li><b>Scale</b></li><li><b>Reject</b></li></ul>
-    <div class="caveat"><span>V-SWAP is a conceptual proposal, not yet field-validated or evaluated with stakeholders. The manuscript is in preparation.</span></div>`, more:[['lab','The Question Lab'],['vswap','Try the readiness demo']]},
-  {t:65, room:'community', title:'Community: contribution and reflection', q:'How does he contribute to other people?', body:()=>`
-    <p>In each setting, here is what I was responsible for:</p>
-    <ul class="r-mini">
-      <li data-room="community"><i class="dot"></i><span><b>Nét Mơ (Dream Strokes)</b> · a youth-led STEAM project for children in shelters, older adults in care homes and the wider community. I co-design the curriculum, handle logistics and coordinate volunteers.</span></li>
-      <li data-room="community"><i class="dot"></i><span><b>House Adventure service learning</b> · preparing materials, organising spaces and schedules, supporting volunteers.</span></li>
-      <li data-room="community"><i class="dot"></i><span><b>LSTS Advanced Math Community</b> · learning with peers and supporting younger students preparing for competitions.</span></li>
-      <li data-room="community"><i class="dot"></i><span><b>Debate</b> · competing, leading, giving feedback, and mentoring a younger team.</span></li>
-    </ul>
-    <span class="gap">Add one short reflection in your own words for this stop.</span>`, more:[['common','The Common Room'],['netmo','Nét Mơ']]},
-  {t:45, room:'awards', title:'Awards: the learning journey', q:'How does he learn from a challenge?', body:()=>`
-    <p class="close-line" style="font-size:clamp(24px,3.4vw,32px)">IMOCSEA: National Round Bronze → International Round Silver (2025)</p>
-    <p>Between the two, I changed how I practise: attempting problems independently, recording failed approaches, comparing strategies only after trying, and working to understand why a method works.</p>`, more:[['imocsea','The IMOCSEA journey'],['replay','All achievements']]},
-  {t:25, room:'media', title:'Media: a creative example', q:'How does he tell a story?', body:()=>`
-    <p>On the House Adventure Committee, my role is external relations and media coordination: making sure the right people hear about what we do, in a form they’ll pay attention to.</p>
-    ${ph({label:'House Adventure coverage',ratio:'16/9',type:'photo or video still'})}`, more:[['ha-media','House Adventure media'],['studio','The Studio']]},
-  {t:15, room:'about', title:'One person. Many connections.', q:'Where can I go next?', body:()=>`
-    <p>That’s the short version. When you finish, the five places open below: explore whichever one interests you, or search for anything.</p>
-    ${PROFILE.cv?`<p><a href="${esc(PROFILE.cv.url)}" target="_blank" rel="noopener">Download my CV ↗</a></p>`:'<span class="gap">CV link appears here once a CV is added.</span>'}
-    ${contactBlock()}`, more:[]}
-];
-function trailPos(i){ const tot=STOPS.reduce((a,x)=>a+x.t,0); let acc=0; for(let j=0;j<i;j++) acc+=STOPS[j].t; return ((acc+STOPS[i].t/2)/tot*100).toFixed(2); }
-function tourHTML(){
-  const i=Math.min(S.route.stop,STOPS.length-1), s=STOPS[i], n=STOPS.length;
-  const from=(S.route.from!=null&&S.route.from>=0&&S.route.from<n)?S.route.from:i;
-  return `<p class="tour-meta">${n} stops · about 5 minutes</p>
-  <article class="tour" data-room="${s.room}" aria-labelledby="tour-h">
-    <div>
-      <p class="tour-count" aria-live="polite">Stop <b>${i+1}</b> of ${n} · about ${s.t} seconds</p>
-      <div class="trail" role="progressbar" aria-label="Tour progress" aria-valuemin="1" aria-valuemax="${n}" aria-valuenow="${i+1}" aria-valuetext="Stop ${i+1} of ${n}">
-        <div class="trail-track">${STOPS.map((_,j)=>`<i class="${j<i?'done':j===i?'now':''}"></i>`).join('')}</div>
-        <span class="trail-turtle${from>i?' rev':''}" style="--p:${trailPos(from)}" aria-hidden="true">${turtle()}</span>
-      </div>
-    </div>
-    <p class="r-q">${s.q}</p>
-    <h2 id="tour-h" tabindex="-1">${s.title}</h2>
-    ${s.body()}
-    ${s.more.length?`<p class="tour-more">Want more? ${s.more.map(([to,l])=>`<a href="#${to}" data-route-leave>${l}</a>`).concat((s.ext||[]).map(([u,l])=>`<a href="${u}" target="_blank" rel="noopener">${l}</a>`)).join(' · ')}</p>`:''}
-    <div class="tour-nav">
-      ${i>0?`<button type="button" class="btn btn-back" data-route="back">← Back</button>`:'<span></span>'}
-      ${i<n-1?`<button type="button" class="btn btn-next" data-route="next">Next: ${STOPS[i+1].title.replace(/:.*$/,'')} →</button>`:`<button type="button" class="btn btn-next" data-route="finish">Explore the five places ↓</button>`}
-    </div>
-  </article>
-  ${i<n-1?`<button type="button" class="tour-skip" data-route="skip">Skip the tour and explore on my own</button>`:''}`;
-}
-function drawTour(focus){
-  const sec=$('#tour-sec'); if(!sec) return;
-  const from=S.route.from; sec.innerHTML=tourHTML(); mountVocab($('#route-vocab')); S.route.from=null; save();
-  const tt=$('.trail-turtle',sec);
-  if(tt&&from!=null&&from!==S.route.stop){
-    if(RM){ tt.style.setProperty('--p',trailPos(S.route.stop)); tt.classList.remove('rev'); }
-    else requestAnimationFrame(()=>requestAnimationFrame(()=>{ tt.classList.add('moving'); tt.style.setProperty('--p',trailPos(S.route.stop));
-      const end=()=>{ tt.classList.remove('moving','rev'); }; tt.addEventListener('transitionend',end,{once:true}); setTimeout(end,1500); }));
-  }
-  if(focus){ const h=$('#tour-h'); const r=sec.getBoundingClientRect(); if(r.top<0) sec.scrollIntoView({block:'start',behavior:'instant'}); h.focus({preventScroll:true}); }
-}
 /* ----- Results ----- */
 function viewResults(){
   return `<div class="wrap results"><h1 id="main-h" class="vh" tabindex="-1">Search results for ${esc(S.q)}</h1><div id="res-area">${resultsArea()}</div></div>`;
@@ -1988,29 +1840,6 @@ function bindResults(){
   const sw=$('[data-cat-switch]',area); if(sw) sw.addEventListener('click',()=>pick('all',true));
 }
 
-/* ---------- steppers ---------- */
-function stepperHTML(id,steps,label){
-  return `<div class="stepper" data-stepper>
-    <div class="st-tabs" role="tablist" aria-label="${label}">${steps.map((s,i)=>`${i?'<span class="st-arrow" aria-hidden="true">→</span>':''}<button type="button" role="tab" id="${id}-t${i}" aria-controls="${id}-p${i}" aria-selected="${i===0}" tabindex="${i===0?0:-1}"><span class="st-n">${i+1}</span><span>${s.label}</span></button>`).join('')}</div>
-    ${steps.map((s,i)=>`<div class="st-panel" role="tabpanel" id="${id}-p${i}" aria-labelledby="${id}-t${i}" tabindex="0"${i?' hidden':''}>${s.body}
-      <div class="st-nav">${i>0?`<button type="button" class="btn btn-ghost btn-sm" data-st-go="${i-1}">← ${steps[i-1].label}</button>`:''}${i<steps.length-1?`<button type="button" class="btn btn-soft btn-sm" data-st-go="${i+1}">${steps[i+1].label} →</button>`:''}</div>
-    </div>`).join('')}
-  </div>`;
-}
-function bindSteppers(root){
-  $$('[data-stepper]',root).forEach(st=>{
-    const tabs=$$('[role="tab"]',st), panels=$$('[role="tabpanel"]',st);
-    const sel=(i,focus)=>{ tabs.forEach((t,j)=>{ t.setAttribute('aria-selected',String(j===i)); t.tabIndex=j===i?0:-1; t.classList.toggle('done',j<i); }); panels.forEach((p,j)=>{p.hidden=j!==i;}); if(focus) tabs[i].focus(); };
-    const scat=(st.closest('[data-room]')||{dataset:{}}).dataset.room;
-    const note=()=>sig(scat,scat==='awards'?'you stepped through the IMOCSEA journey':'you stepped through the workshop story',1);
-    tabs.forEach((t,i)=>{
-      t.addEventListener('click',()=>{ sel(i); note(); });
-      t.addEventListener('keydown',e=>{ let j=null; if(e.key==='ArrowRight'||e.key==='ArrowDown') j=(i+1)%tabs.length; else if(e.key==='ArrowLeft'||e.key==='ArrowUp') j=(i-1+tabs.length)%tabs.length; else if(e.key==='Home') j=0; else if(e.key==='End') j=tabs.length-1; if(j!=null){ e.preventDefault(); sel(j,true);} });
-    });
-    $$('[data-st-go]',st).forEach(b=>b.addEventListener('click',()=>sel(+b.dataset.stGo,true)));
-  });
-}
-
 /* ---------- vocabulary demo ---------- */
 function mountVocab(el){
   if(!el) return;
@@ -2027,7 +1856,7 @@ function mountVocab(el){
     $$('.vc-opt',el).forEach(b=>b.addEventListener('click',()=>answer(+b.dataset.j)));
   };
   const answer=j=>{
-    sig('build','you tried the vocabulary demo',2);
+   
     const w=VOCAB[i], ok=j===w.answer;
     $$('.vc-opt',el).forEach((b,k)=>{ b.disabled=true; if(k===w.answer) b.classList.add('right'); else if(k===j) b.classList.add('wrong'); if(k===j) b.setAttribute('aria-pressed','true'); });
     const last=i===VOCAB.length-1;
@@ -2062,18 +1891,10 @@ const LOG=[
   {type:'feat', scope:'iot', msg:'FCT Summer Camp · IoT fire alarm · 2nd place', to:'fct-iot', date:'2024'},
   {type:'init', scope:'fct', msg:'join FPT Software’s Computer Talents Club', to:'fct', date:'2023-08'}
 ];
-const LOG_UNDATED=[];
 function hash7(t){ let h=2166136261; for(const c of t){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); } return (h>>>0).toString(16).padStart(8,'0').slice(0,7); }
 function gitlogHTML(){
   return `<div class="gitlog"><p class="cmd">$ <b>git log</b> --author="Trần Duy Anh" --oneline</p><ol>${LOG.map((l,i)=>`<li><span class="g" aria-hidden="true">${i===LOG.length-1?'○':'*'}</span><span class="h">${hash7(l.msg)}</span><span class="d">${l.date}</span><span>${l.ref?`<span class="ref">(${l.ref})</span> `:''}<span class="ty">${l.type}(${l.scope}):</span> <a href="#${l.to}">${esc(l.msg)}</a></span></li>`).join('')}
     <li class="gap-only"><span class="gap">Entries showing only a year need a month to be ordered exactly within that year.</span></li></ol></div>`;
-}
-
-/* ---------- interest signals → "picked for you" ---------- */
-function sig(cat,why,w){ if(!CATS.includes(cat)) return; S.sig=S.sig||{}; S.sigWhy=S.sigWhy||{}; w=w||1; S.sig[cat]=(S.sig[cat]||0)+w; if(!S.sigWhy[cat]||w>=(S.sigW&&S.sigW[cat]||0)){ S.sigWhy[cat]=why; S.sigW=S.sigW||{}; S.sigW[cat]=w; } save(); }
-function recommend(){
-  const sg=S.sig||{}; const cands=CATS.filter(c=>!S.visited[c]&&sg[c]>0).sort((a,b)=>sg[b]-sg[a]);
-  return cands.length?{cat:cands[0],why:S.sigWhy[cands[0]]}:null;
 }
 
 /* ---------- next room ---------- */
@@ -2178,7 +1999,7 @@ ${ESCP(it.summary)}${ms.length?'\n'+ms.map(m=>`<span class="ok">${ESCP(m.value)}
       const t0=performance.now(), rs=runSearch(arg), ms=(performance.now()-t0).toFixed(2);
       tPrint(rs.length?`<span class="dim">${rs.length} result${rs.length===1?'':'s'} in ${ms} ms</span>\n`+rs.slice(0,6).map(r=>`<span class="ok">${String(Math.round(r.s)).padStart(5)}</span>  ${r.it.id.padEnd(16)}<span class="dim">${ESCP(r.it.title)}</span>`).join('\n'):`<span class="dim">no results for “${ESCP(arg)}”</span>`); break; }
     case 'git': if(args[0]==='log'){ tPrint(LOG.map(l=>`<span class="hl">${hash7(l.msg)}</span> ${l.ref?`<span class="ok">(${l.ref})</span> `:''}${l.type}(${l.scope}): ${ESCP(l.msg)} <span class="dim">${l.date}</span>`).join('\n')); } else tPrint(`<span class="err">git: only “git log” works here</span>`); break;
-    case 'tour': tPrint('<span class="ok">starting the tour…</span>'); setTimeout(()=>{ $('#term').close(); S.route.done=false; S.route.stop=0; save(); go('tour'); },350); break;
+    case 'tour': tPrint('<span class="ok">starting the tour…</span>'); setTimeout(()=>{ $('#term').close(); go('tour'); },350); break;
     case 'theme': if(arg==='dark'||arg==='light'){ setLook(arg); $('#term-input').focus(); tPrint(`<span class="ok">theme set to ${arg}</span>`); } else tPrint('<span class="err">usage: theme dark|light</span>'); break;
     case 'clear': $('#term-out').innerHTML=''; break;
     case 'exit': case 'quit': $('#term').close(); break;
@@ -2324,10 +2145,6 @@ function sayHi(){
   hiTimer=setTimeout(()=>closeHi(true), RM?3800:3800);
 }
 function secretFor(q){ const n=norm(q||''); return SECRETS.find(x=>x.keys.includes(n))||null; }
-function peekList(cat){
-  const its=ITEMS.filter(i=>i.cat===cat).map(i=>i.short||i.title);
-  return its.slice(0,3).join(' · ')+(its.length>3?` · +${its.length-3} more`:'');
-}
 function toast(msg){
   const t=$('#toast'); t.innerHTML=turtle()+'<span>'+esc(msg)+'</span>';
   t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
@@ -2366,7 +2183,7 @@ function lightDot(b){
 }
 function setupReveal(){
   if(RM||!('IntersectionObserver' in window)) return;
-  const els=$$('.card,.gal,.aw,.factors li,.journey li,.conn,.layer,.res,.options4 li',main).filter(e=>e.getBoundingClientRect().top>window.innerHeight);
+  const els=$$('.card,.journey li,.res',main).filter(e=>e.getBoundingClientRect().top>window.innerHeight);
   if(!els.length) return;
   const show=t=>{ io.unobserve(t); t.classList.add('rise');
     const done=()=>{ t.classList.remove('pre','rise'); t.style.removeProperty('--d'); }; t.addEventListener('transitionend',done,{once:true}); setTimeout(done,1200); };
@@ -2385,9 +2202,7 @@ function render(){
   const tok=raw;
   if(S.cur==='search') S.resScroll=window.scrollY;
   S.prev=S.cur; S.cur=tok;
-  document.body.classList.remove('welcome');
   if(tok!=='tortoise'&&dlg.open){ opener=null; dlg.close(); }
-  const zd=document.getElementById('zoom'); if(zd&&zd.open){ zoomOpener=null; zd.close(); }
   const hd=document.getElementById('hatch'); if(hd&&hd.open) hd.close();
   ['cmdk','keys','term','drawer'].forEach(id=>{ const d=document.getElementById(id); if(d&&d.open){ if(id==='cmdk') ckOpener=null; d.close(); } });
   const isTour=(tok==='tour'||tok==='route');
@@ -2396,17 +2211,14 @@ function render(){
   let html='', cat=null, after=null, scroll=0;
 
   if(tok==='home'||isTour){
-    if(isTour&&S.route.done){ S.route.done=false; S.route.stop=0; }
-    if(isTour) S.route.active=false;
     const v=viewHome(); html=v.html;
-    S.afterTour=false;
-    after=()=>{ mountVocab($('#route-vocab')); mountReadiness($('#rx-mount')); mountPuzzle($('.pz')); mountQmap(); setupStory();
+    after=()=>{ mountReadiness($('#rx-mount')); mountPuzzle($('.pz')); mountQmap(); setupStory();
       if(isTour){ setTimeout(()=>{ const c=$('#ch-1'); c.scrollIntoView({block:'start',behavior:'instant'}); $('#ch-1-h').setAttribute('tabindex','-1'); $('#ch-1-h').focus({preventScroll:true}); },0); } };
     if(isTour) scroll=null; }
   else if(tok==='search'){ html=viewResults(); const sec=secretFor(S.q); after=()=>{ bindResults(); if(sec&&S.fresh0){ foundEgg('secret'); if(sec.walk) walkTurtle(null); if(sec.hatch) setTimeout(openHatch,60); } }; S.fresh0=S.fresh; scroll=S.fresh?0:S.resScroll; S.fresh=false; }
   else if(ROOM_BY_ID[tok]){ const r=ROOM_BY_ID[tok]; cat=r.cat; S.visited[cat]=1;
     html={workshop:viewWorkshop,replay:viewReplay,lab:viewLab,common:viewCommon,studio:viewStudio}[tok]();
-    after=()=>{ if(tok==='workshop') mountVocab($('#vocab')); if(tok==='lab') mountReadiness($('#rx-mount')); if(tok==='replay') litTimeline(); }; }
+    after=()=>{ if(tok==='workshop') mountVocab($('#vocab')); if(tok==='lab') mountReadiness($('#rx-mount')); }; }
   else if(tok==='vswap'){ cat='research'; S.visited.research=1; html=viewLab(); after=()=>{ mountReadiness($('#rx-mount')); const d=$('#vswap-sec'); d.open=true; setTimeout(()=>{d.scrollIntoView({block:'start',behavior:'instant'}); d.focus({preventScroll:true});},0); }; scroll=null; }
   else if(tok==='about'||tok==='tortoise'||tok==='journey'){ html=viewAbout();
     after=()=>{ if(tok==='tortoise') openTortoise(null); if(tok==='journey'){ const j=$('#journey-anchor'); setTimeout(()=>{j.scrollIntoView({block:'start',behavior:'instant'}); j.focus({preventScroll:true});},0);} };
@@ -2419,9 +2231,7 @@ function render(){
   top.innerHTML = (tok==='home'||isTour)?'':topbar(cat);
   main.innerHTML = html;
   $$('form[data-sb]').forEach(bindSearch);
-  bindSteppers(main);
   if(after) after();
-  pill();
   setupReveal();
   save();
   if(scroll!==null) window.scrollTo({top:scroll,left:0,behavior:'instant'});
@@ -2429,12 +2239,6 @@ function render(){
   first=false;
   document.title = tok==='home'?'Duy Anh Search':(tok==='search'?`${S.q} · Duy Anh Search`:(($('#main-h')||{}).textContent||'')+' · Duy Anh Search');
 }
-function pill(){
-  const slot=$('#pill-slot');
-  if(S.route.active && !S.route.done && !['home','tour','route'].includes(S.cur)) slot.innerHTML=`<a class="resume-pill" href="#tour">Back to the tour · Stop ${S.route.stop+1} of 7</a>`;
-  else slot.innerHTML='';
-}
-
 /* ---------- tortoise dialog ---------- */
 function openTortoise(btn){
   opener=btn; if(dlg.open) return;
@@ -2446,11 +2250,9 @@ dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); });
 $('[data-close]',dlg).addEventListener('click',()=>dlg.close());
 
 /* ---------- global events ---------- */
-let zoomOpener=null;
 $('#drawer').addEventListener('close',()=>{ if(deepOpener&&document.contains(deepOpener)) deepOpener.focus({preventScroll:true}); deepOpener=null; });
 $('#hatch').addEventListener('close',()=>{ const t=hatchOpener&&document.contains(hatchOpener)?hatchOpener:$('#main-h'); if(t) t.focus({preventScroll:true}); hatchOpener=null; });
 $('#hatch').addEventListener('click',e=>{ if(e.target.id==='hatch') e.target.close(); });
-$('#zoom').addEventListener('close',()=>{ if(zoomOpener&&document.contains(zoomOpener)) zoomOpener.focus(); zoomOpener=null; });
 document.addEventListener('click',e=>{
   const q=e.target.closest('[data-q]'); if(q){ e.preventDefault(); doSearch(q.dataset.q); return; }
   if(e.target.closest('[data-hi-go]')){ closeHi(true); return; }
@@ -2476,21 +2278,10 @@ document.addEventListener('click',e=>{
   const lk=e.target.closest('[data-look-toggle]'); if(lk){ setLook(LOOK==='dark'?'light':'dark'); return; }
   const egg=e.target.closest('[data-egg-walk]'); if(egg){ walkTurtle(egg); return; }
   const dot=e.target.closest('[data-dot]'); if(dot){ lightDot(dot); return; }
-  const fa=e.target.closest('.factor'); if(fa){ fa.setAttribute('aria-expanded',String(fa.getAttribute('aria-expanded')!=='true')); sig('research','you opened the research factors',1); return; }
+  const fa=e.target.closest('.factor'); if(fa){ fa.setAttribute('aria-expanded',String(fa.getAttribute('aria-expanded')!=='true')); return; }
   const sc=e.target.closest('[data-scroll]'); if(sc){ const t=document.getElementById(sc.dataset.scroll); if(t){ if(t.tagName==='DETAILS') t.open=true; t.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'}); if(!t.hasAttribute('tabindex')) t.setAttribute('tabindex','-1'); t.focus({preventScroll:true}); } return; }
   const tt=e.target.closest('[data-tortoise]'); if(tt){ openTortoise(tt); return; }
-  const zm=e.target.closest('[data-zoom]'); if(zm){ const zc=(zm.closest('[data-room]')||{dataset:{}}).dataset.room; sig(zc,'you looked closely at a project screenshot',1); const d=$('#zoom'); $('#zoom-img').src=zm.dataset.zoom; $('#zoom-img').alt=zm.dataset.zoomAlt||''; zoomOpener=zm; d.showModal(); $('[data-zoom-close]',d).focus(); return; }
-  if(e.target.closest('[data-zoom-close]')||e.target.id==='zoom'){ $('#zoom').close(); return; }
   const br=e.target.closest('[data-back-results]'); if(br){ if(S.prev==='search') history.back(); else go('search'); return; }
-  const rl=e.target.closest('[data-route-leave]'); if(rl){ const t=rl.getAttribute('href').slice(1); const it=ITEM[t], r=ROOM_BY_ID[t]; if(it||r) sig(it?it.cat:r.cat,`you opened “${it?it.title:r.name}” during the tour`,2); S.route.active=true; save(); return; }
-  const rt=e.target.closest('[data-route]'); if(rt){
-    const a=rt.dataset.route, n=STOPS.length;
-    if(a==='next'){ S.route.from=S.route.stop; S.route.stop=Math.min(n-1,S.route.stop+1); drawTour(true); return; }
-    if(a==='back'){ S.route.from=S.route.stop; S.route.stop=Math.max(0,S.route.stop-1); drawTour(true); return; }
-    if(a==='finish'||a==='skip'){ S.route.done=true; S.route.active=false; S.route.stop=0; S.afterTour=true; save(); go('home'); if(a==='finish') walkTurtle(null); return; }
-    if(a==='replay'){ S.route.done=false; S.route.stop=0; save(); go('tour'); return; }
-    return;
-  }
 });
 function pageChange(){
   const go=()=>render();
@@ -2514,23 +2305,10 @@ document.addEventListener('keydown',e=>{
   if(document.querySelector('dialog[open]')) return;
   const typing=e.target.closest&&e.target.closest('input,textarea,select,[contenteditable="true"]');
   if(typing||e.metaKey||e.ctrlKey||e.altKey) return;
-  if(e.key==='/'){ const i=$('.topbar input')||$('.hero input'); if(i){ e.preventDefault(); i.focus(); i.select(); } return; }
+  if(e.key==='/'){ const i=$('.topbar input')||$('.sx-explore-sec input'); if(i){ e.preventDefault(); i.focus(); i.select(); } return; }
   if(e.key==='?'){ e.preventDefault(); openKeys(); return; }
   if(e.key==='`'||e.code==='Backquote'){ e.preventDefault(); openTerm(); return; }
 });
-document.addEventListener('keydown',e=>{
-  if(!$('#tour-sec')) return;
-  if(e.target.closest('input,textarea,select,button,a,[role="tab"]')) return;
-  if(e.key==='ArrowRight'&&S.route.stop<STOPS.length-1){ S.route.from=S.route.stop; S.route.stop++; drawTour(true); }
-  else if(e.key==='ArrowLeft'&&S.route.stop>0){ S.route.from=S.route.stop; S.route.stop--; drawTour(true); }
-});
-document.addEventListener('pointermove',e=>{
-  const c=e.target.closest&&e.target.closest('.place'); if(!c) return;
-  const r=c.getBoundingClientRect(); c.style.setProperty('--mx',(e.clientX-r.left)+'px'); c.style.setProperty('--my',(e.clientY-r.top)+'px');
-},{passive:true});
-const glow=(e,on)=>{ const a=e.target.closest&&e.target.closest('.story a[href^="#"]'); if(!a) return; const c=$(`.place[href="${a.getAttribute('href')}"]`); if(c) c.classList.toggle('glow',on); };
-document.addEventListener('pointerover',e=>glow(e,true)); document.addEventListener('pointerout',e=>glow(e,false));
-document.addEventListener('focusin',e=>glow(e,true)); document.addEventListener('focusout',e=>glow(e,false));
 eggCount();
 function setGaps(v){ S.gaps=!!v; document.body.classList.toggle('show-gaps',S.gaps); save(); }
 setGaps(S.gaps);
