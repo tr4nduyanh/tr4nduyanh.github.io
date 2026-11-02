@@ -1900,7 +1900,7 @@ function gitlogHTML(){
 /* ---------- next room ---------- */
 function nextRoom(cat){
   const i=CATS.indexOf(cat), prev=ROOMS[i-1], next=ROOMS[i+1];
-  return `<nav class="roomnav" aria-label="Other places">${prev?`<a class="rn prev" href="#${prev.id}" data-room="${prev.cat}"><small>← Previous room</small><b>${prev.name}</b></a>`:'<span></span>'}${next?`<a class="rn next" href="#${next.id}" data-room="${next.cat}"><small>Next room →</small><b>${next.name}</b></a>`:`<a class="rn next" href="#home" data-room="about"><small>Back to the start →</small><b>Duy Anh Search</b></a>`}</nav>`;
+  return `<nav class="roomnav" aria-label="Other places">${prev?`<a class="rn prev" href="#${prev.id}" data-room="${prev.cat}"><small>← Previous room</small><b>${prev.name}</b></a>`:'<span></span>'}${next?`<a class="rn next" href="#${next.id}" data-room="${next.cat}"><small>Next room →</small><b>${next.name}</b></a>`:`<a class="rn next" href="#home" data-room="about"><small>Back to the start →</small><b>Behind the screen</b></a>`}</nav>`;
 }
 
 /* ---------- search explain ---------- */
@@ -2237,7 +2237,14 @@ function render(){
   if(scroll!==null) window.scrollTo({top:scroll,left:0,behavior:'instant'});
   if(!first&&!isTour&&!(tok==='home'&&scroll===null)){ const h=$('#main-h'); if(h) h.focus({preventScroll:true}); }
   first=false;
-  document.title = tok==='home'?'Duy Anh Search':(tok==='search'?`${S.q} · Duy Anh Search`:(($('#main-h')||{}).textContent||'')+' · Duy Anh Search');
+  // tab title: the page's name, then the site's
+  const page = (tok==='home'||isTour) ? 'Behind the screen'
+    : tok==='search' ? `“${S.q}” · Search`
+    : ROOM_BY_ID[tok] ? ROOM_BY_ID[tok].name
+    : tok==='vswap' ? ROOM.research.name
+    : (tok==='about'||tok==='tortoise'||tok==='journey') ? 'About'
+    : ITEM[tok] ? ITEM[tok].title : 'Page not found';
+  document.title = `${page} · Trần Duy Anh`;
 }
 /* ---------- tortoise dialog ---------- */
 function openTortoise(btn){
