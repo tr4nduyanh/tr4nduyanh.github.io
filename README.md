@@ -1,5 +1,13 @@
-# Trần Duy Anh · Portfolio
+# Trần Duy Anh · Behind the screen
 
-Behind the screen: https://tr4nduyanh.github.io/
+My portfolio: https://tr4nduyanh.github.io/
 
-The FUNiX assignment site is at https://tr4nduyanh.github.io/ASM3/
+```
+index.html       page structure
+css/style.css    styles, light and dark looks
+js/app.js        content, search, routing and the interactive demos
+img/             photos and screenshots (children's faces blurred)
+ASM3/            FUNiX assignment site
+```
+
+Plain HTML, CSS and JavaScript. No build step, no framework.
