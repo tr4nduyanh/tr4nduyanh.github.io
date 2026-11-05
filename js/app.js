@@ -331,16 +331,16 @@ const ITEMS = [
   media:[{label:'Service-learning setup photo', ratio:'3/2', type:'photo'}],
   evidence:[], metrics:[], related:['ha-media','netmo'] },
 
-{ id:'math-community', short:'Advanced Math Community', cat:'community', kind:'Peer mentoring', title:'LSTS Advanced Math Community', aliases:['lsts math','advanced math community'],
-  summary:'Weekly olympiad sessions. I’m the main peer mentor.',
-  role:'Core member · peer mentor', layout:'chain',
-  tags:['math','mathematics','olympiad','challenge','mentoring','peer learning','teaching','community','tutoring'],
+{ id:'math-community', short:'Advanced Math Community', cat:'community', kind:'Peer teaching', title:'LSTS Advanced Math Community', aliases:['lsts math','advanced math community','math club'],
+  summary:'Every week, one of us becomes the teacher.',
+  role:'Core member', layout:'chain',
+  tags:['math','mathematics','olympiad','challenge','mentoring','peer learning','peer teaching','presenting','teaching','community','tutoring'],
   sections:[
-    ['Where', 'LSTS · since Sep 2025'],
-    ['My role', 'Main peer mentor'],
-    ['For', 'IMOCSEA · IMC'],
-    ['We did', 'Weekly sessions, comparing methods'],
-    ['Result', G('Verified outcomes only, e.g. how your peers did.')],
+    ['Since', 'Sep 2025'],
+    ['My role', 'Core member'],
+    ['How it works', 'We each pick a topic and teach it'],
+    ['Level', 'Beyond the school curriculum'],
+    ['Also', 'Olympiad prep: IMOCSEA · IMC'],
     ['Learned', G('One line in your own words.')]
   ],
   media:[{label:'A maths session', src:'img/math.webp?v=c05e68dc', w:1600, h:1200, ratio:'4/3', alt:'Two students in LSTS uniforms pointing at a GeoGebra geometry construction on a large classroom screen, with circle diagrams drawn on the whiteboards on either side.', caption:'A maths session.'}], evidence:[], metrics:[], related:['imocsea','debate'] },
@@ -573,7 +573,7 @@ function val(v){
 const isGap = v => v==null || (v&&v.gap) || (Array.isArray(v)&&v.every(isGap));
 function fields(sections,layout){
   if(!sections||!sections.length) return '';
-  const IC={'Where':'i-room','When':'i-cal','Since':'i-cal','My role':'i-target','Team':'i-people','Result':'i-trophy','Next year':'i-trophy','A moment':'i-spark','Learned':'i-bulb','We ran':'i-bolt','We did':'i-bolt','For':'i-book','Events':'i-camera','Tools':'i-stack','A choice I made':'i-page'};
+  const IC={'How it works':'i-book','Level':'i-chart','Also':'i-trophy','Where':'i-room','When':'i-cal','Since':'i-cal','My role':'i-target','Team':'i-people','Result':'i-trophy','Next year':'i-trophy','A moment':'i-spark','Learned':'i-bulb','We ran':'i-bolt','We did':'i-bolt','For':'i-book','Events':'i-camera','Tools':'i-stack','A choice I made':'i-page'};
   let n=0;
   return `<dl class="tiles">${sections.map(([k,v])=>{ const g=isGap(v), i=g?0:n++;
     return `<div class="tile${g?' gap-row':''}${!g&&String(v).replace(/<[^>]+>/g,'').length>42?' w':''}${/^(Result|Next year)$/.test(k)?' win':''}" style="--i:${i}"><span class="tile-ic">${icon(IC[k]||'i-spark')}</span><dt>${k}</dt><dd>${val(v)}</dd></div>`; }).join('')}</dl>`;
@@ -951,7 +951,7 @@ function viewHome(){
       <p class="sx-quote">Someone once pushed me to speak up. Now I could do that for someone else.</p>
       <div class="c4">
         <div class="c4-col"><span class="c4-v">Listen</span><h3>Debate</h3><p>Captain: 1st of 8 teams. The next year, the 4 juniors I coached won too.</p>${zimg(PH.debate)}</div>
-        <div class="c4-col"><span class="c4-v">Explain</span><h3>Maths mentoring</h3><p>Main peer mentor for IMOCSEA and IMC in the LSTS Advanced Math Community.</p>${zimg(PH.math)}</div>
+        <div class="c4-col"><span class="c4-v">Explain</span><h3>Maths community</h3><p>Every week one of us teaches an advanced topic. I’m a core member.</p>${zimg(PH.math)}</div>
         <div class="c4-col c4-nm"><span class="c4-v">Create together</span>
           <div class="nm-logo nm-sm"><svg class="nm-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="nm-c2" d="M100,100 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"/></defs><text><textPath href="#nm-c2" textLength="524" lengthAdjust="spacing">NÉT MƠ · DREAM STROKES · YOUTH-LED STEAM ·</textPath></text></svg><span class="nm-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></span><img src="img/netmo-logo.webp?v=0b5d1051" width="368" height="368" alt="The Nét Mơ logo: a cheerful hand-drawn character holding a paintbrush under the colourful words “Nét Mơ”." loading="lazy"></div>
           <h3>Nét Mơ <small>Dream Strokes</small></h3><p>STEAM workshops for children in shelters and older adults in care homes. As Head of HR, I co-design activities and coordinate 20+ volunteers. Participation went from about half the children to nearly all.</p></div>
@@ -1313,7 +1313,7 @@ function viewCommon(){
         strip:[{kind:'photo',label:'Materials we prepared',cap:'Materials'},{kind:'photo',label:'Volunteers on the day',cap:'Volunteers'},{kind:'photo',label:'The space, ready',cap:'The space'}],
         bullets:['First-aid, painting and craft workshops','Led logistics and 40+ volunteers across rotating stations','The children’s artwork was displayed at the pagoda']})}
       <div class="rgrid two" style="margin-top:8px">
-        ${rcard('math-community',{k:'Peer mentoring',line:'Learning with peers and helping younger students get ready for maths competitions.',img:[PH.math.src,PH.math.w,PH.math.h,PH.math.alt]})}
+        ${rcard('math-community',{k:'Peer teaching',line:'Weekly sessions where we take turns teaching advanced maths.',img:[PH.math.src,PH.math.w,PH.math.h,PH.math.alt]})}
         ${rcard('debate',{k:'Debate',line:'Team captain, 1st among 8 teams. The next year, the juniors I coached won too.',img:[PH.debate.src,PH.debate.w,PH.debate.h,PH.debate.alt]})}
       </div>
     </section>
