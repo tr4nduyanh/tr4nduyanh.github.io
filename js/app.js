@@ -179,12 +179,12 @@ const ITEMS = [
   } },
 
 { id:'firealarm', boost:10, cat:'build', kind:'Hardware project', title:'IoT fire alarm', aliases:['fire alarm','iot fire alarm'],
-  summary:'A fire-alarm circuit that senses smoke and heat, from FCT Summer Camp 2024 (2nd place). Bluetooth alerts were the next step.',
-  role:'Bluetooth research · wiring the circuit', stack:'Smoke sensor · temperature sensor',
+  summary:'A fire-alarm circuit that senses smoke and heat, then flashes LEDs and sounds a buzzer. FCT Summer Camp 2024, 2nd place. Bluetooth alerts were the next step.',
+  role:'Bluetooth research · wiring the circuit', stack:'Smoke sensor · temperature sensor · LEDs · buzzer',
   tags:['IoT','hardware','sensors','Bluetooth','electronics','coding','programming','teamwork','summer camp','embedded'],
   sections:[
     ['My role', 'Bluetooth research · wiring'],
-    ['Built', 'Smoke + heat detection'],
+    ['Built', 'Smoke + heat sensing → LEDs + buzzer'],
     ['Next step', 'Bluetooth alerts (not reached)'],
     ['Result', '2nd place'],
     ['Learned', 'Patience, and how the physical circuit and the code work together']
@@ -266,10 +266,10 @@ const ITEMS = [
   media:[], evidence:[{label:'Certificate', url:null}], metrics:[], related:['fptu-ai','icia'] },
 
 { id:'fct-iot', short:'FCT Summer Camp 2024', cat:'awards', kind:'Award', title:'FCT Summer Camp 2024: Second Place', aliases:['iot chip programming hackathon','iot hackathon','fct summer camp 2024'],
-  summary:'Second Place at FCT Summer Camp 2024, for a fire-alarm circuit that senses smoke and heat.',
+  summary:'Second Place at FCT Summer Camp 2024, for a fire-alarm circuit that senses smoke and heat and sounds a buzzer.',
   award:{comp:'FCT Summer Camp', round:null, result:'Second Place', year:2024, role:null}, project:'firealarm',
   tags:['IoT','hardware','chip programming','embedded','hackathon','summer camp','FCT','coding','programming','challenge','award'],
-  sections:[['The project', 'A fire-alarm circuit that senses smoke and heat. Bluetooth alerts were planned next.'],['Growth', 'Patience, and how the physical circuit and the code work together.']],
+  sections:[['The project', 'A fire-alarm circuit that senses smoke and heat, then flashes LEDs and sounds a buzzer. Bluetooth alerts were planned next.'],['Growth', 'Patience, and how the physical circuit and the code work together.']],
   media:[], evidence:[{label:'Certificate', url:null}], metrics:[], related:['firealarm','fct'] },
 
 { id:'fct-scam', short:'FCT Summer Camp 2026', cat:'awards', kind:'Award', title:'FCT Summer Camp 2026: Fourth Place', aliases:['scamcheck hackathon','fct summer camp','summer camp 2026'],
@@ -1168,9 +1168,9 @@ function viewWorkshop(){
         bullets:['Paste in a message that looks suspicious','Three AI characters check its warning signs and suggest what to do first','Larger text, softer colours and fewer steps for older users'],
         proof:'4th place · FCT Summer Camp 2026',ext:['http://hk1.quvo.pro:15640/','Try the demo']})}
       ${spot({id:'firealarm',flip:true,k:'FCT Summer Camp 2024 · hardware · team project',
-        line:'A fire-alarm circuit that senses smoke and heat.',
+        line:'Senses smoke and heat, then flashes and beeps.',
         main:{...ITEM.firealarm.media[0],ratio:'4/3'},
-        bullets:['My part: Bluetooth research and wiring','Built: smoke and heat detection','Next step we didn’t reach: Bluetooth alerts'],proof:'2nd place · FCT Summer Camp 2024'})}
+        bullets:['My part: Bluetooth research and wiring','Built: smoke and heat sensing, LEDs and a buzzer','Next step we didn’t reach: Bluetooth alerts'],proof:'2nd place · FCT Summer Camp 2024'})}
     </section>
     <section class="rm-sec" aria-labelledby="ws-learn"><h2 class="rm-h" id="ws-learn">Where I learned to build</h2>
       <div class="rgrid two">
@@ -1422,7 +1422,7 @@ function storyView(it){
 /* ----- FCT and FUNiX pages ----- */
 const FCT_STOPS=[
   {d:'Aug 2023',t:'Joined',s:'Mentor-guided programming, algorithms and advanced maths.'},
-  {d:'Summer 2024',t:'Camp · IoT fire alarm',s:'2nd place. A circuit that senses smoke and heat.',to:'firealarm'},
+  {d:'Summer 2024',t:'Camp · IoT fire alarm',s:'2nd place. Senses smoke and heat, then beeps.',to:'firealarm'},
   {d:'Summer 2026',t:'Camp · ScamCheck',s:'4th place. An AI scam checker for older users.',to:'scamcheck'},
   {d:'Jul 2026',t:'Graduated',s:'86 weeks of training. Final grade: A.'}
 ];
@@ -1458,7 +1458,7 @@ function viewFct(it){
             <svg class="wires" viewBox="0 0 220 120" preserveAspectRatio="none"><path d="M44 78 C44 30 120 14 156 40" stroke="#E8455B"/><path d="M68 78 C78 36 150 34 170 62" stroke="#4FB6E8"/><path d="M96 78 C108 48 176 54 192 84" stroke="#F6C343"/></svg>
             <span class="hw-led"></span><span class="hw-bz">${BUZZER}</span>
           </div>
-          <div class="camp-body"><p class="camp-y">2024</p><p class="rc-k">Hardware · 2nd place</p><h3>IoT fire alarm</h3><p>Senses smoke and heat.</p>
+          <div class="camp-body"><p class="camp-y">2024</p><p class="rc-k">Hardware · 2nd place</p><h3>IoT fire alarm</h3><p>Senses smoke and heat, then beeps.</p>
             <div class="camp-act"><button type="button" class="btn btn-soft btn-sm" data-run>Run it</button><a href="#firealarm">See the project →</a></div></div>
         </article>
         <article class="camp">
@@ -1531,10 +1531,10 @@ const FLAME=`<svg viewBox="0 0 40 56" aria-hidden="true" focusable="false"><path
 function viewFirealarm(it){
   const rm=ROOM.build;
   return `<div data-room="build">
-  ${pageHead({room:'workshop',cat:'build',id:'firealarm',k:'Build · '+rm.name,t:'IoT fire alarm',sub:'FCT Summer Camp 2024 · 2nd place',lede:'A circuit that senses smoke and heat. Bluetooth alerts were the next step.',side:`<span class="fa-hero" aria-hidden="true"><span class="fa-hf">${FLAME}</span><span class="fa-hb">${BUZZER}</span></span>`})}
+  ${pageHead({room:'workshop',cat:'build',id:'firealarm',k:'Build · '+rm.name,t:'IoT fire alarm',sub:'FCT Summer Camp 2024 · 2nd place',lede:'Senses smoke and heat, then flashes LEDs and sounds a buzzer. Bluetooth alerts were the next step.',side:`<span class="fa-hero" aria-hidden="true"><span class="fa-hf">${FLAME}</span><span class="fa-hb">${BUZZER}</span></span>`})}
   <div class="wrap">
-    <dl class="sx-stats nmp-stats">${[['2nd','FCT Summer Camp 2024'],['Smoke + heat','what it senses'],['Wiring','my part, plus Bluetooth research'],['Bluetooth','planned, not reached']].map(([v,l])=>`<div><dt>${l}</dt><dd>${v}</dd></div>`).join('')}</dl>
-    <section class="nmp-sec" aria-labelledby="sim-h"><h2 class="rm-h" id="sim-h">Try it · trip the sensor</h2>
+    <dl class="sx-stats nmp-stats">${[['2nd','FCT Summer Camp 2024'],['LEDs + buzzer','when it senses smoke or heat'],['Wiring','my part, plus Bluetooth research'],['Bluetooth','planned, not reached']].map(([v,l])=>`<div><dt>${l}</dt><dd>${v}</dd></div>`).join('')}</dl>
+    <section class="nmp-sec" aria-labelledby="sim-h"><h2 class="rm-h" id="sim-h">Try it · set off the alarm</h2>
       <div class="sim" id="sim" style="--lv:0;--fx:.45">
         <div class="sim-room" role="group" aria-label="A room with a smoke sensor. Drag the match into the room, or tap the floor, to start a fire.">
           <span class="sim-sensor" aria-hidden="true"><i></i><i></i><b>Sensor</b></span>
@@ -1551,7 +1551,7 @@ function viewFirealarm(it){
           <p class="sim-lab">Sensor reading</p>
           <div class="sim-gauge" aria-hidden="true"><span class="sim-fill"></span><span class="sim-thr"></span></div>
           <p class="sim-read"><span>Smoke <b id="sim-v">0</b></span><span>Alarm at 60</span></p>
-          <ol class="fa-flow"><li><b>Sense</b><span>Sensors read the room</span></li><li><b>Decide</b><span>The code checks the reading</span></li><li><b>Alert</b><span>Bluetooth: our next step</span></li></ol>
+          <ol class="fa-flow"><li><b>Sense</b><span>Sensors read the room</span></li><li><b>Decide</b><span>The code checks the reading</span></li><li><b>Alert</b><span>LEDs + buzzer · Bluetooth was next</span></li></ol>
           <p class="sim-status" aria-live="polite">All clear. Drag the match into the room.</p>
           <div class="sim-btns"><button type="button" class="btn btn-primary btn-sm" data-sim="fire">Light a fire</button><button type="button" class="btn btn-line btn-sm" data-sim="out">Use the extinguisher</button></div>
         </div>
@@ -1571,7 +1571,7 @@ function mountFirealarm(){
   const paint=()=>{ const n=Math.round(lv); v.textContent=n; sim.style.setProperty('--lv',(lv/100).toFixed(3));
     const on=n>=60; sim.classList.toggle('alarm',on); sim.classList.toggle('burning',burning);
     fl[0].classList.toggle('on',n>0); fl[1].classList.toggle('on',n>=35); fl[2].classList.toggle('on',on);
-    st.textContent=on?'Smoke and heat detected!':burning?(n<30?'Something’s burning…':'Smoke is reaching the sensor…'):n>0?'Fire’s out. Clearing the smoke…':'All clear. Drag the match into the room.';
+    st.textContent=on?'Fire detected! LEDs flashing, buzzer on.':burning?(n<30?'Something’s burning…':'Smoke is reaching the sensor…'):n>0?'Fire’s out. Clearing the smoke…':'All clear. Drag the match into the room.';
   };
   const tick=t=>{ const dt=Math.min(.1,(t-(last||t))/1000); last=t;
     lv=burning?Math.min(100,lv+dt*(lv<20?14:24)):Math.max(0,lv-dt*30); paint();
