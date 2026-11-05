@@ -33,7 +33,7 @@ const G = t => ({gap:t});
 const PROFILE = {
   name:'Trần Duy Anh', school:'Lawrence S. Ting High School', city:'Ho Chi Minh City', classOf:'2027',
   interests:['Computer science','AI','Practical problem-solving'],
-  cv:{ label:'CV (Google Drive)', url:'https://drive.google.com/file/d/17j-IOST_Y2QnPrUlypWk-KUAgOLSO3m5/view?usp=drive_link' },   // the “CV” nav link appears only when this is set
+  cv:{ label:'CV (Google Drive)', url:'https://drive.google.com/file/d/1BiTnrZczZHzuVRgcna0xPpgyx9h9NJKA/view?usp=sharing' },   // the “CV” nav link appears only when this is set
   contact:[            // shown exactly as written; add url for a clickable link
     { label:'Email',  value:'tranduyanh06032009@gmail.com', copy:true },
     { label:'Phone',  value:'+84 932 074 702', copy:true },
