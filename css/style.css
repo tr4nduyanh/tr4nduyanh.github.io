@@ -20,6 +20,7 @@
    17. Fire alarm page and simulator
    18. Two summer camps
    19. Speaking-up stage
+   20. Studio feed and film strip
 
    Rules later in the file deliberately override earlier ones,
    so keep the order when moving things around.
@@ -1637,12 +1638,12 @@ dialog::backdrop{background:var(--scrim)}
    19. SPEAKING-UP STAGE
    ============================================================ */
 :root{--spk-bg:#13221C;--spk-bg2:#0B1612;--spk-light:rgba(255,214,160,.28);--spk-paper:#FFFBF0;--spk-pink:#E58B76;--spk-rule:#D7E5F2;--spk-ink:#1C2A22;--spk-dim:#6C7B72;--spk-on:#F4EFE4;--spk-on2:rgba(244,239,228,.7)}
-.spk{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.5fr);grid-template-areas:"note stage" "cert stage";gap:16px;margin-top:28px;align-items:start}
-@media (max-width:900px){.spk{grid-template-columns:1fr;grid-template-areas:"note" "stage" "cert"}}
-.spk-note{grid-area:note;padding:20px 22px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.spk{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.5fr);grid-template-areas:"note stage";gap:16px;margin-top:28px;align-items:stretch}
+@media (max-width:900px){.spk{grid-template-columns:1fr;grid-template-areas:"note" "stage"}}
+.spk-note{grid-area:note;display:flex;flex-direction:column;padding:20px 22px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
 .spk-note .c2-h{margin:4px 0 6px}
 .spk-note p:last-child{color:var(--ink-2);font-size:15px}
-.spk-fall{display:block;width:100%;height:34px;margin-top:12px}
+.spk-fall{display:block;width:100%;height:34px;margin-top:auto;padding-top:12px;box-sizing:content-box}
 .spk-fall path{fill:none;stroke:var(--rc);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .spk-fall circle{fill:var(--rc)}
 .spk-stage{grid-area:stage;align-self:stretch;display:flex;flex-direction:column;position:relative;margin:0;min-height:360px;padding:24px clamp(18px,3vw,30px) 0;border-radius:24px;overflow:hidden;color:var(--spk-on);
@@ -1675,9 +1676,48 @@ dialog::backdrop{background:var(--scrim)}
 .spk-crowd .t{fill:rgba(244,239,228,.08)}
 .spk-stage:has(.spk-card:nth-child(3):hover) .spk-crowd{filter:none}
 .spk-won{position:absolute;right:clamp(16px,3vw,28px);bottom:clamp(14px,2.4vw,24px);z-index:2;padding:6px 14px;border:2.5px solid var(--spk-pink);border-radius:8px;color:var(--spk-pink);font:800 clamp(15px,1.8vw,19px) var(--sans);letter-spacing:.02em;text-transform:uppercase;transform:rotate(-6deg);background:color-mix(in srgb,var(--spk-bg2) 70%,transparent)}
-.spk-cert{grid-area:cert;margin:0;display:grid;gap:10px;padding:12px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
-.spk-cert img{display:block;width:100%;height:auto;border-radius:12px}
-.spk-cert figcaption{display:grid;gap:2px;padding:0 4px 4px}
-.spk-cert figcaption b{font-size:15.5px;line-height:1.3}
-.spk-cert figcaption span{font-size:13px;color:var(--ink-2)}
 @media (prefers-reduced-motion: reduce){.spk-breath::after{animation:none;transform:scale(.7)}.spk-card,.spk-crowd{transition:none}}
+/* ============================================================
+   20. STUDIO FEED AND FILM STRIP
+   ============================================================ */
+.pod-plus{font-weight:600;color:var(--rc)!important}
+.pod-cert{grid-row:2;grid-column:2;width:min(100%,260px);height:auto;border-radius:10px;border:1px solid var(--line);margin-top:4px}
+.pod:has(.pod-cert) .pod-m{grid-row:1;grid-column:3}
+@media (max-width:640px){.pod-cert{grid-row:auto;grid-column:1/-1}.pod:has(.pod-cert) .pod-m{grid-row:auto;grid-column:auto}}
+.st-top{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:clamp(22px,4vw,52px);align-items:center;padding-block:clamp(30px,4.5vw,52px)}
+@media (max-width:960px){.st-top{grid-template-columns:1fr}}
+.st-feed{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:18px;align-items:center}
+@media (max-width:640px){.st-feed{grid-template-columns:1fr;justify-items:center}}
+.ig{--ig-bg:#000;--ig-ink:#F5F5F5;--ig-dim:#A8A8A8;display:grid;gap:12px;width:100%;max-width:300px;padding:16px 14px 0;border-radius:34px;background:var(--ig-bg);color:var(--ig-ink);text-decoration:none;border:8px solid #1d1d1f;box-shadow:0 30px 60px -30px var(--shade-2),0 0 0 1px var(--line);transform:rotate(-2deg);transition:transform .4s cubic-bezier(.3,1.4,.5,1);font-size:12.5px;line-height:1.35;overflow:hidden}
+.ig:hover{transform:rotate(0) translateY(-4px)}
+.ig-top{display:flex;justify-content:space-between;align-items:center;font-size:15px}
+.ig-top i{font-style:normal;color:var(--ig-dim)}
+.ig-head{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;align-items:center}
+.ig-av{display:block;width:72px;height:72px;border-radius:50%;padding:3px;background:conic-gradient(from 200deg,#F9CE34,#EE2A7B,#6228D7,#F9CE34)}
+.ig-av img{display:block;width:100%;height:100%;border-radius:50%;border:3px solid var(--ig-bg)}
+.ig-st{display:grid;grid-template-columns:repeat(3,auto);justify-content:space-between;gap:4px;text-align:center;color:var(--ig-dim);font-size:11.5px}
+.ig-st b{display:block;font-size:15px;color:var(--ig-ink)}
+.ig-bio{display:grid;gap:1px;color:var(--ig-ink)}
+.ig-bio b{font-size:13px}
+.ig-hl{display:flex;gap:10px;overflow:hidden;font-size:10.5px;color:var(--ig-ink)}
+.ig-hl span{display:grid;justify-items:center;gap:4px;flex:none;width:48px;text-align:center;white-space:nowrap}
+.ig-hl i{display:block;width:44px;height:44px;border-radius:50%;background-size:cover;box-shadow:0 0 0 2px var(--ig-bg),0 0 0 3px #3a3a3a}
+.ig-grid{display:block;margin:0 -14px;border-top:1px solid #262626}
+.ig-grid img{display:block;width:100%;height:auto}
+.reel{margin:0;display:grid;gap:8px;min-width:0;transform:rotate(1.5deg)}
+.reel-b{position:relative;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 30px 60px -30px var(--shade-2)}
+.reel-b img{display:block;width:100%;height:auto}
+.reel-chip{position:absolute;top:10px;left:10px;padding:3px 10px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.reel-cap{position:absolute;left:0;right:0;bottom:0;display:grid;gap:2px;padding:36px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.78));color:#fff}
+.reel-cap b{font-size:15px;line-height:1.3}
+.reel-cap span{font-size:12.5px;opacity:.85}
+.reel figcaption{font-size:12.5px;color:var(--ink-2);padding-left:4px}
+@media (max-width:640px){.reel,.ig{transform:none}}
+.film{--hole:radial-gradient(circle at 50% 50%,var(--bg) 0 3.5px,transparent 4px);display:grid;grid-auto-flow:column;grid-auto-columns:minmax(260px,1fr);gap:6px;padding:22px 10px;border-radius:14px;background:var(--hole) 0 6px/16px 12px repeat-x,var(--hole) 0 calc(100% - 6px)/16px 12px repeat-x,#111614;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.fm{margin:0;display:grid;gap:6px;scroll-snap-align:start;min-width:0}
+.fm-b{aspect-ratio:16/10;overflow:hidden;border-radius:4px;background:#000}
+.fm-b img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05);transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.fm:hover .fm-b img{transform:scale(1.04)}
+.fm figcaption{font:500 11.5px var(--mono);letter-spacing:.04em;color:#cfd8d3;padding:0 2px}
+.fm-slot .slot{margin:0;border-radius:4px}
+@media (prefers-reduced-motion: reduce){.ig,.fm-b img{transition:none}}

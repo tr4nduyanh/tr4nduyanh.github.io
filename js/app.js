@@ -281,10 +281,10 @@ const ITEMS = [
   media:[], evidence:[{label:'Certificate', url:null}], metrics:[], related:['scamcheck','fct'] },
 
 { id:'fptu-speak', short:'Best Presentation award', cat:'awards', kind:'Award', title:'FPTU AI & Robotics Challenge: Best Presentation & Public Speaking', aliases:['best presentation','public speaking award','ai programming round'],
-  summary:'Best Presentation & Public Speaking Award (2,000,000 VND) in the AI Programming Round of the FPTU AI & Robotics Challenge, 2025.',
+  summary:'Best Presentation & Public Speaking Award (2,000,000 VND) at the FPTU AI & Robotics Challenge hackathon, 2025, AI Programming Round.',
   award:{comp:'FPTU AI & Robotics Challenge', round:'AI Programming Round', result:'Best Presentation & Public Speaking Award', year:2025, role:null},
-  tags:['public speaking','presentation','speaking','AI','programming','challenge','competition','award','FPTU'],
-  sections:[], media:[], evidence:[{label:'Award board', url:'img/cert-fptu-speaking.webp'}], metrics:[], related:['debate','fptu-ai'] },
+  tags:['public speaking','presentation','AI','programming','hackathon','challenge','competition','award','FPTU'],
+  sections:[], media:[], evidence:[{label:'Award board', url:'img/cert-fptu-speaking.webp'}], metrics:[], related:['fptu-ai'] },
 
 /* ---------- RESEARCH ---------- */
 { id:'smartwaste', short:'Smart-waste scoping review', boost:20, cat:'research', kind:'Research project', page:'lab',
@@ -942,8 +942,6 @@ function viewHome(){
           <svg class="spk-crowd" viewBox="0 0 600 70" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><rect class="t" x="0" y="58" width="600" height="12"/><path d="M10 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="28" cy="32" r="10"/><path d="M52 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="70" cy="30" r="10"/><path d="M94 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="112" cy="33" r="10"/><path d="M136 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="154" cy="29" r="10"/><path d="M178 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="196" cy="32" r="10"/><path d="M220 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="238" cy="31" r="10"/><path d="M262 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="280" cy="30" r="10"/><path d="M304 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="322" cy="33" r="10"/><path d="M346 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="364" cy="29" r="10"/><path d="M388 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="406" cy="32" r="10"/><path d="M430 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="448" cy="30" r="10"/><path d="M472 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="490" cy="33" r="10"/><path d="M514 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="532" cy="31" r="10"/><path d="M556 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="574" cy="30" r="10"/></svg>
           <p class="spk-won">Her team won</p>
         </figure>
-        <figure class="spk-cert"><img src="img/cert-fptu-speaking.webp" width="960" height="621" alt="Award board from the FPTU AI &amp; Robotics Challenge 2025, AI Programming Round: Best Presentation &amp; Public Speaking Award, 2,000,000 VND." loading="lazy" decoding="async">
-          <figcaption><b>Best Presentation &amp; Public Speaking</b><span>FPTU AI &amp; Robotics Challenge 2025 · AI Programming Round</span></figcaption></figure>
       </div>
       <p class="sx-quote">Someone once pushed me to speak up. Now I could do that for someone else.</p>
       <div class="c4">
@@ -1189,8 +1187,8 @@ const AW_MATH=[
 ];
 const AW_BUILD=[
   {id:'fct-scam',r:'4th',t:'FCT Summer Camp',s:'ScamCheck, an AI scam checker',y:'2026',to:'scamcheck'},
-  {id:'fptu-ai',r:'Top 4',of:'of 71 teams',t:'FPTU AI Web Hackathon',s:'Southern Region',y:'2025',lead:true},
-  {id:'fptu-speak',r:'Best',of:'presentation',t:'FPTU AI & Robotics Challenge',s:'AI Programming Round · Presentation & Public Speaking Award',y:'2025'},
+  {id:'fptu-ai',r:'Top 4',of:'of 71 teams',t:'FPTU AI & Robotics Challenge',s:'AI Web Hackathon · Southern Region',y:'2025',lead:true,
+   plus:'+ Best Presentation & Public Speaking Award',cert:{src:'img/cert-fptu-speaking.webp',w:960,h:621,alt:'Award board from the FPTU AI & Robotics Challenge 2025, AI Programming Round: Best Presentation & Public Speaking Award, 2,000,000 VND.'}},
   {id:'humlog',r:'Top 10',of:'of 70 teams',t:'Humanitarian Logistics Hackathon',s:'National Round · linking aid groups with people in need',y:'2025',lead:true},
   {id:'icia',r:'2nd',t:'Creativity & Innovation Award',s:'Southern Region · FoodWise, a food-waste prevention app',y:'2025',lead:true,ext:'https://partyrock.aws/u/duyanhh/xhNRNQkr9/FoodWise'},
   {id:'fct-iot',r:'2nd',t:'FCT Summer Camp',s:'An IoT fire alarm',y:'2024',to:'firealarm'}
@@ -1209,7 +1207,7 @@ function viewReplay(){
       </div>
     </section>
     <section class="rm-sec" aria-labelledby="aw-b"><h2 class="rm-h" id="aw-b">Building & leading teams</h2>
-      <ol class="podium">${AW_BUILD.map(x=>{ const body=`<span class="pod-r">${x.r}${x.of?`<small>${x.of}</small>`:''}</span><span class="pod-t"><b>${x.t}</b><span>${x.s}</span></span><span class="pod-m"><span>${x.y}</span>${x.lead?'<i>Team leader</i>':''}${x.to?'<em>See the project →</em>':x.ext?'<em>Try the prototype ↗</em>':''}</span>`;
+      <ol class="podium">${AW_BUILD.map(x=>{ const body=`<span class="pod-r">${x.r}${x.of?`<small>${x.of}</small>`:''}</span><span class="pod-t"><b>${x.t}</b><span>${x.s}</span>${x.plus?`<span class="pod-plus">${x.plus}</span>`:''}</span>${x.cert?`<img class="pod-cert" src="${x.cert.src}" width="${x.cert.w}" height="${x.cert.h}" alt="${esc(x.cert.alt)}" loading="lazy" decoding="async">`:''}<span class="pod-m"><span>${x.y}</span>${x.lead?'<i>Team leader</i>':''}${x.to?'<em>See the project →</em>':x.ext?'<em>Try the prototype ↗</em>':''}</span>`;
         return `<li>${x.to?`<a class="pod pod-link" href="#${x.to}">${body}</a>`:x.ext?`<a class="pod pod-link" href="${x.ext}" target="_blank" rel="noopener">${body}</a>`:`<div class="pod">${body}</div>`}</li>`; }).join('')}</ol>
     </section>
     ${whereNext([],'awards')}
@@ -1320,23 +1318,51 @@ function viewCommon(){
 
 /* ===== Media ===== */
 function viewStudio(){
-  const r=ROOM.media;
+  const r=ROOM.media, it=ITEM['ha-media'];
+  const hl=[['GEN 5','av'],['talent 26','#BFE3FF'],['httn 25’','#E9CFF0'],['talent 25’','#9CC8FF'],['GEN 4','av']];
+  const frame=x=>x.src?`<figure class="fm"><div class="fm-b"><img src="${x.src}" width="${x.w}" height="${x.h}" alt="${esc(x.alt)}" loading="lazy" decoding="async"></div><figcaption>${esc(x.cap)}</figcaption></figure>`
+    :`<div class="fm fm-slot">${slot(x.kind,x.label,'16/10')}</div>`;
   return `<div data-room="media">
   ${roomBand(r,'I help our work reach the people it’s for.',[['~15','people in the media team I lead'],['10+','posts'],['~10,000','average views per post']])}
   <div class="wrap">
-    ${spot({id:'ha-media',big:true,k:'House Adventure Committee · Head of External Relations',
-      line:'Telling the story of our events, and making sure the right people hear it.',
-      main:{kind:'video',label:'House Adventure event video',ratio:'16/9'},
-      strip:[{kind:'photo',label:'Event coverage',cap:'Event coverage'},{kind:'photo',label:'Behind the scenes',cap:'Behind the scenes'},{kind:'photo',label:'A post we shared',cap:'A post we shared'}],
-      bullets:['Lead a media team of about 15 people','10+ posts, averaging about 10,000 views and 300 likes each','Edited with DaVinci Resolve and Photoshop']})}
+    <section class="st-top" aria-labelledby="sp-ha-media">
+      <div class="st-intro"><p class="rc-k">House Adventure Committee · Head of External Relations</p>
+        <h2 class="spot-t" id="sp-ha-media">${it.title}</h2>
+        <p class="spot-l">Telling the story of our events, and making sure the right people hear it.</p>
+        <ul class="spot-b"><li>Lead a media team of about 15 people</li><li>10+ posts, averaging about 10,000 views and 300 likes each</li><li>Edited with DaVinci Resolve and Photoshop</li></ul>
+        <p class="spot-cta"><a class="rf-cta" href="#${pageOf(it)}">Read the full story →</a><a class="spot-ext" href="https://www.instagram.com/feat_adventure/" target="_blank" rel="noopener">@feat_adventure ↗</a></p>
+      </div>
+      <div class="st-feed">
+        <a class="ig" href="https://www.instagram.com/feat_adventure/" target="_blank" rel="noopener" aria-label="Our house’s Instagram, @feat_adventure: 79 posts and 1,585 followers (Nov 2026). Opens Instagram.">
+          <span class="ig-top"><b>feat_adventure</b><i aria-hidden="true">···</i></span>
+          <span class="ig-head"><span class="ig-av"><img src="img/ha-ig-avatar.webp" width="154" height="154" alt=""></span>
+            <span class="ig-st"><span><b data-count="79">79</b>posts</span><span><b data-count="1585">1,585</b>followers</span><span><b>25</b>following</span></span></span>
+          <span class="ig-bio"><b>whalesarewell</b>when there’s a whale, there’s a wave ⚓</span>
+          <span class="ig-hl" aria-hidden="true">${hl.map(([t,c])=>`<span><i style="${c==='av'?'background-image:url(img/ha-ig-avatar.webp)':'background:'+c}"></i>${t}</span>`).join('')}</span>
+          <span class="ig-grid"><img src="img/ha-ig-banner.webp" width="843" height="292" alt="" loading="lazy"></span>
+        </a>
+        <figure class="reel"><div class="reel-b"><img src="img/ha-reel.webp" width="855" height="480" alt="A still from our reel: two students at a classroom table, one watching a cartoon on a laptop during class." loading="lazy" decoding="async">
+          <span class="reel-chip">Reel</span>
+          <span class="reel-cap"><b>Using devices by the school rules</b><span>🎥 shez · 🎤 duy anh</span></span></div>
+          <figcaption>A reel on our feed</figcaption></figure>
+      </div>
+    </section>
+    <section class="rm-sec" aria-labelledby="st-stage"><h2 class="rm-h" id="st-stage">On stage</h2>
+      <div class="film">
+        ${frame({kind:'video',label:'House Adventure event video'})}
+        ${frame({src:'img/ha-vannghe.webp',w:1600,h:1066,alt:'Class A07 on stage at the school’s Hội thi Văn nghệ, in matching black A7 jerseys, holding up hand-painted signs reading “A07 chúc mừng 20/11” while a student plays guitar.',cap:'Hội thi Văn nghệ · 20/11'})}
+        ${frame({src:'img/ha-stage.webp',w:1600,h:1066,alt:'A group of students in white uniforms on stage at Lawrence S. Ting School, throwing colourful scarves into the air and cheering.',cap:'On stage at Lawrence S. Ting School'})}
+        ${frame({kind:'photo',label:'Behind the scenes'})}
+      </div>
+      <span class="gap">Which event is the scarf photo, and what was your role in these two?</span>
+    </section>
     <section class="rm-sec" aria-labelledby="st-more"><h2 class="rm-h" id="st-more">More from the studio</h2>
       <div class="rgrid">
         ${rcard('media-video',{k:'Video',line:'Video editing and storytelling.',slot:['video','A video I edited']})}
-        ${rcard('media-photo',{k:'Photography',line:'Photos from events.',slot:['photo','Event photography']})}
         ${rcard('media-scripts',{k:'Writing',line:'Scripts and storyboards behind our pieces.',slot:['scan','A script or storyboard page']})}
       </div>
     </section>
-    ${whereNext([{to:'common',q:'Media coordination and volunteer coordination draw on the same communication work.'},{to:'workshop',q:'Designing an interface and editing a video both start with who the audience is.'}],'media')}
+    ${whereNext([],'media')}
   </div></div>`;
 }
 
