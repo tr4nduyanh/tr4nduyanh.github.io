@@ -542,6 +542,13 @@ const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const $ = (s,el=document)=>el.querySelector(s);
 const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
 const turtle = cls => `<svg class="${cls||''}" aria-hidden="true" focusable="false"><use href="#turtle"/></svg>`;
+function tileBoing(t,e){
+  if(RM) return;
+  t.classList.remove('boing'); void t.offsetWidth; t.classList.add('boing');
+  const r=t.getBoundingClientRect(), x=(e.clientX||r.left+r.width/2)-r.left, y=(e.clientY||r.top+r.height/2)-r.top;
+  for(let k=0;k<10;k++){ const d=document.createElement('i'); d.className='tile-pop'; const a=Math.PI*2*k/10+Math.random()*.5, dist=36+Math.random()*30;
+    d.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(a)*dist}px;--dy:${Math.sin(a)*dist}px`; t.appendChild(d); setTimeout(()=>d.remove(),700); }
+}
 const icon = id => `<svg aria-hidden="true" focusable="false"><use href="#${id}"/></svg>`;
 const pageOf = it => it.page||it.id;
 const roomTok = cat => ROOM[cat]?ROOM[cat].id:'about';
@@ -566,7 +573,10 @@ function val(v){
 const isGap = v => v==null || (v&&v.gap) || (Array.isArray(v)&&v.every(isGap));
 function fields(sections,layout){
   if(!sections||!sections.length) return '';
-  return `<dl class="tiles">${sections.map(([k,v])=>`<div class="tile${isGap(v)?' gap-row':''}${!isGap(v)&&String(v).replace(/<[^>]+>/g,'').length>42?' w':''}"><dt>${k}</dt><dd>${val(v)}</dd></div>`).join('')}</dl>`;
+  const IC={'When':'i-cal','Since':'i-cal','My role':'i-target','Team':'i-people','Result':'i-trophy','Next year':'i-trophy','A moment':'i-spark','Learned':'i-bulb','We ran':'i-bolt','We did':'i-bolt','For':'i-book','Events':'i-camera','Tools':'i-stack','A choice I made':'i-page'};
+  let n=0;
+  return `<dl class="tiles">${sections.map(([k,v])=>{ const g=isGap(v), i=g?0:n++;
+    return `<div class="tile${g?' gap-row':''}${!g&&String(v).replace(/<[^>]+>/g,'').length>42?' w':''}${/^(Result|Next year)$/.test(k)?' win':''}" style="--i:${i}"><span class="tile-ic">${icon(IC[k]||'i-spark')}</span><dt>${k}</dt><dd>${val(v)}</dd></div>`; }).join('')}</dl>`;
 }
 function ph(m){
   if(m.src){
@@ -2297,6 +2307,7 @@ $('#drawer').addEventListener('close',()=>{ if(deepOpener&&document.contains(dee
 $('#hatch').addEventListener('close',()=>{ const t=hatchOpener&&document.contains(hatchOpener)?hatchOpener:$('#main-h'); if(t) t.focus({preventScroll:true}); hatchOpener=null; });
 $('#hatch').addEventListener('click',e=>{ if(e.target.id==='hatch') e.target.close(); });
 document.addEventListener('click',e=>{
+  const tl=e.target.closest('.tile:not(.gap-row)'); if(tl&&!e.target.closest('a')){ tileBoing(tl,e); return; }
   const q=e.target.closest('[data-q]'); if(q){ e.preventDefault(); doSearch(q.dataset.q); return; }
   if(e.target.closest('[data-hi-go]')){ closeHi(true); return; }
   if(e.target.closest('[data-hi-stay]')){ closeHi(false); return; }
