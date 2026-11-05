@@ -573,7 +573,7 @@ function val(v){
 const isGap = v => v==null || (v&&v.gap) || (Array.isArray(v)&&v.every(isGap));
 function fields(sections,layout){
   if(!sections||!sections.length) return '';
-  const IC={'When':'i-cal','Since':'i-cal','My role':'i-target','Team':'i-people','Result':'i-trophy','Next year':'i-trophy','A moment':'i-spark','Learned':'i-bulb','We ran':'i-bolt','We did':'i-bolt','For':'i-book','Events':'i-camera','Tools':'i-stack','A choice I made':'i-page'};
+  const IC={'Where':'i-room','When':'i-cal','Since':'i-cal','My role':'i-target','Team':'i-people','Result':'i-trophy','Next year':'i-trophy','A moment':'i-spark','Learned':'i-bulb','We ran':'i-bolt','We did':'i-bolt','For':'i-book','Events':'i-camera','Tools':'i-stack','A choice I made':'i-page'};
   let n=0;
   return `<dl class="tiles">${sections.map(([k,v])=>{ const g=isGap(v), i=g?0:n++;
     return `<div class="tile${g?' gap-row':''}${!g&&String(v).replace(/<[^>]+>/g,'').length>42?' w':''}${/^(Result|Next year)$/.test(k)?' win':''}" style="--i:${i}"><span class="tile-ic">${icon(IC[k]||'i-spark')}</span><dt>${k}</dt><dd>${val(v)}</dd></div>`; }).join('')}</dl>`;
