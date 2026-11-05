@@ -394,12 +394,11 @@ const ITEMS = [
   tags:['photography','photo','event coverage','media','storytelling'],
   sections:[
     ['Medium', 'Photography'],
-    ['Event or purpose', G('Which event, and who was the audience?')],
-    ['My role', G('Confirm your role.')],
-    ['A creative decision', G('One framing or selection choice and why.')],
-    ['Final asset', G('Add 3–6 photos with alt text and permission confirmed.')]
+    ['Event or purpose', 'Hội thi Văn nghệ (20/11) and Văn nghệ Family at school.'],
+    ['My role', 'Photographer.'],
+    ['A creative decision', G('One framing or selection choice and why.')]
   ],
-  media:[{label:'Event photograph', ratio:'3/2', type:'photo'}],
+  media:[{src:'img/ha-vannghe.webp',w:1600,h:1066,ratio:'3/2',type:'photo',alt:'Class A07 on stage at the school’s Hội thi Văn nghệ, in matching black A7 jerseys, holding up hand-painted signs reading “A07 chúc mừng 20/11” while a student plays guitar.',caption:'Hội thi Văn nghệ · 20/11'},{src:'img/ha-stage.webp',w:1600,h:1066,ratio:'3/2',type:'photo',alt:'Students in white uniforms on stage at Văn nghệ Family, Lawrence S. Ting School, throwing colourful scarves into the air and cheering.',caption:'Văn nghệ Family'}],
   evidence:[], metrics:[], related:['ha-media','netmo'] },
 
 { id:'media-scripts', cat:'media', kind:'Writing', title:'Scripts & storyboards', aliases:['scripts','storyboard'],
@@ -1343,18 +1342,17 @@ function viewStudio(){
         </a>
         <figure class="reel"><div class="reel-b"><img src="img/ha-reel.webp" width="855" height="480" alt="A still from our reel: two students at a classroom table, one watching a cartoon on a laptop during class." loading="lazy" decoding="async">
           <span class="reel-chip">Reel</span>
-          <span class="reel-cap"><b>Using devices by the school rules</b><span>🎥 shez · 🎤 duy anh</span></span></div>
+          <span class="reel-cap"><b>Using devices by the school rules</b><span>🎥 shez · ✍️ caption by me</span></span></div>
           <figcaption>A reel on our feed</figcaption></figure>
       </div>
     </section>
-    <section class="rm-sec" aria-labelledby="st-stage"><h2 class="rm-h" id="st-stage">On stage</h2>
+    <section class="rm-sec" aria-labelledby="st-stage"><h2 class="rm-h" id="st-stage">On stage, through my lens</h2>
       <div class="film">
         ${frame({kind:'video',label:'House Adventure event video'})}
-        ${frame({src:'img/ha-vannghe.webp',w:1600,h:1066,alt:'Class A07 on stage at the school’s Hội thi Văn nghệ, in matching black A7 jerseys, holding up hand-painted signs reading “A07 chúc mừng 20/11” while a student plays guitar.',cap:'Hội thi Văn nghệ · 20/11'})}
-        ${frame({src:'img/ha-stage.webp',w:1600,h:1066,alt:'A group of students in white uniforms on stage at Lawrence S. Ting School, throwing colourful scarves into the air and cheering.',cap:'On stage at Lawrence S. Ting School'})}
+        ${frame({src:'img/ha-vannghe.webp',w:1600,h:1066,alt:'Class A07 on stage at the school’s Hội thi Văn nghệ, in matching black A7 jerseys, holding up hand-painted signs reading “A07 chúc mừng 20/11” while a student plays guitar.',cap:'Hội thi Văn nghệ · 20/11 · 📷 me'})}
+        ${frame({src:'img/ha-stage.webp',w:1600,h:1066,alt:'Students in white uniforms on stage at Văn nghệ Family, Lawrence S. Ting School, throwing colourful scarves into the air and cheering.',cap:'Văn nghệ Family · 📷 me'})}
         ${frame({kind:'photo',label:'Behind the scenes'})}
       </div>
-      <span class="gap">Which event is the scarf photo, and what was your role in these two?</span>
     </section>
     <section class="rm-sec" aria-labelledby="st-more"><h2 class="rm-h" id="st-more">More from the studio</h2>
       <div class="rgrid">
