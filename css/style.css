@@ -19,6 +19,7 @@
    16. FCT and FUNiX pages
    17. Fire alarm page and simulator
    18. Two summer camps
+   19. Speaking-up stage
 
    Rules later in the file deliberately override earlier ones,
    so keep the order when moving things around.
@@ -1632,3 +1633,51 @@ dialog::backdrop{background:var(--scrim)}
 .camp-act a{color:var(--rc);font-weight:700;text-decoration:none}
 .camp-act a:hover{text-decoration:underline;text-underline-offset:3px}
 @media (prefers-reduced-motion: reduce){.camp.run *{animation:none!important}.camp.run .ai-stamp{opacity:1;transform:rotate(-12deg)}}
+/* ============================================================
+   19. SPEAKING-UP STAGE
+   ============================================================ */
+:root{--spk-bg:#13221C;--spk-bg2:#0B1612;--spk-light:rgba(255,214,160,.28);--spk-paper:#FFFBF0;--spk-pink:#E58B76;--spk-rule:#D7E5F2;--spk-ink:#1C2A22;--spk-dim:#6C7B72;--spk-on:#F4EFE4;--spk-on2:rgba(244,239,228,.7)}
+.spk{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.5fr);grid-template-areas:"note stage" "cert stage";gap:16px;margin-top:28px;align-items:start}
+@media (max-width:900px){.spk{grid-template-columns:1fr;grid-template-areas:"note" "stage" "cert"}}
+.spk-note{grid-area:note;padding:20px 22px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.spk-note .c2-h{margin:4px 0 6px}
+.spk-note p:last-child{color:var(--ink-2);font-size:15px}
+.spk-fall{display:block;width:100%;height:34px;margin-top:12px}
+.spk-fall path{fill:none;stroke:var(--rc);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.spk-fall circle{fill:var(--rc)}
+.spk-stage{grid-area:stage;align-self:stretch;display:flex;flex-direction:column;position:relative;margin:0;min-height:360px;padding:24px clamp(18px,3vw,30px) 0;border-radius:24px;overflow:hidden;color:var(--spk-on);
+  background:radial-gradient(60% 70% at 50% -8%,var(--spk-light),transparent 70%),linear-gradient(var(--spk-bg),var(--spk-bg2))}
+.spk-k{font:600 11.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--spk-pink)}
+.spk-h{font-size:clamp(19px,2.2vw,23px);font-weight:700;letter-spacing:-.015em;line-height:1.3;margin-top:4px;max-width:22em}
+.spk-h span{color:var(--spk-on2);font-weight:500}
+.spk-cards{list-style:none;margin:auto 0 0;padding-top:22px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;position:relative;z-index:1}
+@media (max-width:560px){.spk-cards{grid-template-columns:1fr;gap:10px}}
+.spk-card{display:grid;grid-template-rows:64px auto;gap:10px;padding:12px 14px 14px;border-radius:6px;color:var(--spk-ink);
+  background:linear-gradient(var(--spk-paper) 0 0) top/100% 22px no-repeat,repeating-linear-gradient(var(--spk-paper) 0 21px,var(--spk-rule) 21px 22px);
+  border-top:3px solid var(--spk-pink);box-shadow:0 14px 26px -14px rgba(0,0,0,.6);transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+.spk-card:nth-child(1){transform:rotate(-2.5deg)}.spk-card:nth-child(2){transform:translateY(-6px) rotate(1deg)}.spk-card:nth-child(3){transform:rotate(2.5deg)}
+.spk-card:hover{transform:translateY(-8px) rotate(0)}
+.spk-card b{font-size:15px;line-height:1.3}
+.spk-vis{display:grid;place-items:center;border-radius:4px;background:color-mix(in srgb,var(--spk-rule) 35%,transparent)}
+.spk-pts{display:grid;gap:5px;width:70%}
+.spk-pts i{display:block;height:5px;border-radius:3px;background:var(--spk-ink)}
+.spk-pts i:nth-child(2),.spk-pts i:nth-child(4),.spk-pts i:nth-child(5){opacity:.18}
+.spk-pts i:nth-child(1){width:90%}.spk-pts i:nth-child(2){width:75%}.spk-pts i:nth-child(3){width:60%}.spk-pts i:nth-child(4){width:85%}.spk-pts i:nth-child(5){width:50%}
+.spk-breath{position:relative;width:48px;height:48px}
+.spk-breath::before,.spk-breath::after{content:"";position:absolute;inset:0;border-radius:50%;border:2.5px solid var(--spk-pink)}
+.spk-breath::after{background:color-mix(in srgb,var(--spk-pink) 30%,transparent);border:0;animation:breathe 8s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(.35)}45%,55%{transform:scale(1)}}
+.spk-glasses{width:64px;height:30px}
+.spk-glasses path,.spk-glasses circle{fill:none;stroke:var(--spk-ink);stroke-width:2.4;stroke-linecap:round}
+.spk-glasses .x{stroke:var(--spk-pink);stroke-width:3}
+.spk-crowd{display:block;flex:none;width:calc(100% + 2*clamp(18px,3vw,30px));height:84px;margin:auto calc(-1*clamp(18px,3vw,30px)) 0;padding-top:28px;filter:blur(2.5px);transition:filter .5s}
+.spk-crowd path,.spk-crowd circle{fill:rgba(244,239,228,.16)}
+.spk-crowd .t{fill:rgba(244,239,228,.08)}
+.spk-stage:has(.spk-card:nth-child(3):hover) .spk-crowd{filter:none}
+.spk-won{position:absolute;right:clamp(16px,3vw,28px);bottom:clamp(14px,2.4vw,24px);z-index:2;padding:6px 14px;border:2.5px solid var(--spk-pink);border-radius:8px;color:var(--spk-pink);font:800 clamp(15px,1.8vw,19px) var(--sans);letter-spacing:.02em;text-transform:uppercase;transform:rotate(-6deg);background:color-mix(in srgb,var(--spk-bg2) 70%,transparent)}
+.spk-cert{grid-area:cert;margin:0;display:grid;gap:10px;padding:12px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.spk-cert img{display:block;width:100%;height:auto;border-radius:12px}
+.spk-cert figcaption{display:grid;gap:2px;padding:0 4px 4px}
+.spk-cert figcaption b{font-size:15.5px;line-height:1.3}
+.spk-cert figcaption span{font-size:13px;color:var(--ink-2)}
+@media (prefers-reduced-motion: reduce){.spk-breath::after{animation:none;transform:scale(.7)}.spk-card,.spk-crowd{transition:none}}

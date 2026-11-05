@@ -280,6 +280,12 @@ const ITEMS = [
   sections:[['Growth', G('What feedback did the team get, and what would you improve?')]],
   media:[], evidence:[{label:'Certificate', url:null}], metrics:[], related:['scamcheck','fct'] },
 
+{ id:'fptu-speak', short:'Best Presentation award', cat:'awards', kind:'Award', title:'FPTU AI & Robotics Challenge: Best Presentation & Public Speaking', aliases:['best presentation','public speaking award','ai programming round'],
+  summary:'Best Presentation & Public Speaking Award (2,000,000 VND) in the AI Programming Round of the FPTU AI & Robotics Challenge, 2025.',
+  award:{comp:'FPTU AI & Robotics Challenge', round:'AI Programming Round', result:'Best Presentation & Public Speaking Award', year:2025, role:null},
+  tags:['public speaking','presentation','speaking','AI','programming','challenge','competition','award','FPTU'],
+  sections:[], media:[], evidence:[{label:'Award board', url:'img/cert-fptu-speaking.webp'}], metrics:[], related:['debate','fptu-ai'] },
+
 /* ---------- RESEARCH ---------- */
 { id:'smartwaste', short:'Smart-waste scoping review', boost:20, cat:'research', kind:'Research project', page:'lab',
   title:'Adapting AI- and IoT-Enabled Smart Waste Management for Vietnam', aliases:['smart waste','smart waste management','smart-waste research'],
@@ -922,13 +928,22 @@ function viewHome(){
   <section class="sx-ch" id="ch-3" data-room="community" aria-labelledby="ch-3-h">
     <div class="wrap">${chHead(CHAPTERS[2])}
       <p class="sx-lead">I used to be too shy to start a conversation. Then classmates asked me to try debate.</p>
-      <div class="c2 c2-top">
-        <div class="c2-before"><span class="c2-k">First competition</span><p class="c2-h">My speech went badly</p>
-          <p class="c2-p">I came back anyway.</p></div>
-        <span class="c2-arrow" aria-hidden="true">→</span>
-        <div class="c2-after"><span class="c2-k">A year later, as a mentor</span><p class="c2-h">A junior froze in front of the judges</p>
-          <ul class="tl-habits"><li>Fewer points</li><li>Deep breaths</li><li>Glasses off, so the audience blurs</li></ul>
-          <p class="c2-p">Her team won.</p></div>
+      <div class="spk">
+        <div class="spk-note"><span class="c2-k">First competition</span><p class="c2-h">My speech went badly</p><p>I came back anyway.</p>
+          <svg class="spk-fall" viewBox="0 0 300 34" aria-hidden="true"><path d="M4 8 60 8 84 28 120 28 150 6 296 6"/><circle cx="296" cy="6" r="4"/></svg></div>
+        <figure class="spk-stage" aria-label="A year later, as a mentor: a junior froze in front of the judges. I told her: fewer points, deep breaths, glasses off so the audience blurs. Her team won.">
+          <span class="spk-k">A year later, as a mentor</span>
+          <p class="spk-h">A junior froze in front of the judges. <span>What I told her:</span></p>
+          <ol class="spk-cards">
+            <li class="spk-card"><span class="spk-vis"><span class="spk-pts" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></span><b>Fewer points</b></li>
+            <li class="spk-card"><span class="spk-vis"><span class="spk-breath" aria-hidden="true"></span></span><b>Deep breaths</b></li>
+            <li class="spk-card"><span class="spk-vis"><svg class="spk-glasses" viewBox="0 0 64 30" aria-hidden="true"><circle cx="18" cy="16" r="10"/><circle cx="46" cy="16" r="10"/><path d="M28 15q4-4 8 0M8 14 3 10M56 14l5-4"/><path class="x" d="M6 27 58 3"/></svg></span><b>Glasses off, so the audience blurs</b></li>
+          </ol>
+          <svg class="spk-crowd" viewBox="0 0 600 70" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><rect class="t" x="0" y="58" width="600" height="12"/><path d="M10 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="28" cy="32" r="10"/><path d="M52 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="70" cy="30" r="10"/><path d="M94 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="112" cy="33" r="10"/><path d="M136 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="154" cy="29" r="10"/><path d="M178 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="196" cy="32" r="10"/><path d="M220 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="238" cy="31" r="10"/><path d="M262 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="280" cy="30" r="10"/><path d="M304 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="322" cy="33" r="10"/><path d="M346 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="364" cy="29" r="10"/><path d="M388 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="406" cy="32" r="10"/><path d="M430 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="448" cy="30" r="10"/><path d="M472 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="490" cy="33" r="10"/><path d="M514 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="532" cy="31" r="10"/><path d="M556 70v-9c0-10 8-16 18-16s18 6 18 16v9Z"/><circle cx="574" cy="30" r="10"/></svg>
+          <p class="spk-won">Her team won</p>
+        </figure>
+        <figure class="spk-cert"><img src="img/cert-fptu-speaking.webp" width="960" height="621" alt="Award board from the FPTU AI &amp; Robotics Challenge 2025, AI Programming Round: Best Presentation &amp; Public Speaking Award, 2,000,000 VND." loading="lazy" decoding="async">
+          <figcaption><b>Best Presentation &amp; Public Speaking</b><span>FPTU AI &amp; Robotics Challenge 2025 · AI Programming Round</span></figcaption></figure>
       </div>
       <p class="sx-quote">Someone once pushed me to speak up. Now I could do that for someone else.</p>
       <div class="c4">
@@ -1175,6 +1190,7 @@ const AW_MATH=[
 const AW_BUILD=[
   {id:'fct-scam',r:'4th',t:'FCT Summer Camp',s:'ScamCheck, an AI scam checker',y:'2026',to:'scamcheck'},
   {id:'fptu-ai',r:'Top 4',of:'of 71 teams',t:'FPTU AI Web Hackathon',s:'Southern Region',y:'2025',lead:true},
+  {id:'fptu-speak',r:'Best',of:'presentation',t:'FPTU AI & Robotics Challenge',s:'AI Programming Round · Presentation & Public Speaking Award',y:'2025'},
   {id:'humlog',r:'Top 10',of:'of 70 teams',t:'Humanitarian Logistics Hackathon',s:'National Round · linking aid groups with people in need',y:'2025',lead:true},
   {id:'icia',r:'2nd',t:'Creativity & Innovation Award',s:'Southern Region · FoodWise, a food-waste prevention app',y:'2025',lead:true,ext:'https://partyrock.aws/u/duyanhh/xhNRNQkr9/FoodWise'},
   {id:'fct-iot',r:'2nd',t:'FCT Summer Camp',s:'An IoT fire alarm',y:'2024',to:'firealarm'}
@@ -1182,7 +1198,7 @@ const AW_BUILD=[
 function viewReplay(){
   const r=ROOM.awards, medal=x=>`<span class="medal t-${x.tier}" aria-hidden="true">${x.badge}</span>`;
   return `<div data-room="awards">
-  ${roomBand(r,'Each result showed me what to practise next.',[['9','medals and placings'],['Bronze → Silver','IMOCSEA, 2025'],['3×','team leader']])}
+  ${roomBand(r,'Each result showed me what to practise next.',[['10','medals and placings'],['Bronze → Silver','IMOCSEA, 2025'],['3×','team leader']])}
   <div class="wrap">
     <section class="rm-sec" aria-labelledby="aw-m"><h2 class="rm-h" id="aw-m">Maths</h2>
       <ul class="shelf">${AW_MATH.map(x=>`<li><div class="shelf-a">${medal(x)}<b>${x.t}</b><span>${x.s}</span><em>${x.y}</em></div></li>`).join('')}</ul>
