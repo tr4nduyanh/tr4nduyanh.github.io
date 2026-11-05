@@ -1757,3 +1757,5 @@ dialog::backdrop{background:var(--scrim)}
 @keyframes boing{0%{transform:none}25%{transform:scale(1.06,.9)}50%{transform:scale(.95,1.07) translateY(-6px)}75%{transform:scale(1.02,.98)}100%{transform:none}}
 @keyframes pop-out{from{transform:translate(-50%,-50%) scale(1);opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.2);opacity:0}}
 @media (prefers-reduced-motion: reduce){.tile,.tile-ic,.tile:hover .tile-ic{animation:none;transition:none}.tile:hover{transform:none}}
+.sim-phone.planned{opacity:.6;border-style:dashed}
+#fa-me + .tiles,.nmp-sec .tiles{margin-top:14px}

@@ -179,16 +179,15 @@ const ITEMS = [
   } },
 
 { id:'firealarm', boost:10, cat:'build', kind:'Hardware project', title:'IoT fire alarm', aliases:['fire alarm','iot fire alarm'],
-  summary:'A Bluetooth-enabled IoT fire alarm built at FCT Summer Camp 2024, where it placed second. It combines sensor input, Bluetooth communication and a buzzer alarm.',
-  role:'Team member', stack:'Sensors · Bluetooth · Buzzer',
+  summary:'A fire-alarm circuit that senses smoke and heat, from FCT Summer Camp 2024 (2nd place). Bluetooth alerts were the next step.',
+  role:'Bluetooth research · wiring the circuit', stack:'Smoke sensor · temperature sensor',
   tags:['IoT','hardware','sensors','Bluetooth','electronics','coding','programming','teamwork','summer camp','embedded'],
   sections:[
-    ['The need', G('Describe the problem the alarm was designed for.')],
-    ['My role', G('Describe your part of the build and how the team divided the work.')],
-    ['A key decision', G('One technical choice, for example how the sensor reading triggers the buzzer.')],
-    ['Challenge & iteration', G('A hardware problem you hit and how you debugged it.')],
-    ['Result', ['Second Place at FCT Summer Camp 2024.', G('Add what the final prototype could do, with a photo or video.')]],
-    ['What I learned', G('What did hardware teach you that software didn’t?')]
+    ['My role', 'Bluetooth research · wiring'],
+    ['Built', 'Smoke + heat detection'],
+    ['Next step', 'Bluetooth alerts (not reached)'],
+    ['Result', '2nd place'],
+    ['Learned', 'Patience, and how the physical circuit and the code work together']
   ],
   media:[{label:'Our fire alarm prototype', src:'img/firealarm.webp?v=6571263d', w:900, h:1600, ratio:'900/1600', alt:'Our fire alarm prototype: a breadboard wired to sensor modules, LEDs and a buzzer with colourful jumper wires.', caption:'Our prototype: sensors, LEDs and a buzzer on a breadboard.'},{label:'FCT Summer Camp', src:'img/fct-camp.webp?v=5495653d', w:1433, h:960, ratio:'1433/960', alt:'FCT Summer Camp 2024 at FPT Software: students at long tables with laptops and hardware kits. A yellow arrow labelled “Me” points to Duy Anh, second from the left.', caption:'FCT Summer Camp 2024. I’m second from the left.'}],
   evidence:[],
@@ -202,7 +201,7 @@ const ITEMS = [
     ['What I trained in', 'Programming, algorithms, and advanced mathematics, following a self-directed learning roadmap with mentor support.'],
     ['When', 'August 2023 to July 2026: 86 weeks of technical training.'],
     ['How it worked', 'Mentor-guided learning, two intensive summer camps with seminars from professionals in cybersecurity, computer science and AI, and the club’s Learning by Sharing community, where I wrote forum posts about programming algorithms and how I learn.'],
-    ['Where it shows up', 'Two summer camp projects: a Bluetooth-enabled <a href="#firealarm">IoT fire alarm</a> (Second Place, 2024) and <a href="#scamcheck">ScamCheck</a>, an AI scam checker (Fourth Place, 2026).'],
+    ['Where it shows up', 'Two summer camp projects: an <a href="#firealarm">IoT fire alarm</a> (Second Place, 2024) and <a href="#scamcheck">ScamCheck</a>, an AI scam checker (Fourth Place, 2026).'],
     ['What I took from it', 'The club’s Digital Age Tortoise philosophy: even when technology moves fast, meaningful learning takes patience. At first I rushed through courses and mistook finishing for understanding. FCT is where I learned to stay with a problem until I understood it.']
   ],
   media:[], evidence:[{label:'Club page or certificate', url:null}],
@@ -267,10 +266,10 @@ const ITEMS = [
   media:[], evidence:[{label:'Certificate', url:null}], metrics:[], related:['fptu-ai','icia'] },
 
 { id:'fct-iot', short:'FCT Summer Camp 2024', cat:'awards', kind:'Award', title:'FCT Summer Camp 2024: Second Place', aliases:['iot chip programming hackathon','iot hackathon','fct summer camp 2024'],
-  summary:'Second Place at FCT Summer Camp 2024, for a Bluetooth-enabled IoT fire-alarm system.',
+  summary:'Second Place at FCT Summer Camp 2024, for a fire-alarm circuit that senses smoke and heat.',
   award:{comp:'FCT Summer Camp', round:null, result:'Second Place', year:2024, role:null}, project:'firealarm',
   tags:['IoT','hardware','chip programming','embedded','hackathon','summer camp','FCT','coding','programming','challenge','award'],
-  sections:[['The project', 'A Bluetooth-enabled IoT fire-alarm system: sensor input, Bluetooth communication and a buzzer alarm.'],['Growth', G('What did the camp teach you about hardware?')]],
+  sections:[['The project', 'A fire-alarm circuit that senses smoke and heat. Bluetooth alerts were planned next.'],['Growth', 'Patience, and how the physical circuit and the code work together.']],
   media:[], evidence:[{label:'Certificate', url:null}], metrics:[], related:['firealarm','fct'] },
 
 { id:'fct-scam', short:'FCT Summer Camp 2026', cat:'awards', kind:'Award', title:'FCT Summer Camp 2026: Fourth Place', aliases:['scamcheck hackathon','fct summer camp','summer camp 2026'],
@@ -573,7 +572,7 @@ function val(v){
 const isGap = v => v==null || (v&&v.gap) || (Array.isArray(v)&&v.every(isGap));
 function fields(sections,layout){
   if(!sections||!sections.length) return '';
-  const IC={'How it works':'i-book','Level':'i-chart','Also':'i-trophy','Where':'i-room','When':'i-cal','Since':'i-cal','My role':'i-target','Team':'i-people','Result':'i-trophy','Next year':'i-trophy','A moment':'i-spark','Learned':'i-bulb','We ran':'i-bolt','We did':'i-bolt','For':'i-book','Events':'i-camera','Tools':'i-stack','A choice I made':'i-page'};
+  const IC={'Built':'i-bolt','Next step':'i-spark','How it works':'i-book','Level':'i-chart','Also':'i-trophy','Where':'i-room','When':'i-cal','Since':'i-cal','My role':'i-target','Team':'i-people','Result':'i-trophy','Next year':'i-trophy','A moment':'i-spark','Learned':'i-bulb','We ran':'i-bolt','We did':'i-bolt','For':'i-book','Events':'i-camera','Tools':'i-stack','A choice I made':'i-page'};
   let n=0;
   return `<dl class="tiles">${sections.map(([k,v])=>{ const g=isGap(v), i=g?0:n++;
     return `<div class="tile${g?' gap-row':''}${!g&&String(v).replace(/<[^>]+>/g,'').length>42?' w':''}${/^(Result|Next year)$/.test(k)?' win':''}" style="--i:${i}"><span class="tile-ic">${icon(IC[k]||'i-spark')}</span><dt>${k}</dt><dd>${val(v)}</dd></div>`; }).join('')}</dl>`;
@@ -1169,9 +1168,9 @@ function viewWorkshop(){
         bullets:['Paste in a message that looks suspicious','Three AI characters check its warning signs and suggest what to do first','Larger text, softer colours and fewer steps for older users'],
         proof:'4th place · FCT Summer Camp 2026',ext:['http://hk1.quvo.pro:15640/','Try the demo']})}
       ${spot({id:'firealarm',flip:true,k:'FCT Summer Camp 2024 · hardware · team project',
-        line:'A fire alarm built from a sensor, Bluetooth and a buzzer.',
+        line:'A fire-alarm circuit that senses smoke and heat.',
         main:{...ITEM.firealarm.media[0],ratio:'4/3'},
-        bullets:['Sensor input','Bluetooth communication','A buzzer that sounds the alarm'],proof:'2nd place · FCT Summer Camp 2024'})}
+        bullets:['My part: Bluetooth research and wiring','Built: smoke and heat detection','Next step we didn’t reach: Bluetooth alerts'],proof:'2nd place · FCT Summer Camp 2024'})}
     </section>
     <section class="rm-sec" aria-labelledby="ws-learn"><h2 class="rm-h" id="ws-learn">Where I learned to build</h2>
       <div class="rgrid two">
@@ -1423,7 +1422,7 @@ function storyView(it){
 /* ----- FCT and FUNiX pages ----- */
 const FCT_STOPS=[
   {d:'Aug 2023',t:'Joined',s:'Mentor-guided programming, algorithms and advanced maths.'},
-  {d:'Summer 2024',t:'Camp · IoT fire alarm',s:'2nd place. Sensors, Bluetooth and a buzzer.',to:'firealarm'},
+  {d:'Summer 2024',t:'Camp · IoT fire alarm',s:'2nd place. A circuit that senses smoke and heat.',to:'firealarm'},
   {d:'Summer 2026',t:'Camp · ScamCheck',s:'4th place. An AI scam checker for older users.',to:'scamcheck'},
   {d:'Jul 2026',t:'Graduated',s:'86 weeks of training. Final grade: A.'}
 ];
@@ -1459,7 +1458,7 @@ function viewFct(it){
             <svg class="wires" viewBox="0 0 220 120" preserveAspectRatio="none"><path d="M44 78 C44 30 120 14 156 40" stroke="#E8455B"/><path d="M68 78 C78 36 150 34 170 62" stroke="#4FB6E8"/><path d="M96 78 C108 48 176 54 192 84" stroke="#F6C343"/></svg>
             <span class="hw-led"></span><span class="hw-bz">${BUZZER}</span>
           </div>
-          <div class="camp-body"><p class="camp-y">2024</p><p class="rc-k">Hardware · 2nd place</p><h3>IoT fire alarm</h3><p>Sensors, Bluetooth and a buzzer.</p>
+          <div class="camp-body"><p class="camp-y">2024</p><p class="rc-k">Hardware · 2nd place</p><h3>IoT fire alarm</h3><p>Senses smoke and heat.</p>
             <div class="camp-act"><button type="button" class="btn btn-soft btn-sm" data-run>Run it</button><a href="#firealarm">See the project →</a></div></div>
         </article>
         <article class="camp">
@@ -1532,10 +1531,10 @@ const FLAME=`<svg viewBox="0 0 40 56" aria-hidden="true" focusable="false"><path
 function viewFirealarm(it){
   const rm=ROOM.build;
   return `<div data-room="build">
-  ${pageHead({room:'workshop',cat:'build',id:'firealarm',k:'Build · '+rm.name,t:'IoT fire alarm',sub:'FCT Summer Camp 2024 · 2nd place',lede:'Sensors watch for fire. A buzzer, lights and Bluetooth raise the alarm.',side:`<span class="fa-hero" aria-hidden="true"><span class="fa-hf">${FLAME}</span><span class="fa-hb">${BUZZER}</span></span>`})}
+  ${pageHead({room:'workshop',cat:'build',id:'firealarm',k:'Build · '+rm.name,t:'IoT fire alarm',sub:'FCT Summer Camp 2024 · 2nd place',lede:'A circuit that senses smoke and heat. Bluetooth alerts were the next step.',side:`<span class="fa-hero" aria-hidden="true"><span class="fa-hf">${FLAME}</span><span class="fa-hb">${BUZZER}</span></span>`})}
   <div class="wrap">
-    <dl class="sx-stats nmp-stats">${[['2nd','FCT Summer Camp 2024'],['Sensors','to detect'],['Buzzer + LEDs','to warn'],['Bluetooth','to notify']].map(([v,l])=>`<div><dt>${l}</dt><dd>${v}</dd></div>`).join('')}</dl>
-    <section class="nmp-sec" aria-labelledby="sim-h"><h2 class="rm-h" id="sim-h">Try it · set off the alarm</h2>
+    <dl class="sx-stats nmp-stats">${[['2nd','FCT Summer Camp 2024'],['Smoke + heat','what it senses'],['Wiring','my part, plus Bluetooth research'],['Bluetooth','planned, not reached']].map(([v,l])=>`<div><dt>${l}</dt><dd>${v}</dd></div>`).join('')}</dl>
+    <section class="nmp-sec" aria-labelledby="sim-h"><h2 class="rm-h" id="sim-h">Try it · trip the sensor</h2>
       <div class="sim" id="sim" style="--lv:0;--fx:.45">
         <div class="sim-room" role="group" aria-label="A room with a smoke sensor. Drag the match into the room, or tap the floor, to start a fire.">
           <span class="sim-sensor" aria-hidden="true"><i></i><i></i><b>Sensor</b></span>
@@ -1543,7 +1542,7 @@ function viewFirealarm(it){
           <span class="sim-flame" aria-hidden="true">${FLAME}</span>
           <span class="sim-spray" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
           <span class="sim-board" aria-hidden="true"><i class="led"></i><i class="led"></i><span class="fa-bz">${BUZZER}</span></span>
-          <span class="sim-phone" aria-hidden="true"><span class="sim-note"><b>Fire alarm!</b><small>via Bluetooth</small></span></span>
+          <span class="sim-phone planned" aria-hidden="true"><span class="sim-note"><b>Bluetooth alert</b><small>planned · not built</small></span></span>
           <span class="sim-floor" aria-hidden="true"></span>
           <button type="button" class="sim-match" aria-label="Light a match and drop it in the room"><span class="sim-tag">Drag me</span><svg viewBox="0 0 16 70" aria-hidden="true"><rect x="5.5" y="12" width="5" height="56" rx="2" fill="#E0B47A" stroke="#7a5426" stroke-width="1.2"/><ellipse cx="8" cy="11" rx="6" ry="8.5" fill="#D0302A" stroke="#7a1a16" stroke-width="1.2"/></svg></button>
         </div>
@@ -1552,7 +1551,7 @@ function viewFirealarm(it){
           <p class="sim-lab">Sensor reading</p>
           <div class="sim-gauge" aria-hidden="true"><span class="sim-fill"></span><span class="sim-thr"></span></div>
           <p class="sim-read"><span>Smoke <b id="sim-v">0</b></span><span>Alarm at 60</span></p>
-          <ol class="fa-flow"><li><b>Sense</b><span>Sensors read the room</span></li><li><b>Decide</b><span>The code checks the reading</span></li><li><b>Alert</b><span>Buzzer, LEDs, Bluetooth</span></li></ol>
+          <ol class="fa-flow"><li><b>Sense</b><span>Sensors read the room</span></li><li><b>Decide</b><span>The code checks the reading</span></li><li><b>Alert</b><span>Bluetooth: our next step</span></li></ol>
           <p class="sim-status" aria-live="polite">All clear. Drag the match into the room.</p>
           <div class="sim-btns"><button type="button" class="btn btn-primary btn-sm" data-sim="fire">Light a fire</button><button type="button" class="btn btn-line btn-sm" data-sim="out">Use the extinguisher</button></div>
         </div>
@@ -1561,7 +1560,7 @@ function viewFirealarm(it){
     <section class="nmp-sec" aria-labelledby="fa-real"><h2 class="rm-h" id="fa-real">The real thing</h2>
       <div class="fct-camp">${ph(it.media[1])}${ph({...it.media[0],ratio:'4/5'})}</div>
     </section>
-    <p class="gap-only" style="margin-top:24px"><span class="gap">Add your part of the build, and one problem you debugged.</span></p>
+    <section class="nmp-sec" aria-labelledby="fa-me"><h2 class="rm-h" id="fa-me">My part</h2>${fields(it.sections)}</section>
     <div class="s-links" style="margin-top:48px">${evidenceList(it.evidence)||'<div></div>'}<div><p><a class="btn btn-soft" href="#workshop">← All of ${rm.name}</a></p></div></div>
   </div></div>`;
 }
@@ -1572,7 +1571,7 @@ function mountFirealarm(){
   const paint=()=>{ const n=Math.round(lv); v.textContent=n; sim.style.setProperty('--lv',(lv/100).toFixed(3));
     const on=n>=60; sim.classList.toggle('alarm',on); sim.classList.toggle('burning',burning);
     fl[0].classList.toggle('on',n>0); fl[1].classList.toggle('on',n>=35); fl[2].classList.toggle('on',on);
-    st.textContent=on?'Fire detected! Buzzer on, LEDs flashing, phone notified.':burning?(n<30?'Something’s burning…':'Smoke is reaching the sensor…'):n>0?'Fire’s out. Clearing the smoke…':'All clear. Drag the match into the room.';
+    st.textContent=on?'Smoke and heat detected!':burning?(n<30?'Something’s burning…':'Smoke is reaching the sensor…'):n>0?'Fire’s out. Clearing the smoke…':'All clear. Drag the match into the room.';
   };
   const tick=t=>{ const dt=Math.min(.1,(t-(last||t))/1000); last=t;
     lv=burning?Math.min(100,lv+dt*(lv<20?14:24)):Math.max(0,lv-dt*30); paint();
