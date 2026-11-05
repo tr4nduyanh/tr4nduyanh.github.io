@@ -69,7 +69,7 @@ const ITEMS = [
     ['What I learned', 'Code that runs isn’t enough. It has to stay reliable when people need it.']
   ],
 
-  media:[{label:'Contextuary homepage', ratio:'1516/896', w:1516, h:896, type:'screenshot', src:'img/contextuary-home.webp', frame:'contextuary.app',
+  media:[{label:'Contextuary homepage', ratio:'1516/896', w:1516, h:896, type:'screenshot', src:'img/contextuary-home.webp?v=bb127c69', frame:'contextuary.app',
     alt:'The Contextuary homepage. The headline reads “Understand words. In context. For real.” Beside it, a word card for “ubiquitous” shows its pronunciation, Vietnamese meaning, an example sentence and synonyms, next to a quiz card asking what “mitigate” means.',
     caption:'The live homepage at contextuary.app.'}],
   evidence:[{label:'Live product: contextuary.app', url:'https://contextuary.app'},{label:'Repository', url:null}],
@@ -82,11 +82,11 @@ const ITEMS = [
       points:[['My part','Co-lead. Database, interface, learning flows, stability.'],['Built with','React and Supabase.']] },
     features:[
       {t:'Daily Picks and your word list', d:'Ten new SAT words a day. One tap adds a word to your list.', ic:'i-cal',
-        img:{src:'img/ctx-words.webp', w:1535, h:530, label:'My Words page with Daily Picks', frame:'contextuary.app · My Words', alt:'The Contextuary “My Words” page. A Daily Picks row offers words such as ubiquitous, mitigate, salient and arbitrary with their pronunciations and add buttons, with a daily goal of 10. Below are a search box, status and tag filters, and an empty word table.', caption:'My Words, with today’s Daily Picks.'}},
+        img:{src:'img/ctx-words.webp?v=685967ae', w:1535, h:530, label:'My Words page with Daily Picks', frame:'contextuary.app · My Words', alt:'The Contextuary “My Words” page. A Daily Picks row offers words such as ubiquitous, mitigate, salient and arbitrary with their pronunciations and add buttons, with a daily goal of 10. Below are a search box, status and tag filters, and an empty word table.', caption:'My Words, with today’s Daily Picks.'}},
       {t:'Every word, explained', d:'Pronunciation, Vietnamese meaning, an example and a memory hint.', ic:'i-book',
-        img:{src:'img/ctx-word.webp', w:1535, h:660, label:'Word detail for “mitigate”', frame:'contextuary.app · mitigate', alt:'A word panel for “mitigate” showing its pronunciation, the Vietnamese meaning “Làm giảm nhẹ, làm dịu bớt”, a tag reading “#2 in the SAT bank”, an example sentence about government policies, and the memory hint “Mitigate sounds like make it gate: close the gate on problems to lessen them.”', caption:'The word panel for “mitigate”.'}},
+        img:{src:'img/ctx-word.webp?v=26759b50', w:1535, h:660, label:'Word detail for “mitigate”', frame:'contextuary.app · mitigate', alt:'A word panel for “mitigate” showing its pronunciation, the Vietnamese meaning “Làm giảm nhẹ, làm dịu bớt”, a tag reading “#2 in the SAT bank”, an example sentence about government policies, and the memory hint “Mitigate sounds like make it gate: close the gate on problems to lessen them.”', caption:'The word panel for “mitigate”.'}},
       {t:'Practise your way', d:'Quizzes, flashcards or a fresh AI Challenge. Six question types.', ic:'i-target',
-        img:{src:'img/ctx-practice.webp', w:665, h:713, label:'Start practice settings', frame:'contextuary.app · Practice', alt:'The “Start practice” panel with two modes, Practice and AI Challenge; a choice of quiz or flashcards; word filters for today’s new words, all words, favourites or by status; a count of 10, 20, 50 or all; and six question types.', caption:'Setting up a practice session.'}},
+        img:{src:'img/ctx-practice.webp?v=45cbe6a6', w:665, h:713, label:'Start practice settings', frame:'contextuary.app · Practice', alt:'The “Start practice” panel with two modes, Practice and AI Challenge; a choice of quiz or flashcards; word filters for today’s new words, all words, favourites or by status; a count of 10, 20, 50 or all; and six question types.', caption:'Setting up a practice session.'}},
       {t:'Learn from SAT passages', d:'Words highlighted inside SAT-style passages.', ic:'i-book'},
       {t:'Progress at a glance', d:'Your week: mastered, learning, new, and quiz accuracy.', ic:'i-chart'}
     ],
@@ -110,7 +110,7 @@ const ITEMS = [
     ['What I learned', 'Easy for me isn’t easy for everyone. Design from the user’s side.']
   ],
 
-  media:[{label:'Together! homepage', ratio:'1512/729', w:1512, h:729, type:'screenshot', src:'img/together-home.webp', frame:'toghether.contextuary.app',
+  media:[{label:'Together! homepage', ratio:'1512/729', w:1512, h:729, type:'screenshot', src:'img/together-home.webp?v=aa9f150b', frame:'toghether.contextuary.app',
     alt:'The Together! homepage in Vietnamese. The headline reads “Cả đội cùng nhau ghi lại hành trình” (the whole team records the journey together). Beside it, a shared October 2026 calendar with coloured event bars, a voice-note player, and a card for a kick-off workshop with a team photo.',
     caption:'The live homepage, in Vietnamese with an English option.'}],
   evidence:[{label:'Live product: toghether.contextuary.app', url:'https://toghether.contextuary.app/'},{label:'Repository', url:null}],
@@ -123,13 +123,13 @@ const ITEMS = [
       points:[['My part','Co-founder, UI/UX. React interface, structure and user flows.'],['In use','<a href="#netmo">Nét Mơ</a> keeps its journal here.']] },
     features:[
       {t:'A journal for every project', d:'A cover and a colour-coded calendar for each project.', ic:'i-cal',
-        img:{src:'img/together-journal.webp', w:1146, h:612, label:'Nét Mơ project calendar', frame:'Together! · Nét Mơ', alt:'A Together! project page for Nét Mơ, with a blurred cover photo above an October 2026 calendar and a legend of six activity types.', caption:'Nét Mơ’s season 2 journal. Children’s faces are blurred.'}},
+        img:{src:'img/together-journal.webp?v=04aff5ae', w:1146, h:612, label:'Nét Mơ project calendar', frame:'Together! · Nét Mơ', alt:'A Together! project page for Nét Mơ, with a blurred cover photo above an October 2026 calendar and a legend of six activity types.', caption:'Nét Mơ’s season 2 journal. Children’s faces are blurred.'}},
       {t:'Log an activity in one form', d:'Date, people, photos, voice notes, a link and a place.', ic:'i-stack',
-        img:{src:'img/together-log.webp', w:672, h:761, label:'Log a new activity form', frame:'Together! · New activity', alt:'The “Log a new activity” form with fields for name, date, participants, activity type and status, a drop zone for photos, buttons for video, document, audio upload and recording, an external link field and a location field.', caption:'The form for logging a new activity.'}},
+        img:{src:'img/together-log.webp?v=04646ffe', w:672, h:761, label:'Log a new activity form', frame:'Together! · New activity', alt:'The “Log a new activity” form with fields for name, date, participants, activity type and status, a drop zone for photos, buttons for video, document, audio upload and recording, an external link field and a location field.', caption:'The form for logging a new activity.'}},
       {t:'Every moment, with its people', d:'Status, people, reactions and comments on every card.', ic:'i-chart',
-        img:{src:'img/together-recent.webp', w:1146, h:364, label:'Recent activities', frame:'Together! · Recent', alt:'Three recent activity cards: an event marked in progress, a team meeting and a comic project marked completed, each with participant, photo, reaction and comment counts.', caption:'Recent activities. A teammate’s name is blurred.'}},
+        img:{src:'img/together-recent.webp?v=1ef0201b', w:1146, h:364, label:'Recent activities', frame:'Together! · Recent', alt:'Three recent activity cards: an event marked in progress, a team meeting and a comic project marked completed, each with participant, photo, reaction and comment counts.', caption:'Recent activities. A teammate’s name is blurred.'}},
       {t:'The journey in numbers', d:'Activities and participation, as a report.', ic:'i-chart',
-        img:{src:'img/together-reports.webp', w:1144, h:732, label:'Journey in numbers report', frame:'Together! · Reports', alt:'A report titled “Nét Mơ’s journey in numbers” with tiles for total activities, workshops, participations and completed, a bar list by activity type, status tiles and a stacked breakdown bar.', caption:'Nét Mơ’s journey in numbers.'}}
+        img:{src:'img/together-reports.webp?v=df11943b', w:1144, h:732, label:'Journey in numbers report', frame:'Together! · Reports', alt:'A report titled “Nét Mơ’s journey in numbers” with tiles for total activities, workshops, participations and completed, a bar list by activity type, status tiles and a stacked breakdown bar.', caption:'Nét Mơ’s journey in numbers.'}}
     ],
     extras:['Google one-tap sign-in','Vietnamese & English','Dark mode'],
     feedback:{ title:'What the team wrote', quotes:[
@@ -154,11 +154,11 @@ const ITEMS = [
     ['What I learned', 'Spotting a scam isn’t enough. The tool has to say what to do next.']
   ],
 
-  media:[{label:'ScamCheck homepage', ratio:'1518/758', w:1518, h:758, type:'screenshot', src:'img/scamcheck-home.webp', frame:'hk1.quvo.pro',
+  media:[{label:'ScamCheck homepage', ratio:'1518/758', w:1518, h:758, type:'screenshot', src:'img/scamcheck-home.webp?v=c8888bbf', frame:'hk1.quvo.pro',
     alt:'The ScamCheck homepage in Vietnamese, with the tagline “Lá chắn số cho mọi gia đình” (a digital shield for every family). A dark panel reads “Dừng lại — kiểm tra — Hành động an toàn” (Stop, check, act safely) above a red “Kiểm tra tin nhắn” (check a message) button. On the right, an illustration of three characters, one holding a magnifying glass and a phone. The top bar has a text-size button.',
     caption:'The hackathon demo, designed for older users.'},
-    {label:'ScamCheck result screen', ratio:'800/794', w:800, h:794, type:'screenshot', src:'img/scamcheck-result.webp', frame:'hk1.quvo.pro', alt:'ScamCheck’s result screen in Vietnamese: a verdict card reading “An toàn” (safe), a “Đọc kết quả cho Bác” (read the result aloud) button, and three numbered steps to take right away: don’t click strange links, never share passwords or OTP codes, and call family or the official hotline. A side panel shows the detective character comparing warning signs.', caption:'The result: a clear verdict, a read-aloud button, and three things to do right away.'},
-    {label:'Our team presenting at the hackathon', ratio:'1338/778', w:1338, h:778, type:'photo', src:'img/scamcheck-team.webp', alt:'Four members of our team presenting ScamCheck on stage, in front of a slide that sums up the problem: online scams through SMS, Zalo, Messenger and email, especially targeting people over 45.', caption:'Presenting ScamCheck at the hackathon.'}],
+    {label:'ScamCheck result screen', ratio:'800/794', w:800, h:794, type:'screenshot', src:'img/scamcheck-result.webp?v=9f2ea80a', frame:'hk1.quvo.pro', alt:'ScamCheck’s result screen in Vietnamese: a verdict card reading “An toàn” (safe), a “Đọc kết quả cho Bác” (read the result aloud) button, and three numbered steps to take right away: don’t click strange links, never share passwords or OTP codes, and call family or the official hotline. A side panel shows the detective character comparing warning signs.', caption:'The result: a clear verdict, a read-aloud button, and three things to do right away.'},
+    {label:'Our team presenting at the hackathon', ratio:'1338/778', w:1338, h:778, type:'photo', src:'img/scamcheck-team.webp?v=0d37392f', alt:'Four members of our team presenting ScamCheck on stage, in front of a slide that sums up the problem: online scams through SMS, Zalo, Messenger and email, especially targeting people over 45.', caption:'Presenting ScamCheck at the hackathon.'}],
   evidence:[{label:'Live demo: hk1.quvo.pro', url:'http://hk1.quvo.pro:15640/'},{label:'Repository', url:null}],
   metrics:[], related:['fct-scam','fct','smartwaste'],
   story:{
@@ -168,13 +168,13 @@ const ITEMS = [
       points:[['My part','Interface design for older users. Three of our five built the AI.'],['The decision','Bigger text, softer colours, fewer steps.'],['Built at','FCT Summer Camp 2026, with the Gemini API.']] },
     features:[
       {t:'One clear verdict', d:'A plain verdict, a read-aloud button, and three things to do now.', ic:'i-target',
-        img:'img/scamcheck-result.webp'},
+        img:'img/scamcheck-result.webp?v=9f2ea80a'},
       {t:'Three AI characters', d:'They check the warning signs. A detective explains the verdict.', ic:'i-search'},
       {t:'Text that fits the reader', d:'Bigger text, plus an A+ button.', ic:'i-book'},
       {t:'Fewer steps to ask', d:'One red button. It never asks for a password or OTP.', ic:'i-bolt'}
     ],
     extras:['Read-aloud results','A+ text size','Vietnamese'],
-    scene:{ title:'At the hackathon', img:'img/scamcheck-team.webp', text:'Our opening slide: scams by SMS, Zalo, Messenger and email, aimed at people over 45.', gap:'A sharper team photo. This one is a frame from a video.' },
+    scene:{ title:'At the hackathon', img:'img/scamcheck-team.webp?v=0d37392f', text:'Our opening slide: scams by SMS, Zalo, Messenger and email, aimed at people over 45.', gap:'A sharper team photo. This one is a frame from a video.' },
     feedbackGap:'Add a comment from a judge, a mentor, or an older person who tried ScamCheck.'
   } },
 
@@ -190,7 +190,7 @@ const ITEMS = [
     ['Result', ['Second Place at FCT Summer Camp 2024.', G('Add what the final prototype could do, with a photo or video.')]],
     ['What I learned', G('What did hardware teach you that software didn’t?')]
   ],
-  media:[{label:'Our fire alarm prototype', src:'img/firealarm.webp', w:900, h:1600, ratio:'900/1600', alt:'Our fire alarm prototype: a breadboard wired to sensor modules, LEDs and a buzzer with colourful jumper wires.', caption:'Our prototype: sensors, LEDs and a buzzer on a breadboard.'},{label:'FCT Summer Camp', src:'img/fct-camp.webp', w:1433, h:960, ratio:'1433/960', alt:'FCT Summer Camp 2024 at FPT Software: students at long tables with laptops and hardware kits. A yellow arrow labelled “Me” points to Duy Anh, second from the left.', caption:'FCT Summer Camp 2024. I’m second from the left.'}],
+  media:[{label:'Our fire alarm prototype', src:'img/firealarm.webp?v=6571263d', w:900, h:1600, ratio:'900/1600', alt:'Our fire alarm prototype: a breadboard wired to sensor modules, LEDs and a buzzer with colourful jumper wires.', caption:'Our prototype: sensors, LEDs and a buzzer on a breadboard.'},{label:'FCT Summer Camp', src:'img/fct-camp.webp?v=5495653d', w:1433, h:960, ratio:'1433/960', alt:'FCT Summer Camp 2024 at FPT Software: students at long tables with laptops and hardware kits. A yellow arrow labelled “Me” points to Duy Anh, second from the left.', caption:'FCT Summer Camp 2024. I’m second from the left.'}],
   evidence:[],
   metrics:[], related:['fct-iot','fct','funix'] },
 
@@ -284,7 +284,7 @@ const ITEMS = [
   summary:'Best Presentation & Public Speaking Award (2,000,000 VND) at the FPTU AI & Robotics Challenge hackathon, 2025, AI Programming Round.',
   award:{comp:'FPTU AI & Robotics Challenge', round:'AI Programming Round', result:'Best Presentation & Public Speaking Award', year:2025, role:null},
   tags:['public speaking','presentation','AI','programming','hackathon','challenge','competition','award','FPTU'],
-  sections:[], media:[], evidence:[{label:'Award board', url:'img/cert-fptu-speaking.webp'}], metrics:[], related:['fptu-ai'] },
+  sections:[], media:[], evidence:[{label:'Award board', url:'img/cert-fptu-speaking.webp?v=3dcf6e60'}], metrics:[], related:['fptu-ai'] },
 
 /* ---------- RESEARCH ---------- */
 { id:'smartwaste', short:'Smart-waste scoping review', boost:20, cat:'research', kind:'Research project', page:'lab',
@@ -313,7 +313,7 @@ const ITEMS = [
     ['Fundraising', 'I co-managed “Colors of the Pitch”, a football event with 10 teams and 1,000+ spectators in total. It was part of wider fundraising that raised about VND 70 million in net proceeds for workshops and partner support.'],
     ['What I learned', G('Add a short reflection in your own words.')]
   ],
-  media:[{label:'A Nét Mơ workshop', src:'img/netmo-session.webp', w:1600, h:1036, ratio:'1600/1036', alt:'Nét Mơ volunteers with children holding up the cardboard artworks they made, including a whale, hearts and a house. The children’s faces are blurred.', caption:'A Nét Mơ workshop. Children’s faces are blurred.'},{label:'At the care home', src:'img/carehome.webp', w:480, h:360, ratio:'4/3', alt:'The Nét Mơ team outside the care home, holding a painting and making heart shapes with their hands.', caption:'Outside the care home.'},{label:'Part of the Nét Mơ team', src:'img/netmo-team.webp', w:1600, h:1200, ratio:'4/3', alt:'Some of the Nét Mơ team posing together for a selfie on a street in Ho Chi Minh City.', caption:'Part of the Nét Mơ team. There are more of us!'}],
+  media:[{label:'A Nét Mơ workshop', src:'img/netmo-session.webp?v=c84fb89f', w:1600, h:1036, ratio:'1600/1036', alt:'Nét Mơ volunteers with children holding up the cardboard artworks they made, including a whale, hearts and a house. The children’s faces are blurred.', caption:'A Nét Mơ workshop. Children’s faces are blurred.'},{label:'At the care home', src:'img/carehome.webp?v=ea325d11', w:480, h:360, ratio:'4/3', alt:'The Nét Mơ team outside the care home, holding a painting and making heart shapes with their hands.', caption:'Outside the care home.'},{label:'Part of the Nét Mơ team', src:'img/netmo-team.webp?v=00a556c8', w:1600, h:1200, ratio:'4/3', alt:'Some of the Nét Mơ team posing together for a selfie on a street in Ho Chi Minh City.', caption:'Part of the Nét Mơ team. There are more of us!'}],
   evidence:[{label:'Website: netmoproject.page',url:'https://netmoproject.page/'},{label:'Instagram: @netmow.prj',url:'https://www.instagram.com/netmow.prj/'}], metrics:[{label:'children in six shelters',value:'~200'},{label:'older adults, 8 care-home workshops',value:'25'},{label:'volunteers I coordinate',value:'20+'}], related:['together','house-service','ha-media'] },
 
 { id:'house-service', short:'Service learning', boost:15, cat:'community', kind:'Service learning', title:'Service learning at Hồng Quang Pagoda', aliases:['service learning','hong quang pagoda','lsts service learning'],
@@ -343,7 +343,7 @@ const ITEMS = [
     ['Result', G('Verified outcomes only, e.g. how your peers did.')],
     ['Learned', G('One line in your own words.')]
   ],
-  media:[{label:'A maths session', src:'img/math.webp', w:1600, h:1200, ratio:'4/3', alt:'Two students in LSTS uniforms pointing at a GeoGebra geometry construction on a large classroom screen, with circle diagrams drawn on the whiteboards on either side.', caption:'A maths session.'}], evidence:[], metrics:[], related:['imocsea','debate'] },
+  media:[{label:'A maths session', src:'img/math.webp?v=c05e68dc', w:1600, h:1200, ratio:'4/3', alt:'Two students in LSTS uniforms pointing at a GeoGebra geometry construction on a large classroom screen, with circle diagrams drawn on the whiteboards on either side.', caption:'A maths session.'}], evidence:[], metrics:[], related:['imocsea','debate'] },
 
 { id:'debate', cat:'community', kind:'Debate', title:'House Adventure debate team', aliases:['debate','house adventure debate'],
   summary:'From too shy to speak, to team captain.',
@@ -357,7 +357,7 @@ const ITEMS = [
     ['A moment', 'A junior froze. Fewer points, deep breaths, glasses off. Her team won.'],
     ['Learned', 'Someone pushed me to speak up. I passed it on.']
   ],
-  media:[{label:'The junior debate team I mentored', src:'img/debate.webp', w:1600, h:1066, ratio:'1600/1066', alt:'Duy Anh with the junior debate team he mentored, six students at a table covered in notes, smiling and giving thumbs up. A yellow arrow labelled “Me” points to Duy Anh, second from the right.', caption:'The junior debate team I mentored. I’m second from the right.'}], evidence:[], metrics:[], related:['math-community','ha-media'] },
+  media:[{label:'The junior debate team I mentored', src:'img/debate.webp?v=b7b76d7d', w:1600, h:1066, ratio:'1600/1066', alt:'Duy Anh with the junior debate team he mentored, six students at a table covered in notes, smiling and giving thumbs up. A yellow arrow labelled “Me” points to Duy Anh, second from the right.', caption:'The junior debate team I mentored. I’m second from the right.'}], evidence:[], metrics:[], related:['math-community','ha-media'] },
 
 /* ---------- MEDIA ---------- */
 { id:'ha-media', short:'House Adventure media', boost:20, cat:'media', kind:'Media leadership', title:'House Adventure Committee: external relations & media', aliases:['house adventure committee','external relations','house adventure'],
@@ -396,7 +396,7 @@ const ITEMS = [
     ['My role', 'Photographer'],
     ['A choice I made', G('One framing or timing choice.')]
   ],
-  media:[{src:'img/ha-vannghe.webp',w:1600,h:1066,ratio:'3/2',type:'photo',alt:'Class A07 on stage at the school’s Hội thi Văn nghệ, in matching black A7 jerseys, holding up hand-painted signs reading “A07 chúc mừng 20/11” while a student plays guitar.',caption:'Hội thi Văn nghệ · 20/11'},{src:'img/ha-stage.webp',w:1600,h:1066,ratio:'3/2',type:'photo',alt:'Students in white uniforms on stage at Văn nghệ Family, Lawrence S. Ting School, throwing colourful scarves into the air and cheering.',caption:'Văn nghệ Family'}],
+  media:[{src:'img/ha-vannghe.webp?v=9eacff3a',w:1600,h:1066,ratio:'3/2',type:'photo',alt:'Class A07 on stage at the school’s Hội thi Văn nghệ, in matching black A7 jerseys, holding up hand-painted signs reading “A07 chúc mừng 20/11” while a student plays guitar.',caption:'Hội thi Văn nghệ · 20/11'},{src:'img/ha-stage.webp?v=80037d99',w:1600,h:1066,ratio:'3/2',type:'photo',alt:'Students in white uniforms on stage at Văn nghệ Family, Lawrence S. Ting School, throwing colourful scarves into the air and cheering.',caption:'Văn nghệ Family'}],
   evidence:[], metrics:[], related:['ha-media','netmo'] },
 
 { id:'media-scripts', cat:'media', kind:'Writing', title:'Scripts & storyboards', aliases:['scripts','storyboard'],
@@ -720,7 +720,7 @@ const DEEP={
     <p class="dr-links"><a href="#contextuary">The full Contextuary page →</a><a href="https://contextuary.app" target="_blank" rel="noopener">contextuary.app ↗</a></p>`}),
   tg:()=>({k:'Chapter 4 · Together!',t:'Behind Together!',html:`
     <p>Each project gets a cover and a colour-coded calendar. An activity is logged in one form, with photos, video, documents, voice notes, a link and a location. Reports turn the journal into numbers.</p>
-    <div class="strip">${zimg(STRIP('img/together-log.webp','Logging an activity'))}${zimg(STRIP('img/together-reports.webp','Journey in numbers'))}${zimg(STRIP('img/together-home.webp','The homepage'))}</div>
+    <div class="strip">${zimg(STRIP('img/together-log.webp?v=04646ffe','Logging an activity'))}${zimg(STRIP('img/together-reports.webp?v=df11943b','Journey in numbers'))}${zimg(STRIP('img/together-home.webp?v=aa9f150b','The homepage'))}</div>
     <h3>What I learned</h3><p>An interface I find easy to use won’t necessarily feel easy to someone else. I learned to put myself in the user’s place, think about what they are trying to do, and arrange the steps so they are clear.</p>
     <p class="dr-links"><a href="#together">The full Together! page →</a><a href="https://toghether.contextuary.app/" target="_blank" rel="noopener">Visit the app ↗</a></p>`}),
   sc:()=>({k:'Chapter 4 · ScamCheck',t:'Behind ScamCheck',html:`
@@ -754,7 +754,7 @@ function pzPath(r,c){
 function puzzleHTML(){
   const W=PZ_C*100, Hh=PZ_R*100, N=PZ_C*PZ_R;
   const art=`<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
-    <symbol id="pz-art" viewBox="0 0 ${W} ${Hh}"><image href="img/contextuary-home.webp" x="-46" y="0" width="${(Hh*1516/896).toFixed(1)}" height="${Hh}" preserveAspectRatio="none"/></symbol></defs></svg>`;
+    <symbol id="pz-art" viewBox="0 0 ${W} ${Hh}"><image href="img/contextuary-home.webp?v=bb127c69" x="-46" y="0" width="${(Hh*1516/896).toFixed(1)}" height="${Hh}" preserveAspectRatio="none"/></symbol></defs></svg>`;
   let pieces='';
   for(let r=0;r<PZ_R;r++) for(let c=0;c<PZ_C;c++){ const i=r*PZ_C+c, d=pzPath(r,c);
     pieces+=`<button type="button" class="pz-p" data-pz="${i}" style="left:${((c*100-25)/W*100).toFixed(3)}%;top:${((r*100-25)/Hh*100).toFixed(3)}%;width:${(150/W*100).toFixed(3)}%;height:${(150/Hh*100).toFixed(3)}%" aria-label="Puzzle piece ${i+1} of ${N}">
@@ -953,7 +953,7 @@ function viewHome(){
         <div class="c4-col"><span class="c4-v">Listen</span><h3>Debate</h3><p>Captain: 1st of 8 teams. The next year, the 4 juniors I coached won too.</p>${zimg(PH.debate)}</div>
         <div class="c4-col"><span class="c4-v">Explain</span><h3>Maths mentoring</h3><p>Main peer mentor for IMOCSEA and IMC in the LSTS Advanced Math Community.</p>${zimg(PH.math)}</div>
         <div class="c4-col c4-nm"><span class="c4-v">Create together</span>
-          <div class="nm-logo nm-sm"><svg class="nm-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="nm-c2" d="M100,100 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"/></defs><text><textPath href="#nm-c2" textLength="524" lengthAdjust="spacing">NÉT MƠ · DREAM STROKES · YOUTH-LED STEAM ·</textPath></text></svg><span class="nm-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></span><img src="img/netmo-logo.webp" width="368" height="368" alt="The Nét Mơ logo: a cheerful hand-drawn character holding a paintbrush under the colourful words “Nét Mơ”." loading="lazy"></div>
+          <div class="nm-logo nm-sm"><svg class="nm-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="nm-c2" d="M100,100 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"/></defs><text><textPath href="#nm-c2" textLength="524" lengthAdjust="spacing">NÉT MƠ · DREAM STROKES · YOUTH-LED STEAM ·</textPath></text></svg><span class="nm-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></span><img src="img/netmo-logo.webp?v=0b5d1051" width="368" height="368" alt="The Nét Mơ logo: a cheerful hand-drawn character holding a paintbrush under the colourful words “Nét Mơ”." loading="lazy"></div>
           <h3>Nét Mơ <small>Dream Strokes</small></h3><p>STEAM workshops for children in shelters and older adults in care homes. As Head of HR, I co-design activities and coordinate 20+ volunteers. Participation went from about half the children to nearly all.</p></div>
       </div>
       <div class="c4-gal ph5"><div class="g-a">${zimg(PH.session)}</div><div class="g-b">${zimg(PH.draw)}</div><div class="g-c">${zimg(PH.care)}</div><div class="g-d">${zimg(PH.team)}</div></div>
@@ -982,7 +982,7 @@ function viewHome(){
       <article class="p3 p3-tg" aria-labelledby="p-tg">
         <div class="p3-top"><div><p class="p3-k">Together! · co-founder, UI/UX programmer · launched Sep 2026</p><h3 id="p-tg">Designing a space for shared memories</h3></div>${statRow(tg.metrics)}</div>
         <div class="tg-grid">
-          <div class="tg-collage">${zimg(STRIP('img/together-journal.webp','A project’s calendar'))}${zimg(STRIP('img/together-recent.webp','Moments, with their people'))}${zimg(STRIP('img/together-log.webp','Logging an activity'))}</div>
+          <div class="tg-collage">${zimg(STRIP('img/together-journal.webp?v=04aff5ae','A project’s calendar'))}${zimg(STRIP('img/together-recent.webp?v=1ef0201b','Moments, with their people'))}${zimg(STRIP('img/together-log.webp?v=04646ffe','Logging an activity'))}</div>
           <div class="tg-side">
             ${lifecycle([
               ['Problem','Our team juggled spreadsheets, Messenger and Docs.'],
@@ -1134,7 +1134,7 @@ function spot(o){
 function whereNext(list,cat){
   return `<section class="rm-sec rm-next" aria-label="Other rooms">${nextRoom(cat)}</section>`;
 }
-const PH={scres:{src:'img/scamcheck-result.webp',w:800,h:794,alt:'ScamCheck’s result screen in Vietnamese: a verdict card reading “An toàn” (safe), a “Đọc kết quả cho Bác” (read the result aloud) button, and three numbered steps to take right away: don’t click strange links, never share passwords or OTP codes, and call family or the official hotline. A side panel shows the detective character comparing warning signs.',cap:'The result screen, with a read-aloud button'},scteam:{src:'img/scamcheck-team.webp',w:1338,h:778,alt:'Four members of our team presenting ScamCheck on stage, in front of a slide that sums up the problem: online scams through SMS, Zalo, Messenger and email, especially targeting people over 45.',cap:'Presenting ScamCheck at the hackathon'},debate:{src:'img/debate.webp',w:1600,h:1066,alt:'Duy Anh with the junior debate team he mentored, six students at a table covered in notes, smiling and giving thumbs up. A yellow arrow labelled “Me” points to Duy Anh, second from the right.',cap:'The junior team I mentored · I’m second from the right'},math:{src:'img/math.webp',w:1600,h:1200,alt:'Two students in LSTS uniforms pointing at a GeoGebra geometry construction on a large classroom screen, with circle diagrams drawn on the whiteboards on either side.',cap:'A maths session'},session:{src:'img/netmo-session.webp',w:1600,h:1036,alt:'Nét Mơ volunteers with children holding up the cardboard artworks they made, including a whale, hearts and a house. The children’s faces are blurred.',cap:'A Nét Mơ workshop · children’s faces blurred'},team:{src:'img/netmo-team.webp',w:1600,h:1200,alt:'Some of the Nét Mơ team posing together for a selfie on a street in Ho Chi Minh City.',cap:'Part of the Nét Mơ team · there are more of us!'},care:{src:'img/carehome.webp',w:480,h:360,alt:'The Nét Mơ team outside the care home, holding a painting and making heart shapes with their hands.',cap:'At the care home'},draw:{src:'img/drawing.webp',w:480,h:640,alt:'Two flowers drawn in pink and blue marker on white paper, made during our care-home session.',cap:'A drawing from our care-home session'}};
+const PH={scres:{src:'img/scamcheck-result.webp?v=9f2ea80a',w:800,h:794,alt:'ScamCheck’s result screen in Vietnamese: a verdict card reading “An toàn” (safe), a “Đọc kết quả cho Bác” (read the result aloud) button, and three numbered steps to take right away: don’t click strange links, never share passwords or OTP codes, and call family or the official hotline. A side panel shows the detective character comparing warning signs.',cap:'The result screen, with a read-aloud button'},scteam:{src:'img/scamcheck-team.webp?v=0d37392f',w:1338,h:778,alt:'Four members of our team presenting ScamCheck on stage, in front of a slide that sums up the problem: online scams through SMS, Zalo, Messenger and email, especially targeting people over 45.',cap:'Presenting ScamCheck at the hackathon'},debate:{src:'img/debate.webp?v=b7b76d7d',w:1600,h:1066,alt:'Duy Anh with the junior debate team he mentored, six students at a table covered in notes, smiling and giving thumbs up. A yellow arrow labelled “Me” points to Duy Anh, second from the right.',cap:'The junior team I mentored · I’m second from the right'},math:{src:'img/math.webp?v=c05e68dc',w:1600,h:1200,alt:'Two students in LSTS uniforms pointing at a GeoGebra geometry construction on a large classroom screen, with circle diagrams drawn on the whiteboards on either side.',cap:'A maths session'},session:{src:'img/netmo-session.webp?v=c84fb89f',w:1600,h:1036,alt:'Nét Mơ volunteers with children holding up the cardboard artworks they made, including a whale, hearts and a house. The children’s faces are blurred.',cap:'A Nét Mơ workshop · children’s faces blurred'},team:{src:'img/netmo-team.webp?v=00a556c8',w:1600,h:1200,alt:'Some of the Nét Mơ team posing together for a selfie on a street in Ho Chi Minh City.',cap:'Part of the Nét Mơ team · there are more of us!'},care:{src:'img/carehome.webp?v=ea325d11',w:480,h:360,alt:'The Nét Mơ team outside the care home, holding a painting and making heart shapes with their hands.',cap:'At the care home'},draw:{src:'img/drawing.webp?v=994449b8',w:480,h:640,alt:'Two flowers drawn in pink and blue marker on white paper, made during our care-home session.',cap:'A drawing from our care-home session'}};
 const IMG=src=>{ for(const it of ITEMS){ for(const m of (it.media||[])) if(m.src===src) return m; if(it.story) for(const f of it.story.features) if(f.img&&f.img.src===src) return f.img; } return null; };
 const STRIP=(src,cap)=>{ const m=IMG(src); return {src,w:m.w,h:m.h,alt:m.alt,cap}; };
 
@@ -1148,7 +1148,7 @@ function viewWorkshop(){
       line:'An app that teaches SAT words through the sentences they live in.',
       stats:statRow(ITEM.contextuary.metrics),
       main:ITEM.contextuary.media[0],
-      strip:[STRIP('img/ctx-words.webp','Daily Picks'),STRIP('img/ctx-word.webp','Every word, explained'),STRIP('img/ctx-practice.webp','Practise your way')],
+      strip:[STRIP('img/ctx-words.webp?v=685967ae','Daily Picks'),STRIP('img/ctx-word.webp?v=26759b50','Every word, explained'),STRIP('img/ctx-practice.webp?v=45cbe6a6','Practise your way')],
       bullets:['Ten Daily Picks every day, each with its pronunciation','A Vietnamese meaning, an SAT-style example and a memory hint for every word','Six question types, plus a harder AI Challenge','Kept the site smooth through SAT-week traffic by reworking caching and the database'],
       ext:['https://contextuary.app','contextuary.app']})}
     <section class="rm-sec tight" aria-labelledby="ws-try"><h2 class="rm-h" id="ws-try">Try the idea in 10 seconds</h2>
@@ -1159,7 +1159,7 @@ function viewWorkshop(){
         line:'A shared journal for teams, so members who missed a day can still catch up.',
         stats:statRow(ITEM.together.metrics),
         main:ITEM.together.media[0],
-        strip:[STRIP('img/together-journal.webp','Project calendar'),STRIP('img/together-log.webp','Log an activity'),STRIP('img/together-reports.webp','Journey in numbers')],
+        strip:[STRIP('img/together-journal.webp?v=04aff5ae','Project calendar'),STRIP('img/together-log.webp?v=04646ffe','Log an activity'),STRIP('img/together-reports.webp?v=df11943b','Journey in numbers')],
         bullets:['Every workshop, trip and meeting on one shared calendar','Photos, voice notes, reactions and comments on each activity','Replaced spreadsheets, Messenger and Docs for our own team, Nét Mơ'],
         ext:['https://toghether.contextuary.app/','Visit the app']})}
       ${spot({id:'scamcheck',k:'Interface design · team of 5 · Gemini API · 2026',
@@ -1193,7 +1193,7 @@ const AW_MATH=[
 const AW_BUILD=[
   {id:'fct-scam',r:'4th',t:'FCT Summer Camp',s:'ScamCheck, an AI scam checker',y:'2026',to:'scamcheck'},
   {id:'fptu-ai',r:'Top 4',of:'of 71 teams',t:'FPTU AI & Robotics Challenge',s:'AI Web Hackathon · Southern Region',y:'2025',lead:true,
-   plus:'+ Best Presentation & Public Speaking Award',cert:{src:'img/cert-fptu-speaking.webp',w:960,h:621,alt:'Award board from the FPTU AI & Robotics Challenge 2025, AI Programming Round: Best Presentation & Public Speaking Award, 2,000,000 VND.'}},
+   plus:'+ Best Presentation & Public Speaking Award',cert:{src:'img/cert-fptu-speaking.webp?v=3dcf6e60',w:960,h:621,alt:'Award board from the FPTU AI & Robotics Challenge 2025, AI Programming Round: Best Presentation & Public Speaking Award, 2,000,000 VND.'}},
   {id:'humlog',r:'Top 10',of:'of 70 teams',t:'Humanitarian Logistics Hackathon',s:'National Round · linking aid groups with people in need',y:'2025',lead:true},
   {id:'icia',r:'2nd',t:'Creativity & Innovation Award',s:'Southern Region · FoodWise, a food-waste prevention app',y:'2025',lead:true,ext:'https://partyrock.aws/u/duyanhh/xhNRNQkr9/FoodWise'},
   {id:'fct-iot',r:'2nd',t:'FCT Summer Camp',s:'An IoT fire alarm',y:'2024',to:'firealarm'}
@@ -1295,7 +1295,7 @@ function viewCommon(){
       <div class="nm-logo">
         <svg class="nm-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="nm-c" d="M100,100 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"/></defs><text><textPath href="#nm-c" textLength="524" lengthAdjust="spacing">NÉT MƠ · DREAM STROKES · YOUTH-LED STEAM ·</textPath></text></svg>
         <span class="nm-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-        <img src="img/netmo-logo.webp" width="368" height="368" alt="The Nét Mơ logo: a cheerful hand-drawn character holding a paintbrush under the colourful words “Nét Mơ”." decoding="async">
+        <img src="img/netmo-logo.webp?v=0b5d1051" width="368" height="368" alt="The Nét Mơ logo: a cheerful hand-drawn character holding a paintbrush under the colourful words “Nét Mơ”." decoding="async">
       </div>
       <div class="nm-body"><p class="rc-k">Activities · volunteers · fundraising</p>
         <h2 id="nm-h">Nét Mơ <small>Dream Strokes</small></h2>
@@ -1340,13 +1340,13 @@ function viewStudio(){
       <div class="st-feed">
         <a class="ig" href="https://www.instagram.com/feat_adventure/" target="_blank" rel="noopener" aria-label="Our house’s Instagram, @feat_adventure: 79 posts and 1,585 followers (Nov 2026). Opens Instagram.">
           <span class="ig-top"><b>feat_adventure</b><i aria-hidden="true">···</i></span>
-          <span class="ig-head"><span class="ig-av"><img src="img/ha-ig-avatar.webp" width="154" height="154" alt=""></span>
+          <span class="ig-head"><span class="ig-av"><img src="img/ha-ig-avatar.webp?v=3557ab2e" width="154" height="154" alt=""></span>
             <span class="ig-st"><span><b data-count="79">79</b>posts</span><span><b data-count="1585">1,585</b>followers</span><span><b>25</b>following</span></span></span>
           <span class="ig-bio"><b>whalesarewell</b>when there’s a whale, there’s a wave ⚓</span>
-          <span class="ig-hl" aria-hidden="true">${hl.map(([t,c])=>`<span><i style="${c==='av'?'background-image:url(img/ha-ig-avatar.webp)':'background:'+c}"></i>${t}</span>`).join('')}</span>
-          <span class="ig-grid"><img src="img/ha-ig-banner.webp" width="843" height="292" alt="" loading="lazy"></span>
+          <span class="ig-hl" aria-hidden="true">${hl.map(([t,c])=>`<span><i style="${c==='av'?'background-image:url(img/ha-ig-avatar.webp?v=3557ab2e)':'background:'+c}"></i>${t}</span>`).join('')}</span>
+          <span class="ig-grid"><img src="img/ha-ig-banner.webp?v=43e739e0" width="843" height="292" alt="" loading="lazy"></span>
         </a>
-        <figure class="reel"><div class="reel-b"><img src="img/ha-reel.webp" width="855" height="480" alt="A still from our reel: two students at a classroom table, one watching a cartoon on a laptop during class." loading="lazy" decoding="async">
+        <figure class="reel"><div class="reel-b"><img src="img/ha-reel.webp?v=667b1024" width="855" height="480" alt="A still from our reel: two students at a classroom table, one watching a cartoon on a laptop during class." loading="lazy" decoding="async">
           <span class="reel-chip">Reel</span>
           <span class="reel-cap"><b>Using devices by the school rules</b><span>🎥 shez · ✍️ caption by me</span></span></div>
           <figcaption>A reel on our feed</figcaption></figure>
@@ -1355,8 +1355,8 @@ function viewStudio(){
     <section class="rm-sec" aria-labelledby="st-stage"><h2 class="rm-h" id="st-stage">On stage, through my lens</h2>
       <div class="film">
         ${frame({kind:'video',label:'House Adventure event video'})}
-        ${frame({src:'img/ha-vannghe.webp',w:1600,h:1066,alt:'Class A07 on stage at the school’s Hội thi Văn nghệ, in matching black A7 jerseys, holding up hand-painted signs reading “A07 chúc mừng 20/11” while a student plays guitar.',cap:'Hội thi Văn nghệ · 20/11 · 📷 me'})}
-        ${frame({src:'img/ha-stage.webp',w:1600,h:1066,alt:'Students in white uniforms on stage at Văn nghệ Family, Lawrence S. Ting School, throwing colourful scarves into the air and cheering.',cap:'Văn nghệ Family · 📷 me'})}
+        ${frame({src:'img/ha-vannghe.webp?v=9eacff3a',w:1600,h:1066,alt:'Class A07 on stage at the school’s Hội thi Văn nghệ, in matching black A7 jerseys, holding up hand-painted signs reading “A07 chúc mừng 20/11” while a student plays guitar.',cap:'Hội thi Văn nghệ · 20/11 · 📷 me'})}
+        ${frame({src:'img/ha-stage.webp?v=80037d99',w:1600,h:1066,alt:'Students in white uniforms on stage at Văn nghệ Family, Lawrence S. Ting School, throwing colourful scarves into the air and cheering.',cap:'Văn nghệ Family · 📷 me'})}
         ${frame({kind:'photo',label:'Behind the scenes'})}
       </div>
     </section>
@@ -1594,7 +1594,7 @@ function mountFirealarm(){
   paint();
 }
 /* ----- Nét Mơ page ----- */
-function nmLogo(id){ return `<div class="nm-logo"><svg class="nm-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="${id}" d="M100,100 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"/></defs><text><textPath href="#${id}" textLength="524" lengthAdjust="spacing">NÉT MƠ · DREAM STROKES · YOUTH-LED STEAM ·</textPath></text></svg><span class="nm-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></span><img src="img/netmo-logo.webp" width="368" height="368" alt="The Nét Mơ logo: a cheerful hand-drawn character holding a paintbrush under the colourful words “Nét Mơ”." decoding="async"></div>`; }
+function nmLogo(id){ return `<div class="nm-logo"><svg class="nm-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="${id}" d="M100,100 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"/></defs><text><textPath href="#${id}" textLength="524" lengthAdjust="spacing">NÉT MƠ · DREAM STROKES · YOUTH-LED STEAM ·</textPath></text></svg><span class="nm-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></span><img src="img/netmo-logo.webp?v=0b5d1051" width="368" height="368" alt="The Nét Mơ logo: a cheerful hand-drawn character holding a paintbrush under the colourful words “Nét Mơ”." decoding="async"></div>`; }
 function viewNetmo(it){
   const rm=ROOM.community;
   return `<div data-room="community" class="nmp">
