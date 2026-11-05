@@ -317,100 +317,96 @@ const ITEMS = [
   evidence:[{label:'Website: netmoproject.page',url:'https://netmoproject.page/'},{label:'Instagram: @netmow.prj',url:'https://www.instagram.com/netmow.prj/'}], metrics:[{label:'children in six shelters',value:'~200'},{label:'older adults, 8 care-home workshops',value:'25'},{label:'volunteers I coordinate',value:'20+'}], related:['together','house-service','ha-media'] },
 
 { id:'house-service', short:'Service learning', boost:15, cat:'community', kind:'Service learning', title:'Service learning at Hồng Quang Pagoda', aliases:['service learning','hong quang pagoda','lsts service learning'],
-  summary:'Annual first-aid, painting and craft workshops for 60–70 children from Hồng Quang Pagoda. As organising leader and head of logistics, I lead 40+ volunteers across rotating stations.',
+  summary:'Workshops for 60–70 children from Hồng Quang Pagoda.',
   role:'Organising leader · head of logistics', layout:'chain',
   tags:['service learning','volunteering','community','children','organising','logistics','leadership','teamwork','first aid','art','LSTS'],
   sections:[
-    ['The setting', 'LSTS service learning, in the 2024–25 and 2025–26 school years.'],
-    ['My responsibility', 'Organising leader and head of logistics: preparing materials, organising spaces and schedules, and leading 40+ volunteers across rotating stations.'],
-    ['What we did', 'Annual first-aid, painting and craft workshops for 60–70 children from Hồng Quang Pagoda.'],
-    ['What changed', 'The children’s artwork was displayed at the pagoda.'],
-    ['What I learned', G('Add a short reflection in your own words.')]
+    ['When', '2024–26'],
+    ['My role', 'Organising lead · logistics'],
+    ['Team', '40+ volunteers'],
+    ['We ran', 'First aid, painting, crafts'],
+    ['Result', 'Their art went up at the pagoda'],
+    ['Learned', G('One line in your own words.')]
   ],
   media:[{label:'Service-learning setup photo', ratio:'3/2', type:'photo'}],
   evidence:[], metrics:[], related:['ha-media','netmo'] },
 
 { id:'math-community', short:'Advanced Math Community', cat:'community', kind:'Peer mentoring', title:'LSTS Advanced Math Community', aliases:['lsts math','advanced math community'],
-  summary:'Weekly advanced-maths sessions with peers and teachers. I was the main peer mentor for IMOCSEA and IMC, guiding practice while competing alongside my classmates.',
+  summary:'Weekly olympiad sessions. I’m the main peer mentor.',
   role:'Core member · peer mentor', layout:'chain',
   tags:['math','mathematics','olympiad','challenge','mentoring','peer learning','teaching','community','tutoring'],
   sections:[
-    ['The setting', 'The Advanced Math Community at Lawrence S. Ting School, since September 2025.'],
-    ['My responsibility', 'The main peer mentor for IMOCSEA and IMC: guiding practice sessions and explaining challenging problems, while competing alongside my classmates.'],
-    ['What we did', 'Weekly sessions with peers and teachers, comparing solution methods and tackling problems beyond the school curriculum.'],
-    ['What changed', G('Add verified outcomes only, for example how your peers did.')],
-    ['What I learned', G('Connect this to your own IMOCSEA practice in your own words.')]
+    ['Where', 'LSTS · since Sep 2025'],
+    ['My role', 'Main peer mentor'],
+    ['For', 'IMOCSEA · IMC'],
+    ['We did', 'Weekly sessions, comparing methods'],
+    ['Result', G('Verified outcomes only, e.g. how your peers did.')],
+    ['Learned', G('One line in your own words.')]
   ],
   media:[{label:'A maths session', src:'img/math.webp', w:480, h:360, ratio:'4/3', alt:'Two students beside a large screen showing a geometry construction during a maths session.', caption:'A maths session.'}], evidence:[], metrics:[], related:['imocsea','debate'] },
 
 { id:'debate', cat:'community', kind:'Debate', title:'House Adventure debate team', aliases:['debate','house adventure debate'],
-  summary:'From too shy to speak, to team captain. We won 1st place among 8 teams, and the next year the 4 juniors I coached won as well.',
+  summary:'From too shy to speak, to team captain.',
   role:'Team captain · peer mentor', layout:'chain',
   tags:['debate','communication','leadership','mentoring','feedback','public speaking','teamwork','community','House Adventure'],
   sections:[
-    ['The setting', 'The House Adventure debate team, in the 2024–25 and 2025–26 school years. In secondary school I had been very shy. New classmates invited me to try debating, and my first speech went badly.'],
-    ['My responsibility', 'Captaining the team, then coaching 4 juniors over 4 months through mock debates and individual feedback.'],
-    ['Results', '1st place among 8 teams. The following year, the juniors I coached won too.'],
-    ['A moment that mattered', 'One junior had planned every idea, yet froze in front of the judges. I told her about my own first competition and helped her prepare differently: fewer points, deep breaths, and taking off her glasses so the audience blurred away. In the semifinal she answered an unfamiliar question calmly, and her team won the tournament.'],
-    ['What I learned', 'My classmates once encouraged me to speak up when I was too scared to. As a mentor, I could offer that to someone else.']
+    ['When', '2024–26'],
+    ['My role', 'Captain → coach of 4 juniors'],
+    ['Result', '1st of 8 teams'],
+    ['Next year', 'My juniors won too'],
+    ['A moment', 'A junior froze. Fewer points, deep breaths, glasses off. Her team won.'],
+    ['Learned', 'Someone pushed me to speak up. I passed it on.']
   ],
   media:[{label:'The junior debate team I mentored', src:'img/debate.webp', w:1600, h:1066, ratio:'1600/1066', alt:'Duy Anh with the junior debate team he mentored, six students at a table covered in notes, smiling and giving thumbs up. A yellow arrow labelled “Me” points to Duy Anh, second from the right.', caption:'The junior debate team I mentored. I’m second from the right.'}], evidence:[], metrics:[], related:['math-community','ha-media'] },
 
 /* ---------- MEDIA ---------- */
 { id:'ha-media', short:'House Adventure media', boost:20, cat:'media', kind:'Media leadership', title:'House Adventure Committee: external relations & media', aliases:['house adventure committee','external relations','house adventure'],
-  summary:'As Head of External Relations on the House Adventure Committee, I lead a media team of about 15 people telling the stories of our school events.',
+  summary:'I lead our house’s media team.',
   role:'Member → Head of External Relations',
-  tags:['media','external relations','media coordination','communication','event coverage','storytelling','creative leadership','leadership','social media','DaVinci Resolve','Photoshop','House Adventure'],
+  tags:['media','external relations','media coordination','communication','event coverage','storytelling','creative leadership','leadership','social media','DaVinci Resolve','Photoshop','House Adventure','instagram'],
   sections:[
-    ['Medium', 'Social media posts, scripts and visual coverage of school events'],
-    ['Event or purpose', 'House Adventure Committee, since September 2025'],
-    ['My role', 'Leading a media team of about 15 people in developing stories, scripts and visual coverage of school events.'],
-    ['Tools', 'DaVinci Resolve and Photoshop.'],
-    ['Reach', '10+ social media posts, averaging about 10,000 views and 300 likes each.'],
-    ['A creative decision', G('Describe one choice about what to cover or how to present it.')],
-    ['Final asset', G('Add a photo set, video, or post you coordinated.')]
+    ['Since', 'Sep 2025'],
+    ['My role', 'Head of External Relations'],
+    ['Team', '~15 people'],
+    ['Tools', 'DaVinci Resolve · Photoshop'],
+    ['A choice I made', G('One line on what to cover or how.')]
   ],
   media:[{label:'House Adventure event video', ratio:'16/9', type:'video'},{label:'Event coverage', ratio:'3/2', type:'photo'}],
-  evidence:[], metrics:[{label:'posts',value:'10+'},{label:'average views per post',value:'~10,000'},{label:'average likes per post',value:'~300'}], related:['house-service','netmo'] },
+  evidence:[{label:'Instagram: @feat_adventure',url:'https://www.instagram.com/feat_adventure/'}], metrics:[{label:'posts',value:'10+'},{label:'average views per post',value:'~10,000'},{label:'average likes per post',value:'~300'}], related:['house-service','netmo'] },
 
 { id:'media-video', cat:'media', kind:'Video', title:'Video storytelling', aliases:['video'],
-  summary:'Video editing and storytelling.',
+  summary:'Videos I edited.',
   role:'Editor',
   tags:['video','YouTube','video editing','storytelling','media','editing'],
   sections:[
-    ['Medium', 'Video editing'],
-    ['Event or purpose', G('What was the video for?')],
-    ['My role', G('Confirm your role: editing, filming, scripting.')],
-    ['Tools', G('Name the editing software only if it was used for this piece.')],
-    ['A creative decision', G('One editing choice and why.')],
-    ['Final asset', G('Add the video file or YouTube link, with captions or a transcript.')]
+    ['For', G('Which event?')],
+    ['My role', G('Editing, filming, scripting?')],
+    ['Tools', G('Editing app used.')],
+    ['A choice I made', G('One editing choice.')]
   ],
   media:[{label:'Video poster frame', ratio:'16/9', type:'video'}],
   evidence:[{label:'YouTube link', url:null}], metrics:[], related:['media-scripts','ha-media'] },
 
 { id:'media-photo', cat:'media', kind:'Photography', title:'Event photography', aliases:['photography','photos'],
-  summary:'Photography from events.',
+  summary:'Photos from our school stage events.',
   role:'Photographer',
   tags:['photography','photo','event coverage','media','storytelling'],
   sections:[
-    ['Medium', 'Photography'],
-    ['Event or purpose', 'Hội thi Văn nghệ (20/11) and Văn nghệ Family at school.'],
-    ['My role', 'Photographer.'],
-    ['A creative decision', G('One framing or selection choice and why.')]
+    ['Events', 'Hội thi Văn nghệ · Văn nghệ Family'],
+    ['My role', 'Photographer'],
+    ['A choice I made', G('One framing or timing choice.')]
   ],
   media:[{src:'img/ha-vannghe.webp',w:1600,h:1066,ratio:'3/2',type:'photo',alt:'Class A07 on stage at the school’s Hội thi Văn nghệ, in matching black A7 jerseys, holding up hand-painted signs reading “A07 chúc mừng 20/11” while a student plays guitar.',caption:'Hội thi Văn nghệ · 20/11'},{src:'img/ha-stage.webp',w:1600,h:1066,ratio:'3/2',type:'photo',alt:'Students in white uniforms on stage at Văn nghệ Family, Lawrence S. Ting School, throwing colourful scarves into the air and cheering.',caption:'Văn nghệ Family'}],
   evidence:[], metrics:[], related:['ha-media','netmo'] },
 
 { id:'media-scripts', cat:'media', kind:'Writing', title:'Scripts & storyboards', aliases:['scripts','storyboard'],
-  summary:'Scripts and storyboards behind video and event pieces.',
+  summary:'The writing behind our pieces.',
   role:'Writer',
-  tags:['scripts','writing','storyboard','storytelling','video','media'],
+  tags:['scripts','writing','storyboard','storytelling','video','media','caption'],
   sections:[
-    ['Medium', 'Script or storyboard'],
-    ['Event or purpose', G('What piece was this written for?')],
-    ['My role', G('Confirm your role.')],
-    ['A creative decision', G('One choice about structure or audience.')],
-    ['Final asset', G('Add the script page, and the final piece if a genuine pair exists (enables a storyboard-to-final comparison).')]
+    ['For', G('Which piece?')],
+    ['My role', G('Script, storyboard or caption?')],
+    ['A choice I made', G('One choice about structure or audience.')]
   ],
   media:[{label:'Script or storyboard page', ratio:'4/3', type:'scan'}],
   evidence:[], metrics:[], related:['media-video','debate'] },
@@ -570,7 +566,7 @@ function val(v){
 const isGap = v => v==null || (v&&v.gap) || (Array.isArray(v)&&v.every(isGap));
 function fields(sections,layout){
   if(!sections||!sections.length) return '';
-  return `<dl class="fields${layout==='chain'?' chain':''}">${sections.map(([k,v])=>`<div class="f-row${isGap(v)?' gap-row':''}"><dt>${k}</dt><dd>${val(v)}</dd></div>`).join('')}</dl>`;
+  return `<dl class="tiles">${sections.map(([k,v])=>`<div class="tile${isGap(v)?' gap-row':''}${!isGap(v)&&String(v).replace(/<[^>]+>/g,'').length>42?' w':''}"><dt>${k}</dt><dd>${val(v)}</dd></div>`).join('')}</dl>`;
 }
 function ph(m){
   if(m.src){
@@ -1743,7 +1739,7 @@ function viewItem(it){
   if(it.id==='firealarm') return viewFirealarm(it);
   if(it.story) return storyView(it);
   const meta=[['Type',it.kind],['My role',it.role]];
-  const main = `<section aria-labelledby="cs-h"><h2 id="cs-h" class="block-h">${it.layout==='chain'?'Setting → responsibility → reflection':it.cat==='media'?'About this piece':'Case study'}</h2>${fields(it.sections,it.layout)}</section>`;
+  const main = `<section aria-labelledby="cs-h"><h2 id="cs-h" class="vh">At a glance</h2>${fields(it.sections,it.layout)}</section>`;
   const realMedia=(it.media||[]).filter(m=>m.src).map(ph).join('');
   const media=(it.media||[]).filter(m=>!m.src).map(ph).join('');
   return `<div data-room="${it.cat}">
@@ -1753,15 +1749,14 @@ function viewItem(it){
     <p class="room-cat"><i class="dot"></i>${CATLABEL[it.cat]} · ${ROOM[it.cat]?ROOM[it.cat].name:''}</p>
     <h1 id="main-h" tabindex="-1">${it.title}</h1>
     <p class="lede">${it.summary}</p>
-    <dl class="meta-dl">${meta.filter(m=>m[1]!=null&&m[1]!=='').map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
   </header></div>
   <div class="wrap"><div class="item-grid">
     <div class="item-main">
       ${realMedia?`<section aria-label="Screenshots">${realMedia}</section>`:''}
-      ${main}
       ${media?`<section aria-label="Media">${media}</section>`:''}
     </div>
     <aside class="item-side" aria-label="Evidence and connections">
+      ${main}
       ${metricsBlock(it.metrics)}
       ${(it.metrics||[]).every(m=>!m.value)&&it.cat==='build'&&it.kind==='Product'?'<div class="gap-only"><p class="side-h">Usage</p><span class="gap">Usage metrics appear here once current values are added to this record.</span></div>':''}
       ${evidenceList(it.evidence)}
