@@ -73,7 +73,7 @@ const ITEMS = [
     alt:'The Contextuary homepage. The headline reads “Understand words. In context. For real.” Beside it, a word card for “ubiquitous” shows its pronunciation, Vietnamese meaning, an example sentence and synonyms, next to a quiz card asking what “mitigate” means.',
     caption:'The live homepage at contextuary.app.'}],
   evidence:[{label:'Live product: contextuary.app', url:'https://contextuary.app'},{label:'Repository', url:null}],
-  metrics:[ { label:'visitors', value:'2,200+', asOf:'October 2026' }, { label:'users', value:'500+', asOf:'October 2026' } ],
+  metrics:[ { label:'visitors', value:'2,200+', asOf:'October 2026' }, { label:'users', value:'500+', asOf:'October 2026' }, { label:'SAT words', value:'600+', asOf:'October 2026' } ],
   story:{
     pain:{ lead:'Word lists teach definitions, not usage.',
       before:{label:'A word list', steps:['Read a definition','Memorise it','Still can’t use the word']},
@@ -114,7 +114,7 @@ const ITEMS = [
     alt:'The Together! homepage in Vietnamese. The headline reads “Cả đội cùng nhau ghi lại hành trình” (the whole team records the journey together). Beside it, a shared October 2026 calendar with coloured event bars, a voice-note player, and a card for a kick-off workshop with a team photo.',
     caption:'The live homepage, in Vietnamese with an English option.'}],
   evidence:[{label:'Live product: toghether.contextuary.app', url:'https://toghether.contextuary.app/'},{label:'Repository', url:null}],
-  metrics:[], related:['contextuary','netmo','common'],
+  metrics:[ { label:'visitors', value:'1,500+' }, { label:'users', value:'450+' } ], related:['contextuary','netmo','common'],
   story:{
     pain:{ lead:'Our team juggled spreadsheets, Messenger and Docs.',
       before:{label:'Before', steps:['Spreadsheet for activities','Messenger to coordinate','Docs for write-ups','Endless reminders']},
@@ -962,7 +962,7 @@ function viewHome(){
         ${deepBtn('ctx','Look behind Contextuary')}
       </article>
       <article class="p3 p3-tg" aria-labelledby="p-tg">
-        <div class="p3-top"><div><p class="p3-k">Together! · co-founder, UI/UX programmer · launched Sep 2026</p><h3 id="p-tg">Designing a space for shared memories</h3></div></div>
+        <div class="p3-top"><div><p class="p3-k">Together! · co-founder, UI/UX programmer · launched Sep 2026</p><h3 id="p-tg">Designing a space for shared memories</h3></div>${statRow(tg.metrics)}</div>
         <div class="tg-grid">
           <div class="tg-collage">${zimg(STRIP('img/together-journal.webp','A project’s calendar'))}${zimg(STRIP('img/together-recent.webp','Moments, with their people'))}${zimg(STRIP('img/together-log.webp','Logging an activity'))}</div>
           <div class="tg-side">
@@ -1139,6 +1139,7 @@ function viewWorkshop(){
     <section class="rm-sec" aria-labelledby="ws-more"><h2 class="rm-h" id="ws-more">More projects</h2>
       ${spot({id:'together',flip:true,k:'Co-founder · UI/UX programmer · React · since Sep 2026',
         line:'A shared journal for teams, so members who missed a day can still catch up.',
+        stats:statRow(ITEM.together.metrics),
         main:ITEM.together.media[0],
         strip:[STRIP('img/together-journal.webp','Project calendar'),STRIP('img/together-log.webp','Log an activity'),STRIP('img/together-reports.webp','Journey in numbers')],
         bullets:['Every workshop, trip and meeting on one shared calendar','Photos, voice notes, reactions and comments on each activity','Replaced spreadsheets, Messenger and Docs for our own team, Nét Mơ'],
