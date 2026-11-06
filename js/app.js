@@ -793,28 +793,6 @@ const BZ_CODE=[
   ['  <b>await</b> bee.flyTo(hive);','toHive'],
   ['  hive.pollen += bee.drop();','drop'],
   ['}','']];
-function mountTitle(h){
-  if(!h) return;
-  let tx=0,ty=0,x=0,y=0,raf=0,on=false,R=0;
-  const size=()=>{ R=Math.max(44,Math.min(96,h.clientHeight*.32)); };
-  const loop=()=>{ x+=(tx-x)*.2; y+=(ty-y)*.2; h.style.setProperty('--mx',x.toFixed(1)+'px'); h.style.setProperty('--my',y.toFixed(1)+'px');
-    raf=(Math.abs(tx-x)>.3||Math.abs(ty-y)>.3)?requestAnimationFrame(loop):0; };
-  const aim=(cx,cy,jump)=>{ const r=h.getBoundingClientRect(); tx=cx-r.left; ty=cy-r.top; if(jump||RM){ x=tx; y=ty; } if(!raf) raf=requestAnimationFrame(loop); };
-  const show=v=>{ on=v; h.style.setProperty('--r',v?R+'px':'0px'); };
-  size(); window.addEventListener('resize',size,{passive:true});
-  h.addEventListener('pointerenter',e=>{ aim(e.clientX,e.clientY,true); show(true); });
-  h.addEventListener('pointermove',e=>{ aim(e.clientX,e.clientY); if(!on) show(true); });
-  h.addEventListener('pointerleave',()=>show(false));
-  h.addEventListener('pointerdown',e=>{ if(e.pointerType!=='mouse'){ aim(e.clientX,e.clientY,true); show(true); clearTimeout(mountTitle.t); mountTitle.t=setTimeout(()=>show(false),1600); } });
-  if(RM) return;
-  // one slow pass on arrival, so people see there is something behind the words
-  const r=h.getBoundingClientRect(); x=tx=r.width*.08; y=ty=r.height*.3; h.style.setProperty('--mx',x+'px'); h.style.setProperty('--my',y+'px');
-  setTimeout(()=>{ if(on||!document.body.contains(h)) return; show(true); const t0=performance.now();
-    const sweep=t=>{ if(!document.body.contains(h)) return; const k=Math.min(1,(t-t0)/1900), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
-      if(!h.matches(':hover')){ tx=x=r.width*(.08+.84*e); ty=y=r.height*(.3+.42*Math.sin(e*Math.PI)); h.style.setProperty('--mx',x+'px'); h.style.setProperty('--my',y+'px'); }
-      if(k<1) requestAnimationFrame(sweep); else if(!h.matches(':hover')) show(false); };
-    requestAnimationFrame(sweep); },700);
-}
 function mountHop(el){
   if(!el) return;
   if(RM||!('IntersectionObserver' in window)){ el.classList.add('done'); return; }
@@ -949,7 +927,7 @@ function viewHome(){
   <section class="wrap sx-hero" aria-labelledby="main-h">
     <div class="sx-hero-l">
       <p class="eyebrow">TRẦN DUY ANH · HO CHI MINH CITY · CLASS OF 2027</p>
-      <h1 id="main-h" class="ht" tabindex="-1"><span class="ht-front">Behind <br>the screen</span><span class="ht-back" aria-hidden="true">Behind <br>the screen</span><span class="ht-lens" aria-hidden="true"></span></h1>
+      <h1 id="main-h" class="ht" tabindex="-1"><span class="ht-l1" data-t="Behind">Behind</span><span><span class="ht-the">the</span> <span class="ht-scr">screen</span></span></h1>
       <p class="sx-lede">Six short chapters on where my curiosity took me.</p>
       <div class="sx-guide"><span>The question I keep coming back to</span><p>${GUIDE_Q}</p></div>
       <p class="sx-start"><button type="button" class="btn btn-primary" data-ch="ch-1">Start reading <span aria-hidden="true">↓</span></button></p>
@@ -2295,7 +2273,7 @@ function render(){
 
   if(tok==='home'||isTour){
     const v=viewHome(); html=v.html;
-    after=()=>{ mountTitle($('.ht')); mountReadiness($('#rx-mount')); mountHop($('.hop')); mountBees($('#bz')); mountGh($('#gh')); mountQmap(); setupStory();
+    after=()=>{ mountReadiness($('#rx-mount')); mountHop($('.hop')); mountBees($('#bz')); mountGh($('#gh')); mountQmap(); setupStory();
       if(isTour){ setTimeout(()=>{ const c=$('#ch-1'); c.scrollIntoView({block:'start',behavior:'instant'}); $('#ch-1-h').setAttribute('tabindex','-1'); $('#ch-1-h').focus({preventScroll:true}); },0); } };
     if(isTour) scroll=null; }
   else if(tok==='search'){ html=viewResults(); const sec=secretFor(S.q); after=()=>{ bindResults(); if(sec&&S.fresh0){ foundEgg('secret'); if(sec.walk) walkTurtle(null); if(sec.hatch) setTimeout(openHatch,60); } }; S.fresh0=S.fresh; scroll=S.fresh?0:S.resScroll; S.fresh=false; }
