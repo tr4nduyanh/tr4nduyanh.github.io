@@ -672,7 +672,7 @@ function topbar(activeCat){
       <a class="mini-mark" href="#home" aria-label="Behind the screen, home">Duy Anh${turtle()}</a>
       ${searchBox('sm')}
       <nav class="tb-links" aria-label="Site">
-        <a href="#about">About</a><a href="#home">Behind the screen</a>${PROFILE.cv?`<a href="${esc(PROFILE.cv.url)}" target="_blank" rel="noopener">CV</a>`:''}${cmdkBtn()}${lookBtn()}
+        <a href="#about">About</a><a href="#home">Behind the screen</a>${PROFILE.cv?`<a href="${esc(PROFILE.cv.url)}" target="_blank" rel="noopener">CV</a>`:''}${cmdkBtn()}${xrayBtn()}${lookBtn()}
       </nav>
     </div>
     <nav class="rooms" aria-label="Five places">${ROOMS.map(r=>`<a href="#${r.id}" data-room="${r.cat}"${activeCat===r.cat?' aria-current="page"':''}><i class="dot"></i>${r.label}</a>`).join('')}</nav>
@@ -694,8 +694,7 @@ const CHAPTERS=[
 ];
 function chHead(c){
   return `<header class="sx-head"><p class="sx-k"><span class="sx-n">${String(c.n).padStart(2,'0')}</span>${c.short}</p><h2 id="${c.id}-h" class="sx-t">${c.title}</h2>
-    ${c.tags.length?`<p class="sx-tags">${c.tags.map(t=>`<span>${t}</span>`).join('<i aria-hidden="true">·</i>')}</p>`:''}
-    ${c.how?`<p class="sx-how"><b>Behind the screen:</b> ${c.how}</p>`:''}</header>`;
+</header>`;
 }
 function stats(rows){ return `<dl class="sx-stats">${rows.map(([v,l])=>`<div><dt>${l}</dt><dd>${v}</dd></div>`).join('')}</dl>`; }
 function contactBlock(){
@@ -829,15 +828,163 @@ function mountQmap(){
   const io=new IntersectionObserver(es=>{ if(es.some(x=>x.isIntersecting)){ io.disconnect(); box.classList.add('drawn'); } },{threshold:.35}); io.observe(box);
 }
 window.addEventListener('resize',()=>{ if($('#qmap')&&mountQmap.draw) mountQmap.draw(); },{passive:true});
+/* ---------- chapter 1: a live bee screen, with the code that runs it ---------- */
+const BZ_CODE=[
+  ['<b>for</b> (<b>const</b> bee <b>of</b> hive.bees) {','loop'],
+  ['  <b>const</b> flower = nearest(bee, field);','pick'],
+  ['  <b>await</b> bee.flyTo(flower);','toFlower'],
+  ['  bee.collect(flower);','collect'],
+  ['  <b>await</b> bee.flyTo(hive);','toHive'],
+  ['  hive.pollen += bee.drop();','drop'],
+  ['}','']];
+function beeSimHTML(){
+  return `<figure class="bz" id="bz" aria-label="A small bee game beside the code that moves the bees. The highlighted line shows what the traced bee is doing right now.">
+    <div class="bz-game"><span class="c1-lab">In front of the screen</span>
+      <div class="bz-field" aria-hidden="true">
+        <span class="bz-score">POLLEN <b>0000</b></span><span class="c1-hive bz-hive"></span>
+        <svg class="bz-path"><line x1="0" y1="0" x2="0" y2="0"/></svg>
+        <span class="bz-fl"></span><span class="bz-bees"></span><span class="c1-ground"></span>
+      </div>
+      <p class="bz-hint">Tap the field to plant a flower. Tap a bee to trace it.</p>
+    </div>
+    <div class="bz-code"><span class="c1-lab">Behind it · running live</span>
+      <pre aria-hidden="true"><code>${BZ_CODE.map(([l,k],i)=>`<span class="ln" data-k="${k}">${l}</span>`).join('')}</code></pre>
+      <dl class="bz-vars" aria-live="off">
+        <div><dt>bee</dt><dd data-v="bee">bees[0]</dd></div>
+        <div><dt>flower</dt><dd data-v="flower">–</dd></div>
+        <div><dt>distance</dt><dd data-v="dist">–</dd></div>
+        <div><dt>hive.pollen</dt><dd data-v="pollen">0</dd></div>
+      </dl>
+      <p class="bz-btns"><button type="button" data-bz="plant">+ Plant a flower</button><button type="button" data-bz="trace">Trace the next bee</button></p>
+    </div>
+  </figure>`;
+}
+function mountBees(root){
+  if(!root) return;
+  const field=$('.bz-field',root), flWrap=$('.bz-fl',root), beeWrap=$('.bz-bees',root), line=$('.bz-path line',root), score=$('.bz-score b',root);
+  const lines=$$('.ln',root), V=k=>$(`[data-v="${k}"]`,root);
+  let W=field.clientWidth, H=field.clientHeight;
+  const hive=()=>({x:W-25,y:44});
+  const flowers=[], bees=[]; let pollen=0, tr=0, raf=0, last=0, live=false;
+  const addFlower=(x,y)=>{ if(flowers.length>=6){ const o=flowers.shift(); o.el.remove(); }
+    const el=document.createElement('i'); el.className='bz-flower'; flWrap.appendChild(el);
+    const f={x,y,p:1,el,id:++addFlower.n}; flowers.push(f); place(f.el,x,y); return f; };
+  addFlower.n=0;
+  const place=(el,x,y,sx)=>{ el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)${sx?` scaleX(${sx})`:''}`; };
+  [[.18,.78],[.46,.82],[.7,.76]].forEach(([a,b])=>addFlower(a*W,b*H));
+  for(let i=0;i<2;i++){ const el=document.createElement('span'); el.className='bz-bee'; el.innerHTML=BEE; el.dataset.i=i; beeWrap.appendChild(el);
+    bees.push({el,x:W*.3+i*60,y:H*.35+i*20,st:'loop',t:0,f:null,dir:1,ph:Math.random()*6}); }
+  const nearest=b=>{ let best=null,bd=1e9; flowers.forEach(f=>{ if(f.p<.25) return; const d=Math.hypot(f.x-b.x,f.y-b.y); if(d<bd){bd=d;best=f;} }); return best||flowers[0]; };
+  const fly=(b,tx,ty,dt)=>{ const dx=tx-b.x, dy=ty-b.y, d=Math.hypot(dx,dy), sp=95*dt; if(d<=sp){ b.x=tx; b.y=ty; return true; }
+    b.x+=dx/d*sp; b.y+=dy/d*sp; if(Math.abs(dx)>2) b.dir=dx<0?-1:1; return false; };
+  const step=(b,dt)=>{ b.t+=dt;
+    switch(b.st){
+      case 'loop': if(b.t>.35){ b.st='pick'; b.t=0; } break;
+      case 'pick': if(b.t>.45){ b.f=nearest(b); b.st='toFlower'; b.t=0; } break;
+      case 'toFlower': if(fly(b,b.f.x,b.f.y-14,dt)){ b.st='collect'; b.t=0; } break;
+      case 'collect': b.f.p=Math.max(.15,b.f.p-dt*.5); if(b.t>.9){ b.st='toHive'; b.t=0; } break;
+      case 'toHive': { const h=hive(); if(fly(b,h.x,h.y,dt)){ b.st='drop'; b.t=0; } } break;
+      case 'drop': if(b.t>.3){ pollen+=1+Math.floor(Math.random()*3); b.st='loop'; b.t=0; } break; } };
+  const paint=()=>{ bees.forEach((b,i)=>{ const bob=Math.sin((last/1000)*6+b.ph)*(b.st==='collect'?1:3); place(b.el,b.x,b.y+bob,b.dir); b.el.classList.toggle('tr',i===tr); });
+    flowers.forEach(f=>{ f.p=Math.min(1,f.p+.0015); f.el.style.setProperty('--p',f.p.toFixed(2)); f.el.classList.toggle('aim',bees[tr].f===f&&bees[tr].st!=='loop'); });
+    const b=bees[tr], tgt=b.st==='toHive'||b.st==='drop'?hive():b.f&&b.st!=='loop'&&b.st!=='pick'?{x:b.f.x,y:b.f.y-14}:null;
+    if(tgt){ line.setAttribute('x1',b.x); line.setAttribute('y1',b.y); line.setAttribute('x2',tgt.x); line.setAttribute('y2',tgt.y); line.style.opacity=1; } else line.style.opacity=0;
+    lines.forEach(l=>l.classList.toggle('on',l.dataset.k===b.st));
+    V('bee').textContent=`bees[${tr}]`; V('flower').textContent=b.f&&b.st!=='loop'&&b.st!=='pick'?`flowers[${flowers.indexOf(b.f)}]`:(b.st==='pick'?'searching…':'–');
+    V('dist').textContent=tgt?Math.round(Math.hypot(tgt.x-b.x,tgt.y-b.y))+'px':'–';
+    V('pollen').textContent=pollen; score.textContent=String(pollen).padStart(4,'0'); };
+  const tick=t=>{ const dt=Math.min(.05,(t-(last||t))/1000); last=t; bees.forEach(b=>step(b,dt)); paint(); raf=live?requestAnimationFrame(tick):0; if(!raf) last=0; };
+  const start=()=>{ if(RM||raf) return; live=true; raf=requestAnimationFrame(tick); }, stop=()=>{ live=false; };
+  field.addEventListener('click',e=>{ const be=e.target.closest('.bz-bee'); if(be){ tr=+be.dataset.i; paint(); return; }
+    const r=field.getBoundingClientRect(); addFlower(e.clientX-r.left,Math.min(H-34,Math.max(H*.4,e.clientY-r.top))); paint(); });
+  root.addEventListener('click',e=>{ const b=e.target.closest('[data-bz]'); if(!b) return;
+    if(b.dataset.bz==='trace'){ tr=(tr+1)%bees.length; } else addFlower(W*(.1+Math.random()*.65),H*(.6+Math.random()*.2)); paint(); });
+  window.addEventListener('resize',()=>{ if(!document.body.contains(root)) return; const w=field.clientWidth,h=field.clientHeight; if(!w) return;
+    const kx=w/W, ky=h/H; W=w; H=h; [...flowers,...bees].forEach(o=>{ o.x*=kx; o.y*=ky; }); flowers.forEach(f=>place(f.el,f.x,f.y)); paint(); },{passive:true});
+  if(RM){ bees[0].f=flowers[1]; bees[0].st='toFlower'; bees[0].x=W*.3; bees[0].y=H*.4; paint(); return; }
+  if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>{ if(!document.body.contains(root)){ io.disconnect(); stop(); return; } es[0].isIntersecting?start():stop(); }); io.observe(root); } else start();
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden) stop(); });
+  paint();
+}
+
+/* ---------- live GitHub activity ---------- */
+const GH_USER=((PROFILE.contact.find(c=>c.label==='GitHub')||{}).value||'github.com/tr4nduyanh').replace(/^.*github\.com\//,'').replace(/\/.*$/,'')||'tr4nduyanh';
+function ghHTML(){
+  const cells=Array.from({length:84},(_,i)=>`<i style="--d:${i}"></i>`).join('');
+  return `<section class="gh" id="gh" aria-labelledby="gh-h">
+    <div class="gh-top"><h3 id="gh-h"><span class="gh-live" aria-hidden="true"></span>Live from GitHub</h3><a href="https://github.com/${GH_USER}" target="_blank" rel="noopener">@${GH_USER} ↗</a></div>
+    <div class="gh-grid" role="img" aria-label="Public GitHub activity over the last 12 weeks, loading">${cells}</div>
+    <p class="gh-last" aria-live="polite">Asking GitHub…</p>
+    <p class="gh-legend"><span>Last 12 weeks</span><span class="gh-scale" aria-hidden="true">less<i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i>more</span></p>
+  </section>`;
+}
+function ago(t){ const s=Math.max(1,(Date.now()-t)/1000); const u=[[31536e3,'year'],[2592e3,'month'],[604800,'week'],[86400,'day'],[3600,'hour'],[60,'minute']];
+  for(const [n,l] of u) if(s>=n){ const v=Math.floor(s/n); return `${v} ${l}${v>1?'s':''} ago`; } return 'just now'; }
+async function mountGh(root){
+  if(!root) return;
+  const grid=$('.gh-grid',root), cells=$$('.gh-grid i',root), last=$('.gh-last',root);
+  const KEY='das-gh-'+GH_USER; let ev=null;
+  try{ const c=JSON.parse(sessionStorage.getItem(KEY)||'null'); if(c&&Date.now()-c.t<15*60e3) ev=c.ev; }catch(e){}
+  if(!ev){ try{ const r=await fetch(`https://api.github.com/users/${GH_USER}/events/public?per_page=100`,{headers:{Accept:'application/vnd.github+json'}});
+      if(!r.ok) throw new Error(r.status); const j=await r.json();
+      ev=j.map(e=>({type:e.type,repo:(e.repo&&e.repo.name)||'',at:Date.parse(e.created_at),n:(e.payload&&e.payload.size)||1}));
+      try{ sessionStorage.setItem(KEY,JSON.stringify({t:Date.now(),ev})); }catch(e){} }
+    catch(err){ root.classList.add('off'); last.innerHTML=`GitHub didn’t answer just now. <a href="https://github.com/${GH_USER}" target="_blank" rel="noopener">See it there ↗</a>`; grid.setAttribute('aria-label','GitHub activity could not be loaded'); return; } }
+  if(!document.body.contains(root)) return;
+  const day=d=>{ const x=new Date(d); x.setHours(0,0,0,0); return x.getTime(); };
+  const today=day(Date.now()), start=today-83*864e5, counts=new Array(84).fill(0);
+  ev.forEach(e=>{ const i=Math.round((day(e.at)-start)/864e5); if(i>=0&&i<84) counts[i]+=e.type==='PushEvent'?e.n:1; });
+  const max=Math.max(1,...counts), total=counts.reduce((a,b)=>a+b,0), active=counts.filter(Boolean).length;
+  cells.forEach((c,i)=>{ const v=counts[i]; c.className=v?'l'+Math.min(4,Math.ceil(v/max*4)):'l0'; c.title=`${v} on ${new Date(start+i*864e5).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`; });
+  root.classList.add('ready');
+  grid.setAttribute('aria-label',`Public GitHub activity: ${total} contributions on ${active} days in the last 12 weeks`);
+  const VERB={PushEvent:'pushed to',CreateEvent:'created',PullRequestEvent:'opened a pull request in',IssuesEvent:'opened an issue in',WatchEvent:'starred',ForkEvent:'forked',ReleaseEvent:'released',PublicEvent:'open-sourced'};
+  const e=ev.find(x=>VERB[x.type]);
+  last.innerHTML=e?`Last activity <b>${ago(e.at)}</b>: ${VERB[e.type]} <a href="https://github.com/${esc(e.repo)}" target="_blank" rel="noopener">${esc(e.repo.split('/')[1]||e.repo)}</a>`:'No public activity in the last 12 weeks.';
+}
+
+/* ---------- X-ray mode: see the page behind the page ---------- */
+let XRAY=false;
+function xrayBtn(){ return `<button type="button" class="xray-btn" data-xray aria-pressed="${XRAY}" title="X-ray mode (X)">${icon('i-xray')}<span>X-ray</span></button>`; }
+function tagXray(){
+  $$('[data-x]').forEach(el=>{ el.removeAttribute('data-x'); el.classList.remove('xr-rel'); });
+  if(!XRAY) return;
+  $$('#main section, #main article, #main figure, #main dl, #main h1, #main h2, #main form, #main nav, #top header').forEach(el=>{
+    const cs=getComputedStyle(el); if(cs.position==='fixed'||cs.position==='sticky'||cs.display==='none') return;
+    if(getComputedStyle(el,'::after').content!=='none') return;
+    const cls=[...el.classList].find(c=>!/^(wrap|on|lit|ready|off|tr)$/.test(c));
+    let t=`<${el.tagName.toLowerCase()}${el.id?'#'+el.id:cls?'.'+cls:''}>`;
+    const img=el.tagName==='FIGURE'&&$('img',el); if(img&&img.naturalWidth) t+=` img ${img.naturalWidth}×${img.naturalHeight} · ${(img.currentSrc||img.src).split('?')[0].split('.').pop()}`;
+    if(el.tagName==='DL') t+=` · ${el.children.length} items`;
+    if(/^H[12]$/.test(el.tagName)) t+=` · ${el.textContent.trim().length} chars`;
+    if(el.dataset.room) t+=` room=${el.dataset.room}`;
+    if(cs.position==='static') el.classList.add('xr-rel');
+    el.dataset.x=t; });
+}
+function xrayHud(){
+  let h=$('#xray-hud'); if(!XRAY){ if(h) h.remove(); return; }
+  if(!h){ h=document.createElement('div'); h.id='xray-hud'; h.setAttribute('role','status'); document.body.appendChild(h); }
+  const nav=(performance.getEntriesByType&&performance.getEntriesByType('navigation')[0])||null;
+  const res=performance.getEntriesByType?performance.getEntriesByType('resource'):[];
+  const kb=Math.round(([nav,...res].filter(Boolean).reduce((a,r)=>a+(r.transferSize||r.encodedBodySize||0),0))/1024);
+  const ms=nav&&nav.domContentLoadedEventEnd?Math.round(nav.domContentLoadedEventEnd):null;
+  h.innerHTML=`<b>X-RAY</b><span>${document.getElementsByTagName('*').length} elements</span>${kb?`<span>${kb} KB loaded</span>`:''}${ms?`<span>ready in ${ms} ms</span>`:''}<span>0 frameworks · vanilla JS</span><button type="button" data-xray>Exit · X</button>`;
+}
+function setXray(v){
+  XRAY=!!v; document.documentElement.toggleAttribute('data-xray',XRAY);
+  $$('.xray-btn').forEach(b=>b.setAttribute('aria-pressed',String(XRAY)));
+  tagXray(); xrayHud();
+}
+document.addEventListener('click',e=>{ if(e.target.closest('[data-xray]')){ e.preventDefault(); setXray(!XRAY); } });
+
 function viewHome(){
   const dots=S.dots||{}; const allLit=CATS.every(c=>dots[c]);
   const ctx=ITEM.contextuary, tg=ITEM.together, sc=ITEM.scamcheck;
-  const jumps=[['#workshop','Projects'],['#lab','Research'],['#replay','Awards'],['#about','About']];
   return {cls:'', html:`
   <div class="sx-bar" id="sx-bar">
     <div class="wrap sx-bar-in">
       <a class="mini-mark" href="#home" aria-label="Behind the screen, back to the top" data-sx-top>Duy Anh${turtle()}</a>
-      <div class="sx-tools"><button type="button" class="sx-explore" data-cmdk><svg aria-hidden="true"><use href="#i-search"/></svg><span>Explore my work</span><kbd>${MOD} K</kbd></button>${lookBtn()}</div>
+      <div class="sx-tools"><button type="button" class="sx-explore" data-cmdk><svg aria-hidden="true"><use href="#i-search"/></svg><span>Explore my work</span><kbd>${MOD} K</kbd></button>${xrayBtn()}${lookBtn()}</div>
     </div>
   </div>
   <nav class="dock off" id="dock" aria-label="Chapters">
@@ -854,9 +1001,9 @@ function viewHome(){
     <div class="sx-hero-l">
       <p class="eyebrow">TRẦN DUY ANH · HO CHI MINH CITY · CLASS OF 2027</p>
       <h1 id="main-h" tabindex="-1">Behind the screen</h1>
-      <p class="sx-lede">Since I was ten, I’ve wanted to know what happens behind the screen. Six short chapters on where that curiosity took me.</p>
+      <p class="sx-lede">Six short chapters on where my curiosity took me.</p>
       <div class="sx-guide"><span>The question I keep coming back to</span><p>${GUIDE_Q}</p></div>
-      <p class="sx-jumps">${jumps.map(([h,l])=>`<a href="${h}">${l}</a>`).join('')}${PROFILE.cv?`<a href="${esc(PROFILE.cv.url)}" target="_blank" rel="noopener">CV ↗</a>`:''}${PROFILE.contact.length?`<a href="#" data-ch="ch-6">Contact</a>`:''}</p>
+      <p class="sx-start"><button type="button" class="btn btn-primary" data-ch="ch-1">Start reading <span aria-hidden="true">↓</span></button></p>
       <div class="sx-sign"><button type="button" class="wm-turtle sx-turtle" data-egg-walk aria-label="Poke the turtle">${turtle()}</button>
         <div class="wm-dots${allLit?' joined':''}" role="group" aria-label="Five coloured dots">${ROOMS.map(x=>`<button type="button" class="wm-dot${dots[x.cat]?' lit':''}" data-room="${x.cat}" data-dot="${x.cat}" aria-pressed="${!!dots[x.cat]}" aria-label="${x.label} dot"><i></i></button>`).join('')}</div>
         <p class="dots-msg" aria-live="polite">${allLit?'All five connected. One person, many connections.':''}</p></div>
@@ -873,28 +1020,11 @@ function viewHome(){
       <figcaption>Behind every screen: people, data, code, and a place it has to work.</figcaption>
     </figure>
   </section>
-  <nav class="wrap sx-toc" aria-label="Contents"><ol>${CHAPTERS.map(c=>`<li data-room="${c.room}"><button type="button" data-ch="${c.id}"><span class="n">${String(c.n).padStart(2,'0')}</span><span class="s">${c.short}</span><span class="t">${c.title}</span></button></li>`).join('')}</ol></nav>
-
   <div class="sx-story">
   <section class="sx-ch" id="ch-1" data-room="media" aria-labelledby="ch-1-h">
     <div class="wrap">${chHead(CHAPTERS[0])}
-      <div class="c1">
-        <div class="c1-txt">
-          <p class="sx-big">At ten, I spent hours in Bee Swarm Simulator, watching my bees fly from flower to hive.</p>
-          <p>How did each bee know where to fly? Someone had written that, line by line. I wanted to know how.</p>
-          <p>I took fans apart for the same reason.</p>
-          ${puzzleHTML()}
-        </div>
-        <figure class="c1-vis" aria-label="Illustration: bees in a game, beside the kind of code that could move them">
-          <div class="c1-screen"><span class="c1-lab">In front of the screen</span><div class="c1-game" aria-hidden="true"><span class="c1-score">POLLEN 0042</span><span class="c1-hive"></span><span class="c1-flower f1"></span><span class="c1-flower f2"></span><span class="c1-bee b1">${BEE}</span><span class="c1-bee b2">${BEE}</span><span class="c1-ground"></span></div></div>
-          <div class="c1-code"><span class="c1-lab">Behind it</span><pre aria-hidden="true"><code><b>for</b> (bee <b>of</b> hive) {
-  flower = nearest(field);
-  bee.flyTo(flower);
-  bee.collect();
-}</code></pre></div>
-          <figcaption>Illustration · how would each bee know where to fly?</figcaption>
-        </figure>
-      </div>
+      <p class="sx-big c1-big">At ten, I watched my bees in Bee Swarm Simulator and wondered: how does each one know where to fly?</p>
+      ${beeSimHTML()}
       <div class="c1-drift">
         <p class="c2-k">The catch</p>
         <p class="sx-lead">I chased everything, then dropped it once it got hard.</p>
@@ -910,7 +1040,7 @@ function viewHome(){
 
   <section class="sx-ch" id="ch-2" data-room="awards" aria-labelledby="ch-2-h">
     <div class="wrap">${chHead(CHAPTERS[1])}
-      <p class="sx-lead">In 2023 I joined FPT Software’s Computer Talents Club. Its philosophy, the <b>Digital Age Tortoise</b>: real learning takes patience. I didn’t get it yet.</p>
+      <p class="sx-lead">2023: I joined FPT Software’s Computer Talents Club. Its motto, the <b>Digital Age Tortoise</b>: real learning takes patience.</p>
       <div class="c2 c2-top">
         <div class="c2-before"><span class="c2-k">At first</span><p class="c2-h">Copying a tutorial</p>
           <ol class="c2-steps" aria-label="Following a tutorial step by step"><li>Copy a Power Automate workflow</li><li>Get stuck</li><li class="no">No idea why</li></ol></div>
@@ -949,14 +1079,13 @@ function viewHome(){
       </div>
       <p class="sx-quote">Someone once pushed me to speak up. Now I could do that for someone else.</p>
       <div class="c4">
-        <div class="c4-col"><span class="c4-v">Listen</span><h3>Debate</h3><p>Captain: 1st of 8 teams. The next year, the 4 juniors I coached won too.</p>${zimg(PH.debate)}</div>
-        <div class="c4-col"><span class="c4-v">Explain</span><h3>Maths community</h3><p>Every week one of us teaches an advanced topic. I’m a core member.</p>${zimg(PH.math)}</div>
+        <div class="c4-col"><span class="c4-v">Listen</span><h3>Debate</h3><p>Captain, 1st of 8. Then my juniors won too.</p>${zimg(PH.debate)}</div>
+        <div class="c4-col"><span class="c4-v">Explain</span><h3>Maths community</h3><p>Each week, one of us teaches.</p>${zimg(PH.math)}</div>
         <div class="c4-col c4-nm"><span class="c4-v">Create together</span>
           <div class="nm-logo nm-sm"><svg class="nm-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="nm-c2" d="M100,100 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"/></defs><text><textPath href="#nm-c2" textLength="524" lengthAdjust="spacing">NÉT MƠ · DREAM STROKES · YOUTH-LED STEAM ·</textPath></text></svg><span class="nm-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></span><img src="img/netmo-logo.webp?v=0b5d1051" width="368" height="368" alt="The Nét Mơ logo: a cheerful hand-drawn character holding a paintbrush under the colourful words “Nét Mơ”." loading="lazy"></div>
-          <h3>Nét Mơ <small>Dream Strokes</small></h3><p>STEAM workshops for children in shelters and older adults in care homes. As Head of HR, I co-design activities and coordinate 20+ volunteers. Participation went from about half the children to nearly all.</p></div>
+          <h3>Nét Mơ <small>Dream Strokes</small></h3><p>STEAM workshops in shelters and care homes. Head of HR.</p></div>
       </div>
-      <div class="c4-gal ph5"><div class="g-a">${zimg(PH.session)}</div><div class="g-b">${zimg(PH.draw)}</div><div class="g-c">${zimg(PH.care)}</div><div class="g-d">${zimg(PH.team)}</div></div>
-      ${stats([['~200','children across six shelters'],['25','older adults in 8 care-home workshops'],['20+','volunteers I coordinate'],['1st → 1st','debate: my team, then the juniors I coached']])}
+      ${stats([['~200','children across six shelters'],['20+','volunteers I coordinate'],['Half → nearly all','children joining in']])}
       ${goBtn('#common','Go to the Common Room')}
       ${bridge('Meanwhile, people started using what I built.')}
     </div>
@@ -965,17 +1094,13 @@ function viewHome(){
   <section class="sx-ch" id="ch-4" data-room="build" aria-labelledby="ch-4-h">
     <div class="wrap">${chHead(CHAPTERS[3])}
       <p class="sx-lead">Three projects, three lessons about the people using them.</p>
-      ${stats([['2,200+','visitors to Contextuary'],['500+','Contextuary users'],['2','apps launched in 2026'],['4th','FCT Summer Camp 2026']])}
       <article class="p3 p3-ctx" aria-labelledby="p-ctx">
         <div class="p3-top"><div><p class="p3-k">Contextuary · co-leader, full-stack developer · since Aug 2026</p><h3 id="p-ctx">Supporting a product people depend on</h3></div>${statRow(ctx.metrics)}</div>
         <div class="p3-shot">${ph(ctx.media[0])}</div>
         ${lifecycle([
-          ['Problem','Word lists teach definitions, not usage.'],
-          ['My part','Co-lead. Database, interface, learning flows.'],
-          ['Challenge','SAT-week traffic spikes. I reworked caching so it stays fast.'],
-          ['Result','Launched Aug 2026. 2,200+ visitors, 500+ users.'],
-          ['What I learned','Running isn’t enough. It has to stay reliable.']])}
-        <ul class="bubbles two" aria-label="What Contextuary learners say">${ctx.story.feedback.quotes.map(q=>`<li><blockquote>${esc(q.q)}</blockquote><cite>${esc(q.who)}</cite></li>`).join('')}</ul>
+          ['My part','Database, interface, learning flows.'],
+          ['Challenge','SAT-week traffic spikes. I reworked caching.'],
+          ['Learned','Running isn’t enough. It has to stay reliable.']])}
         ${deepBtn('ctx','Look behind Contextuary')}
       </article>
       <article class="p3 p3-tg" aria-labelledby="p-tg">
@@ -984,22 +1109,18 @@ function viewHome(){
           <div class="tg-collage">${zimg(STRIP('img/together-journal.webp?v=04aff5ae','A project’s calendar'))}${zimg(STRIP('img/together-recent.webp?v=1ef0201b','Moments, with their people'))}${zimg(STRIP('img/together-log.webp?v=04646ffe','Logging an activity'))}</div>
           <div class="tg-side">
             ${lifecycle([
-              ['Problem','Our team juggled spreadsheets, Messenger and Docs.'],
-              ['My part','React interface, structure and user flows.'],
-              ['Decision','Structure first, screens second.'],
-              ['Result','One shared journal for every activity.'],
-              ['What I learned','Easy for me isn’t easy for everyone.']])}
+              ['Problem','Spreadsheets, Messenger and Docs, all at once.'],
+              ['My part','React interface and user flows.'],
+              ['Learned','Easy for me isn’t easy for everyone.']])}
           </div>
         </div>
-        <ul class="bubbles" aria-label="What Dream Strokes members wrote">${tg.story.feedback.quotes.map(q=>`<li><blockquote>${esc(q.q)}</blockquote></li>`).join('')}</ul>
-        <p class="sx-small">Messages from members of Dream Strokes (Nét Mơ), translated from Vietnamese.</p>
         ${deepBtn('tg','Look behind Together!')}
       </article>
       <article class="p3 p3-sc" aria-labelledby="p-sc">
         <div class="p3-top"><div><p class="p3-k">ScamCheck · interface design · team of 5 · 2026</p><h3 id="p-sc">Designing for someone under stress</h3></div><div class="ev-list">${award('fct-scam','p','4th')}</div></div>
         <div class="sc-grid">
-          <div class="p3-shot">${ph(sc.media[0])}<div class="strip s2">${zimg(PH.scres)}${zimg(PH.scteam)}</div></div>
-          <div><p class="sx-p">Scam messages frighten older users. Paste one in, and three AI characters check its warning signs.</p>
+          <div class="p3-shot">${ph(sc.media[0])}</div>
+          <div><p class="sx-p">Paste in a scary message. Three AI characters check its warning signs.</p>
             <p class="c2-k" style="margin-top:14px">What I changed for older users</p>
             <ul class="callouts"><li>Bigger text, with an A+ button for more</li><li>Softer colours, with red and yellow saved for what matters</li><li>Fewer steps to submit a message</li></ul>
             ${deepBtn('sc','Look behind ScamCheck')}
@@ -1015,55 +1136,35 @@ function viewHome(){
       <div class="c5">
         <div>
           <p class="sx-big">Smart bins, sensors and AI route planning work in some cities. Would they work in Vietnam?</p>
-          <p>My school is in Phu My Hung, a carefully planned district. Other parts of Ho Chi Minh City work very differently.</p>
-          <p>Since June 2026, mentored by Dr. Nisha Rawindaran (University of South Wales), I’ve reviewed 40+ studies and proposed <b>V-SWAP</b>, a framework that turns local conditions into one of four decisions.</p>
+          <p>Mentored by Dr. Nisha Rawindaran (University of South Wales), I proposed <b>V-SWAP</b>: local conditions in, one of four decisions out.</p>
           <div class="status lt"><span>Manuscript in preparation</span><span>V-SWAP is a proposal, not yet field-validated</span></div>
-        </div>
-        <ul class="four-big" aria-label="V-SWAP’s four decisions"><li><b>Study</b><span>Find out more first</span></li><li><b>Pilot</b><span>Test small and measure</span></li><li><b>Scale</b><span>Expand what worked</span></li><li><b>Reject</b><span>Not a fit, for now</span></li></ul>
-      </div>
-      <div class="c5-case">
-        <p class="c2-k">One 2024 study reported</p>
-        <div class="c5-case-in">
-          <div class="c5-num"><b>32%</b><span>better route efficiency</span></div>
-          <div class="c5-num"><b>29%</b><span>less fuel used</span></div>
-          <p>Would the sensors stay accurate here? Would the networks hold? A strong result elsewhere doesn’t prove a fit here.</p>
         </div>
       </div>
       <div id="rx-mount"></div>
-      ${stats([['40+','studies reviewed since June 2026'],['6','conditions examined'],['4','possible decisions']])}
+      ${stats([['40+','studies reviewed since June 2026'],['6','conditions examined']])}
       ${goBtn('#lab','Open the research page')}
-      ${bridge('Each chapter ended with a better question than it started with. These are the ones I’m carrying forward.')}
+      ${bridge('Each chapter left me a better question. These are the ones I’m carrying forward.')}
     </div>
   </section>
 
   <section class="sx-ch" id="ch-6" data-room="about" aria-labelledby="ch-6-h">
     <div class="wrap">${chHead(CHAPTERS[5])}
-      <div class="sx-guide big"><span>Still the question underneath it all</span><p>${GUIDE_Q}</p></div>
       <div class="c6-next">
         <p class="c2-k">Where I am now</p>
         <p class="sx-big">My research has taught me what to ask about a technology, but not yet how to test the answers with data myself.</p>
-        <p class="sx-p">That’s next: computing and environmental engineering, starting with waste in Ho Chi Minh City.</p>
+        <p class="sx-p">Next: computing and environmental engineering, starting with waste in Ho Chi Minh City.</p>
       </div>
       <h3 class="qm-title">Where my questions come from</h3>
       ${qmapHTML()}
       <span class="draft-chip">Draft questions · rewrite in your own words</span>
       <p class="sx-bridge sx-end">I still wonder what happens behind the screen. The difference now is that I stay long enough to find out.</p>
-      <div class="c6-links">
-        <a href="#workshop" data-room="build"><b>Projects</b><span>Everything I’ve built</span></a>
-        <a href="#lab" data-room="research"><b>Research</b><span>V-SWAP in detail</span></a>
-        <a href="#replay" data-room="awards"><b>Awards</b><span>The full track record</span></a>
-        <a href="#about" data-room="about"><b>About</b><span>Profile and changelog</span></a>
-        ${PROFILE.cv?`<a href="${esc(PROFILE.cv.url)}" target="_blank" rel="noopener"><b>CV ↗</b><span>${esc(PROFILE.cv.label)}</span></a>`:''}
+      <div class="end">
+        ${contactBlock()}
+        ${ghHTML()}
       </div>
-      ${contactBlock()}${PROFILE.cv?'':'<span class="gap">Add your CV link.</span>'}
-    </div>
-  </section>
-
-  <section class="sx-explore-sec" id="places" tabindex="-1" aria-labelledby="ex-h">
-    <div class="wrap"><h2 id="ex-h" class="rm-h">Explore my work</h2>
-      <p class="sx-p">Search everything, or open a section.</p>
-      ${searchBox('lg')}
-      <div class="ex-rooms">${ROOMS.map(r=>`<a href="#${r.id}" data-room="${r.cat}"><i class="dot"></i>${r.name}<small>${r.label}</small></a>`).join('')}</div>
+      <nav class="end-links" aria-label="More">
+        <a href="#workshop">Projects</a><a href="#lab">Research</a><a href="#replay">Awards</a><a href="#about">About</a>${PROFILE.cv?`<a href="${esc(PROFILE.cv.url)}" target="_blank" rel="noopener">CV ↗</a>`:''}
+      </nav>
     </div>
   </section>
   </div>`};
@@ -2257,7 +2358,7 @@ function render(){
 
   if(tok==='home'||isTour){
     const v=viewHome(); html=v.html;
-    after=()=>{ mountReadiness($('#rx-mount')); mountPuzzle($('.pz')); mountQmap(); setupStory();
+    after=()=>{ mountReadiness($('#rx-mount')); mountBees($('#bz')); mountGh($('#gh')); mountQmap(); setupStory();
       if(isTour){ setTimeout(()=>{ const c=$('#ch-1'); c.scrollIntoView({block:'start',behavior:'instant'}); $('#ch-1-h').setAttribute('tabindex','-1'); $('#ch-1-h').focus({preventScroll:true}); },0); } };
     if(isTour) scroll=null; }
   else if(tok==='search'){ html=viewResults(); const sec=secretFor(S.q); after=()=>{ bindResults(); if(sec&&S.fresh0){ foundEgg('secret'); if(sec.walk) walkTurtle(null); if(sec.hatch) setTimeout(openHatch,60); } }; S.fresh0=S.fresh; scroll=S.fresh?0:S.resScroll; S.fresh=false; }
@@ -2277,6 +2378,7 @@ function render(){
   main.innerHTML = html;
   $$('form[data-sb]').forEach(bindSearch);
   if(after) after();
+  if(XRAY) tagXray();
   setupReveal();
   save();
   if(scroll!==null) window.scrollTo({top:scroll,left:0,behavior:'instant'});
@@ -2358,7 +2460,8 @@ document.addEventListener('keydown',e=>{
   if(document.querySelector('dialog[open]')) return;
   const typing=e.target.closest&&e.target.closest('input,textarea,select,[contenteditable="true"]');
   if(typing||e.metaKey||e.ctrlKey||e.altKey) return;
-  if(e.key==='/'){ const i=$('.topbar input')||$('.sx-explore-sec input'); if(i){ e.preventDefault(); i.focus(); i.select(); } return; }
+  if(e.key==='/'){ e.preventDefault(); const i=$('.topbar input'); if(i){ i.focus(); i.select(); } else openCmdk(); return; }
+  if(e.key==='x'||e.key==='X'){ e.preventDefault(); setXray(!XRAY); return; }
   if(e.key==='?'){ e.preventDefault(); openKeys(); return; }
   if(e.key==='`'||e.code==='Backquote'){ e.preventDefault(); openTerm(); return; }
 });
