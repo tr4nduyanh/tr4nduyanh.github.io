@@ -927,7 +927,7 @@ function viewHome(){
   <section class="wrap sx-hero" aria-labelledby="main-h">
     <div class="sx-hero-l">
       <p class="eyebrow">TRẦN DUY ANH · HO CHI MINH CITY · CLASS OF 2027</p>
-      <h1 id="main-h" class="ht" tabindex="-1"><span class="ht-l1" data-t="Behind">Behind</span><span><span class="ht-the">the</span> <span class="ht-scr">screen</span></span></h1>
+      <h1 id="main-h" class="ht" tabindex="-1"><span>Behind</span><span><span class="ht-the">the</span> <span class="ht-scr">screen</span></span></h1>
       <p class="sx-lede">Six short chapters on where my curiosity took me.</p>
       <div class="sx-guide"><span>The question I keep coming back to</span><p>${GUIDE_Q}</p></div>
       <p class="sx-start"><button type="button" class="btn btn-primary" data-ch="ch-1">Start reading <span aria-hidden="true">↓</span></button></p>
@@ -2103,12 +2103,6 @@ function applyLook(v){
   $$('[data-look-toggle]').forEach(b=>{ b.outerHTML=lookBtn(); });
   const nb=$('[data-look-toggle]'); if(nb&&hadFocus) nb.focus();
 }
-(function wave(){ // vertical wavy edge; two identical halves so the loop is seamless
-  const H=2880, P=240, base=46, amp=30; let d=`M0 0 L${base} 0`, line=`M${base} 0`;
-  for(let y=0;y<H;y+=P){ const seg=` Q${base+amp} ${y+P/4} ${base} ${y+P/2} T${base} ${y+P}`; d+=seg; line+=seg; }
-  d+=` L0 ${H} Z`;
-  $$('#curtain .cw-fill').forEach(e=>e.setAttribute('d',d)); $$('#curtain .cw-line').forEach(e=>e.setAttribute('d',line));
-})();
 let curtainBusy=false;
 function setLook(v){
   if(v===LOOK) return;
@@ -2119,9 +2113,9 @@ function setLook(v){
   c.hidden=false; void c.offsetWidth; c.classList.add('closing');
   setTimeout(()=>{ applyLook(v);
     setTimeout(()=>{ c.classList.add('opening');
-      setTimeout(()=>{ c.hidden=true; c.className='curtain'; curtainBusy=false; },860);
-    },360);
-  },740);
+      setTimeout(()=>{ c.hidden=true; c.className='curtain'; curtainBusy=false; },800);
+    },380);
+  },660);
 }
 
 /* =====================================================================
