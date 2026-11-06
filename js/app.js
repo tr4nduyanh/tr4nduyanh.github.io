@@ -837,6 +837,11 @@ const BZ_CODE=[
   ['  <b>await</b> bee.flyTo(hive);','toHive'],
   ['  hive.pollen += bee.drop();','drop'],
   ['}','']];
+function mountHop(el){
+  if(!el) return;
+  if(RM||!('IntersectionObserver' in window)){ el.classList.add('done'); return; }
+  const io=new IntersectionObserver(es=>{ if(es[0].isIntersecting){ io.disconnect(); el.classList.add('play'); } },{threshold:.6}); io.observe(el);
+}
 function beeSimHTML(){
   return `<figure class="bz" id="bz" aria-label="A small bee game beside the code that moves the bees. The highlighted line shows what the traced bee is doing right now.">
     <div class="bz-game"><span class="c1-lab">In front of the screen</span>
@@ -995,9 +1000,9 @@ function viewHome(){
         <p class="c2-k">The catch</p>
         <p class="sx-lead">I chased everything, then dropped it once it got hard.</p>
         <ul class="hop" aria-label="Interests I dropped">
-          <li style="--i:0;--r:-5deg"><b>Astronomy</b><span>dropped at the hard theory</span></li>
-          <li style="--i:1;--r:4deg"><b>Minecraft videos</b><span>dropped when getting better got hard</span></li>
-          <li style="--i:2;--r:-2deg"><b>The next new thing</b><span>and again…</span></li>
+          <li style="--i:0;--r:-5deg;--w:62%"><b>Astronomy</b><span>dropped at the hard theory</span><i class="hop-bar" aria-hidden="true"><i></i></i><i class="hop-x" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5 5 15"/></svg></i></li>
+          <li style="--i:1;--r:4deg;--w:45%"><b>Minecraft videos</b><span>dropped when getting better got hard</span><i class="hop-bar" aria-hidden="true"><i></i></i><i class="hop-x" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5 5 15"/></svg></i></li>
+          <li style="--i:2;--r:-2deg;--w:28%"><b>The next new thing</b><span>and again…</span><i class="hop-bar" aria-hidden="true"><i></i></i><i class="hop-x" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5 5 15"/></svg></i></li>
         </ul>
       </div>
       ${bridge('The next thing to learn wasn’t a language. It was how to stay.')}
@@ -1063,23 +1068,11 @@ function viewHome(){
       <article class="p3 p3-ctx" aria-labelledby="p-ctx">
         <div class="p3-top"><div><p class="p3-k">Contextuary · co-leader, full-stack developer · since Aug 2026</p><h3 id="p-ctx">Supporting a product people depend on</h3></div>${statRow(ctx.metrics)}</div>
         <div class="p3-shot">${ph(ctx.media[0])}</div>
-        ${lifecycle([
-          ['My part','Database, interface, learning flows.'],
-          ['Challenge','SAT-week traffic spikes. I reworked caching.'],
-          ['Learned','Running isn’t enough. It has to stay reliable.']])}
         ${deepBtn('ctx','Look behind Contextuary')}
       </article>
       <article class="p3 p3-tg" aria-labelledby="p-tg">
         <div class="p3-top"><div><p class="p3-k">Together! · co-founder, UI/UX programmer · launched Sep 2026</p><h3 id="p-tg">Designing a space for shared memories</h3></div>${statRow(tg.metrics)}</div>
-        <div class="tg-grid">
-          <div class="tg-collage">${zimg(STRIP('img/together-journal.webp?v=04aff5ae','A project’s calendar'))}${zimg(STRIP('img/together-recent.webp?v=1ef0201b','Moments, with their people'))}${zimg(STRIP('img/together-log.webp?v=04646ffe','Logging an activity'))}</div>
-          <div class="tg-side">
-            ${lifecycle([
-              ['Problem','Spreadsheets, Messenger and Docs, all at once.'],
-              ['My part','React interface and user flows.'],
-              ['Learned','Easy for me isn’t easy for everyone.']])}
-          </div>
-        </div>
+        <div class="tg-collage tg-row">${zimg(STRIP('img/together-journal.webp?v=04aff5ae','A project’s calendar'))}${zimg(STRIP('img/together-recent.webp?v=1ef0201b','Moments, with their people'))}${zimg(STRIP('img/together-log.webp?v=04646ffe','Logging an activity'))}</div>
         ${deepBtn('tg','Look behind Together!')}
       </article>
       <article class="p3 p3-sc" aria-labelledby="p-sc">
@@ -2324,7 +2317,7 @@ function render(){
 
   if(tok==='home'||isTour){
     const v=viewHome(); html=v.html;
-    after=()=>{ mountReadiness($('#rx-mount')); mountBees($('#bz')); mountGh($('#gh')); mountQmap(); setupStory();
+    after=()=>{ mountReadiness($('#rx-mount')); mountHop($('.hop')); mountBees($('#bz')); mountGh($('#gh')); mountQmap(); setupStory();
       if(isTour){ setTimeout(()=>{ const c=$('#ch-1'); c.scrollIntoView({block:'start',behavior:'instant'}); $('#ch-1-h').setAttribute('tabindex','-1'); $('#ch-1-h').focus({preventScroll:true}); },0); } };
     if(isTour) scroll=null; }
   else if(tok==='search'){ html=viewResults(); const sec=secretFor(S.q); after=()=>{ bindResults(); if(sec&&S.fresh0){ foundEgg('secret'); if(sec.walk) walkTurtle(null); if(sec.hatch) setTimeout(openHatch,60); } }; S.fresh0=S.fresh; scroll=S.fresh?0:S.resScroll; S.fresh=false; }
