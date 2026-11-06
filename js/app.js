@@ -685,12 +685,12 @@ function topbar(activeCat){
 /* ===================== BEHIND THE SCREEN (homepage story) ===================== */
 const GUIDE_Q='What does it take for technology to actually work for the people using it?';
 const CHAPTERS=[
-  {id:'ch-1',n:1,short:'Curiosity',room:'media',title:'What happens behind the screen?',tags:['Curious','Hands-on','Asking why'],how:'Taking things apart to see how they work.'},
-  {id:'ch-2',n:2,short:'Learning',room:'awards',title:'Finishing wasn’t the same as understanding.',tags:['Patient','Independent','Reflective'],how:'Tracing where information goes, instead of copying the steps.'},
-  {id:'ch-3',n:3,short:'Speaking up',room:'community',title:'I learned to speak up, then to help others do it.',tags:['Listen','Explain','Create together'],how:'Listening first, explaining clearly, then making things with other people.'},
-  {id:'ch-4',n:4,short:'Building',room:'build',title:'Then people started using what I built.',tags:['Reliable','User-first','Accessible'],how:'Keeping things working for the people who depend on them, and designing for whoever is actually using it.'},
-  {id:'ch-5',n:5,short:'Research',room:'research',title:'Would this actually work here?',tags:['Grounded','Careful','Local'],how:'Checking the conditions on the ground before trusting the technology.'},
-  {id:'ch-6',n:6,short:'Next',room:'about',title:'What I want to understand next.',tags:[],how:''}
+  {id:'ch-1',n:1,short:'Curiosity',room:'media',title:'What happens behind the screen?'},
+  {id:'ch-2',n:2,short:'Learning',room:'awards',title:'Finishing wasn’t the same as understanding.'},
+  {id:'ch-3',n:3,short:'Speaking up',room:'community',title:'I learned to speak up, then to help others do it.'},
+  {id:'ch-4',n:4,short:'Building',room:'build',title:'Then people started using what I built.'},
+  {id:'ch-5',n:5,short:'Research',room:'research',title:'Would this actually work here?'},
+  {id:'ch-6',n:6,short:'Next',room:'about',title:'What I want to understand next.'}
 ];
 function chHead(c){
   return `<header class="sx-head"><p class="sx-k"><span class="sx-n">${String(c.n).padStart(2,'0')}</span>${c.short}</p><h2 id="${c.id}-h" class="sx-t">${c.title}</h2>
@@ -707,7 +707,6 @@ function bridge(t){ return `<p class="sx-bridge">${t}</p>`; }
 function award(id,tier,badge,note){ const it=ITEM[id]; if(!it) return ''; const a=it.award;
   const inner=`<span class="medal t-${tier}" aria-hidden="true">${badge}</span><span><b>${a.result}</b><small>${a.comp}${a.round?' · '+a.round:''} · ${a.year}${a.role?' · '+a.role:''}</small>${note?`<em>${note}</em>`:''}</span>`;
   return it.project?`<a class="ev" href="#${it.project}">${inner}</a>`:`<div class="ev">${inner}</div>`; }
-function lifecycle(rows){ return `<ol class="lc">${rows.map(([k,v])=>`<li><span class="lc-k">${k}</span><p>${v}</p></li>`).join('')}</ol>`; }
 
 /* deeper panels: opened beside the story, so readers keep their place */
 const DEEP={
@@ -737,49 +736,6 @@ function openDeep(key,btn){
 }
 
 const BEE='<svg viewBox="0 0 40 30" aria-hidden="true" focusable="false"><ellipse cx="15" cy="9" rx="8" ry="6" fill="#fff" opacity=".85" stroke="#1b2a4a" stroke-width="1.2"/><ellipse cx="25" cy="8" rx="7" ry="5" fill="#fff" opacity=".85" stroke="#1b2a4a" stroke-width="1.2"/><ellipse cx="20" cy="19" rx="13" ry="9" fill="#f6c343" stroke="#1b2a4a" stroke-width="1.6"/><path d="M15 11.5v15M21 10.5v17" stroke="#1b2a4a" stroke-width="3"/><circle cx="29.5" cy="17" r="1.6" fill="#1b2a4a"/></svg>';
-/* ---------- chapter 1 jigsaw: the pieces become me ---------- */
-function pzEdge(x0,y0,dx,dy,b){ // one side of a piece, drawn clockwise; b=+1 tab out, -1 tab in, 0 flat
-  const ox=dy, oy=-dx, P=(t,n)=>`${(x0+dx*100*t+ox*n).toFixed(1)} ${(y0+dy*100*t+oy*n).toFixed(1)}`;
-  if(!b) return ` L${P(1,0)}`;
-  const h=22*b; return ` L${P(.38,0)} C${P(.28,h)} ${P(.72,h)} ${P(.62,0)} L${P(1,0)}`;
-}
-const PZ_C=4, PZ_R=3;
-function pzPath(r,c){
-  const H=(r,c)=>((r+c)%2?1:-1), V=(r,c)=>((r+c+1)%2?1:-1);
-  const top=r===0?0:-H(r-1,c), right=c===PZ_C-1?0:V(r,c), bottom=r===PZ_R-1?0:H(r,c), left=c===0?0:-V(r,c-1);
-  return 'M0 0'+pzEdge(0,0,1,0,top)+pzEdge(100,0,0,1,right)+pzEdge(100,100,-1,0,bottom)+pzEdge(0,100,0,-1,left)+' Z';
-}
-function puzzleHTML(){
-  const W=PZ_C*100, Hh=PZ_R*100, N=PZ_C*PZ_R;
-  const art=`<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
-    <symbol id="pz-art" viewBox="0 0 ${W} ${Hh}"><image href="img/contextuary-home.webp?v=bb127c69" x="-46" y="0" width="${(Hh*1516/896).toFixed(1)}" height="${Hh}" preserveAspectRatio="none"/></symbol></defs></svg>`;
-  let pieces='';
-  for(let r=0;r<PZ_R;r++) for(let c=0;c<PZ_C;c++){ const i=r*PZ_C+c, d=pzPath(r,c);
-    pieces+=`<button type="button" class="pz-p" data-pz="${i}" style="left:${((c*100-25)/W*100).toFixed(3)}%;top:${((r*100-25)/Hh*100).toFixed(3)}%;width:${(150/W*100).toFixed(3)}%;height:${(150/Hh*100).toFixed(3)}%" aria-label="Puzzle piece ${i+1} of ${N}">
-      <svg viewBox="-25 -25 150 150" aria-hidden="true" focusable="false"><defs><clipPath id="pz-c${i}"><path d="${d}"/></clipPath></defs>
-      <g clip-path="url(#pz-c${i})"><svg x="${-c*100}" y="${-r*100}" width="${W}" height="${Hh}" viewBox="0 0 ${W} ${Hh}"><use href="#pz-art"/></svg></g><path class="pz-o" d="${d}"/></svg></button>`; }
-  return `${art}<div class="pz" data-room="build">
-    <div class="pz-stage"><div class="pz-board" role="group" aria-label="A jigsaw puzzle that forms the Contextuary homepage">${pieces}</div></div>
-    <div class="pz-side"><p class="pz-k">Still taking things apart</p><p class="pz-t" aria-live="polite">Putting it back together…</p>
-      <p class="pz-h">Tap a piece to snap it into place.</p>
-      <button type="button" class="btn btn-line btn-sm" data-pz-scatter>Take it apart</button></div></div>`;
-}
-function mountPuzzle(root){
-  if(!root) return;
-  const ps=$$('.pz-p',root), st=$('.pz-t',root), wrap=root;
-  const check=()=>{ const done=ps.every(p=>p.classList.contains('home')); wrap.classList.toggle('done',done);
-    st.textContent=done?'Put back together: Contextuary, what I build today.':`${ps.filter(p=>p.classList.contains('home')).length} of ${ps.length} pieces in place`; };
-  const scatter=()=>{ ps.forEach(p=>{ p.classList.remove('home'); const a=Math.random()*Math.PI*2, d=26+Math.random()*30;
-    p.style.setProperty('--tx',(Math.cos(a)*d).toFixed(1)+'%'); p.style.setProperty('--ty',(Math.sin(a)*d).toFixed(1)+'%'); p.style.setProperty('--rot',(Math.random()*70-35).toFixed(0)+'deg'); p.style.zIndex=1+Math.floor(Math.random()*9); }); check(); };
-  const home=p=>{ p.classList.add('home'); ['--tx','--ty','--rot'].forEach(k=>p.style.removeProperty(k)); p.style.zIndex=0; check(); };
-  const assemble=()=>{ ps.slice().sort(()=>Math.random()-.5).forEach((p,i)=>setTimeout(()=>home(p),RM?0:260+i*170)); };
-  ps.forEach(p=>p.addEventListener('click',()=>home(p)));
-  $('[data-pz-scatter]',root).addEventListener('click',()=>{ scatter(); });
-  if(RM||!('IntersectionObserver' in window)){ ps.forEach(home); return; }
-  scatter();
-  const io=new IntersectionObserver(es=>{ if(es.some(e=>e.isIntersecting)){ io.disconnect(); assemble(); } },{threshold:.45});
-  io.observe(root);
-}
 
 /* ---------- chapter 6: the question map ---------- */
 const QSRC=[
@@ -837,6 +793,28 @@ const BZ_CODE=[
   ['  <b>await</b> bee.flyTo(hive);','toHive'],
   ['  hive.pollen += bee.drop();','drop'],
   ['}','']];
+function mountTitle(h){
+  if(!h) return;
+  let tx=0,ty=0,x=0,y=0,raf=0,on=false,R=0;
+  const size=()=>{ R=Math.max(44,Math.min(96,h.clientHeight*.32)); };
+  const loop=()=>{ x+=(tx-x)*.2; y+=(ty-y)*.2; h.style.setProperty('--mx',x.toFixed(1)+'px'); h.style.setProperty('--my',y.toFixed(1)+'px');
+    raf=(Math.abs(tx-x)>.3||Math.abs(ty-y)>.3)?requestAnimationFrame(loop):0; };
+  const aim=(cx,cy,jump)=>{ const r=h.getBoundingClientRect(); tx=cx-r.left; ty=cy-r.top; if(jump||RM){ x=tx; y=ty; } if(!raf) raf=requestAnimationFrame(loop); };
+  const show=v=>{ on=v; h.style.setProperty('--r',v?R+'px':'0px'); };
+  size(); window.addEventListener('resize',size,{passive:true});
+  h.addEventListener('pointerenter',e=>{ aim(e.clientX,e.clientY,true); show(true); });
+  h.addEventListener('pointermove',e=>{ aim(e.clientX,e.clientY); if(!on) show(true); });
+  h.addEventListener('pointerleave',()=>show(false));
+  h.addEventListener('pointerdown',e=>{ if(e.pointerType!=='mouse'){ aim(e.clientX,e.clientY,true); show(true); clearTimeout(mountTitle.t); mountTitle.t=setTimeout(()=>show(false),1600); } });
+  if(RM) return;
+  // one slow pass on arrival, so people see there is something behind the words
+  const r=h.getBoundingClientRect(); x=tx=r.width*.08; y=ty=r.height*.3; h.style.setProperty('--mx',x+'px'); h.style.setProperty('--my',y+'px');
+  setTimeout(()=>{ if(on||!document.body.contains(h)) return; show(true); const t0=performance.now();
+    const sweep=t=>{ if(!document.body.contains(h)) return; const k=Math.min(1,(t-t0)/1900), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+      if(!h.matches(':hover')){ tx=x=r.width*(.08+.84*e); ty=y=r.height*(.3+.42*Math.sin(e*Math.PI)); h.style.setProperty('--mx',x+'px'); h.style.setProperty('--my',y+'px'); }
+      if(k<1) requestAnimationFrame(sweep); else if(!h.matches(':hover')) show(false); };
+    requestAnimationFrame(sweep); },700);
+}
 function mountHop(el){
   if(!el) return;
   if(RM||!('IntersectionObserver' in window)){ el.classList.add('done'); return; }
@@ -971,7 +949,7 @@ function viewHome(){
   <section class="wrap sx-hero" aria-labelledby="main-h">
     <div class="sx-hero-l">
       <p class="eyebrow">TRẦN DUY ANH · HO CHI MINH CITY · CLASS OF 2027</p>
-      <h1 id="main-h" tabindex="-1">Behind the screen</h1>
+      <h1 id="main-h" class="ht" tabindex="-1"><span class="ht-front">Behind <br>the screen</span><span class="ht-back" aria-hidden="true">Behind <br>the screen</span><span class="ht-lens" aria-hidden="true"></span></h1>
       <p class="sx-lede">Six short chapters on where my curiosity took me.</p>
       <div class="sx-guide"><span>The question I keep coming back to</span><p>${GUIDE_Q}</p></div>
       <p class="sx-start"><button type="button" class="btn btn-primary" data-ch="ch-1">Start reading <span aria-hidden="true">↓</span></button></p>
@@ -2317,7 +2295,7 @@ function render(){
 
   if(tok==='home'||isTour){
     const v=viewHome(); html=v.html;
-    after=()=>{ mountReadiness($('#rx-mount')); mountHop($('.hop')); mountBees($('#bz')); mountGh($('#gh')); mountQmap(); setupStory();
+    after=()=>{ mountTitle($('.ht')); mountReadiness($('#rx-mount')); mountHop($('.hop')); mountBees($('#bz')); mountGh($('#gh')); mountQmap(); setupStory();
       if(isTour){ setTimeout(()=>{ const c=$('#ch-1'); c.scrollIntoView({block:'start',behavior:'instant'}); $('#ch-1-h').setAttribute('tabindex','-1'); $('#ch-1-h').focus({preventScroll:true}); },0); } };
     if(isTour) scroll=null; }
   else if(tok==='search'){ html=viewResults(); const sec=secretFor(S.q); after=()=>{ bindResults(); if(sec&&S.fresh0){ foundEgg('secret'); if(sec.walk) walkTurtle(null); if(sec.hatch) setTimeout(openHatch,60); } }; S.fresh0=S.fresh; scroll=S.fresh?0:S.resScroll; S.fresh=false; }
