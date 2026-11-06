@@ -22,7 +22,7 @@
    19. Speaking-up stage
    20. Studio feed and film strip
    21. At-a-glance tiles
-   22. Leaner homepage, bee screen, GitHub and X-ray
+   22. Leaner homepage, bee screen and GitHub
 
    Rules later in the file deliberately override earlier ones,
    so keep the order when moving things around.
@@ -1761,7 +1761,7 @@ dialog::backdrop{background:var(--scrim)}
 .sim-phone.planned{opacity:.6;border-style:dashed}
 #fa-me + .tiles,.nmp-sec .tiles{margin-top:14px}
 /* ============================================================
-   22. LEANER HOMEPAGE, BEE SCREEN, GITHUB AND X-RAY
+   22. LEANER HOMEPAGE, BEE SCREEN AND GITHUB
    ============================================================ */
 /* --- Hero and endings --- */
 .sx-start{margin-top:22px}
@@ -1844,28 +1844,3 @@ dialog::backdrop{background:var(--scrim)}
 .gh-scale{display:inline-flex;align-items:center;gap:3px}
 .gh-scale i{width:10px}
 @media (prefers-reduced-motion: reduce){.gh-live,.gh-grid i{animation:none!important;transition:none}}
-
-/* --- X-ray button --- */
-.xray-btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);font:600 13.5px var(--sans);cursor:pointer}
-.xray-btn svg{width:18px;height:18px}
-.xray-btn:hover{border-color:var(--accent)}
-.xray-btn[aria-pressed="true"]{background:#0a2340;color:#7fd3ff;border-color:#7fd3ff}
-@media (max-width:620px){.xray-btn span{display:none}.xray-btn{width:40px;padding:0;justify-content:center}}
-
-/* --- X-ray mode: the blueprint behind the page --- */
-html[data-xray]{--xr-bg:#071a2e;--xr-ink:#cfe6ff;--xr-dim:#6f95bd;--xr-line:rgba(127,211,255,.5);--xr-acc:#7fd3ff}
-html[data-xray] body{background:var(--xr-bg) linear-gradient(rgba(127,211,255,.07) 1px,transparent 1px) 0 0/24px 24px,var(--xr-bg) linear-gradient(90deg,rgba(127,211,255,.07) 1px,transparent 1px) 0 0/24px 24px;background-color:var(--xr-bg)}
-html[data-xray] body::before{background:var(--xr-bg)}
-html[data-xray] #main *,html[data-xray] #top *{background-color:transparent!important;background-image:none!important;box-shadow:none!important;color:var(--xr-ink)!important;border-color:rgba(127,211,255,.28)!important;text-shadow:none!important}
-html[data-xray] .topbar,html[data-xray] .sx-bar,html[data-xray] .sx-ch,html[data-xray] .band,html[data-xray] .foot{background:transparent!important}
-html[data-xray] #main img,html[data-xray] #main svg image{filter:grayscale(1) brightness(1.5) contrast(.6);opacity:.28}
-html[data-xray] #main svg:not(.bz-path){opacity:.55}
-html[data-xray] [data-x]{outline:1px dashed var(--xr-line);outline-offset:3px}
-html[data-xray] .xr-rel{position:relative}
-html[data-xray] [data-x]::after{content:attr(data-x);position:absolute;top:-10px;left:8px;z-index:6;padding:1px 6px;border-radius:4px;background:var(--xr-bg);color:var(--xr-acc);font:500 10.5px/1.4 var(--mono);letter-spacing:0;text-transform:none;white-space:nowrap;max-width:calc(100% - 16px);overflow:hidden;text-overflow:ellipsis;pointer-events:none;font-style:normal;font-weight:500}
-html[data-xray] .bz-code pre,html[data-xray] .bz-field{outline:1px solid var(--xr-acc)}
-#xray-hud{position:fixed;z-index:60;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;max-width:calc(100vw - 32px);padding:10px 12px 10px 16px;border-radius:14px;background:#04121f;border:1px solid var(--xr-acc);color:var(--xr-ink);font:500 12px var(--mono);box-shadow:0 18px 40px -18px #000}
-#xray-hud b{color:var(--xr-acc);letter-spacing:.14em}
-#xray-hud button{margin-left:auto;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--xr-acc);background:transparent;color:var(--xr-acc);font:600 12px var(--mono);cursor:pointer}
-html[data-xray] .dock{display:none}
-html[data-xray] #main .sx-bar,html[data-xray] #top .topbar{background:color-mix(in srgb,#071a2e 94%,transparent)!important}

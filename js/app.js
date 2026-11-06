@@ -672,7 +672,7 @@ function topbar(activeCat){
       <a class="mini-mark" href="#home" aria-label="Behind the screen, home">Duy Anh${turtle()}</a>
       ${searchBox('sm')}
       <nav class="tb-links" aria-label="Site">
-        <a href="#about">About</a><a href="#home">Behind the screen</a>${PROFILE.cv?`<a href="${esc(PROFILE.cv.url)}" target="_blank" rel="noopener">CV</a>`:''}${cmdkBtn()}${xrayBtn()}${lookBtn()}
+        <a href="#about">About</a><a href="#home">Behind the screen</a>${PROFILE.cv?`<a href="${esc(PROFILE.cv.url)}" target="_blank" rel="noopener">CV</a>`:''}${cmdkBtn()}${lookBtn()}
       </nav>
     </div>
     <nav class="rooms" aria-label="Five places">${ROOMS.map(r=>`<a href="#${r.id}" data-room="${r.cat}"${activeCat===r.cat?' aria-current="page"':''}><i class="dot"></i>${r.label}</a>`).join('')}</nav>
@@ -943,40 +943,6 @@ async function mountGh(root){
   last.innerHTML=e?`Last activity <b>${ago(e.at)}</b>: ${VERB[e.type]} <a href="https://github.com/${esc(e.repo)}" target="_blank" rel="noopener">${esc(e.repo.split('/')[1]||e.repo)}</a>`:'No public activity in the last 12 weeks.';
 }
 
-/* ---------- X-ray mode: see the page behind the page ---------- */
-let XRAY=false;
-function xrayBtn(){ return `<button type="button" class="xray-btn" data-xray aria-pressed="${XRAY}" title="X-ray mode (X)">${icon('i-xray')}<span>X-ray</span></button>`; }
-function tagXray(){
-  $$('[data-x]').forEach(el=>{ el.removeAttribute('data-x'); el.classList.remove('xr-rel'); });
-  if(!XRAY) return;
-  $$('#main section, #main article, #main figure, #main dl, #main h1, #main h2, #main form, #main nav, #top header').forEach(el=>{
-    const cs=getComputedStyle(el); if(cs.position==='fixed'||cs.position==='sticky'||cs.display==='none') return;
-    if(getComputedStyle(el,'::after').content!=='none') return;
-    const cls=[...el.classList].find(c=>!/^(wrap|on|lit|ready|off|tr)$/.test(c));
-    let t=`<${el.tagName.toLowerCase()}${el.id?'#'+el.id:cls?'.'+cls:''}>`;
-    const img=el.tagName==='FIGURE'&&$('img',el); if(img&&img.naturalWidth) t+=` img ${img.naturalWidth}×${img.naturalHeight} · ${(img.currentSrc||img.src).split('?')[0].split('.').pop()}`;
-    if(el.tagName==='DL') t+=` · ${el.children.length} items`;
-    if(/^H[12]$/.test(el.tagName)) t+=` · ${el.textContent.trim().length} chars`;
-    if(el.dataset.room) t+=` room=${el.dataset.room}`;
-    if(cs.position==='static') el.classList.add('xr-rel');
-    el.dataset.x=t; });
-}
-function xrayHud(){
-  let h=$('#xray-hud'); if(!XRAY){ if(h) h.remove(); return; }
-  if(!h){ h=document.createElement('div'); h.id='xray-hud'; h.setAttribute('role','status'); document.body.appendChild(h); }
-  const nav=(performance.getEntriesByType&&performance.getEntriesByType('navigation')[0])||null;
-  const res=performance.getEntriesByType?performance.getEntriesByType('resource'):[];
-  const kb=Math.round(([nav,...res].filter(Boolean).reduce((a,r)=>a+(r.transferSize||r.encodedBodySize||0),0))/1024);
-  const ms=nav&&nav.domContentLoadedEventEnd?Math.round(nav.domContentLoadedEventEnd):null;
-  h.innerHTML=`<b>X-RAY</b><span>${document.getElementsByTagName('*').length} elements</span>${kb?`<span>${kb} KB loaded</span>`:''}${ms?`<span>ready in ${ms} ms</span>`:''}<span>0 frameworks · vanilla JS</span><button type="button" data-xray>Exit · X</button>`;
-}
-function setXray(v){
-  XRAY=!!v; document.documentElement.toggleAttribute('data-xray',XRAY);
-  $$('.xray-btn').forEach(b=>b.setAttribute('aria-pressed',String(XRAY)));
-  tagXray(); xrayHud();
-}
-document.addEventListener('click',e=>{ if(e.target.closest('[data-xray]')){ e.preventDefault(); setXray(!XRAY); } });
-
 function viewHome(){
   const dots=S.dots||{}; const allLit=CATS.every(c=>dots[c]);
   const ctx=ITEM.contextuary, tg=ITEM.together, sc=ITEM.scamcheck;
@@ -984,7 +950,7 @@ function viewHome(){
   <div class="sx-bar" id="sx-bar">
     <div class="wrap sx-bar-in">
       <a class="mini-mark" href="#home" aria-label="Behind the screen, back to the top" data-sx-top>Duy Anh${turtle()}</a>
-      <div class="sx-tools"><button type="button" class="sx-explore" data-cmdk><svg aria-hidden="true"><use href="#i-search"/></svg><span>Explore my work</span><kbd>${MOD} K</kbd></button>${xrayBtn()}${lookBtn()}</div>
+      <div class="sx-tools"><button type="button" class="sx-explore" data-cmdk><svg aria-hidden="true"><use href="#i-search"/></svg><span>Explore my work</span><kbd>${MOD} K</kbd></button>${lookBtn()}</div>
     </div>
   </div>
   <nav class="dock off" id="dock" aria-label="Chapters">
@@ -2378,7 +2344,6 @@ function render(){
   main.innerHTML = html;
   $$('form[data-sb]').forEach(bindSearch);
   if(after) after();
-  if(XRAY) tagXray();
   setupReveal();
   save();
   if(scroll!==null) window.scrollTo({top:scroll,left:0,behavior:'instant'});
@@ -2461,7 +2426,6 @@ document.addEventListener('keydown',e=>{
   const typing=e.target.closest&&e.target.closest('input,textarea,select,[contenteditable="true"]');
   if(typing||e.metaKey||e.ctrlKey||e.altKey) return;
   if(e.key==='/'){ e.preventDefault(); const i=$('.topbar input'); if(i){ i.focus(); i.select(); } else openCmdk(); return; }
-  if(e.key==='x'||e.key==='X'){ e.preventDefault(); setXray(!XRAY); return; }
   if(e.key==='?'){ e.preventDefault(); openKeys(); return; }
   if(e.key==='`'||e.code==='Backquote'){ e.preventDefault(); openTerm(); return; }
 });
