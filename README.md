@@ -8,6 +8,7 @@ css/style.css    all styles, in 18 numbered sections (contents at the top)
 js/app.js        content, search, routing and the interactive demos (contents at the top)
 img/             photos and screenshots (children's faces blurred)
 ASM3/            FUNiX assignment site
+vswap/           V-SWAP decision tool from my smart waste management research paper
 ```
 
 Plain HTML, CSS and JavaScript. No framework, no build step.

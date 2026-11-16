@@ -1,0 +1,718 @@
+<title>V-SWAP Decision Tool</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a working form on the left (parts 0–3, in order), a sticky decision panel on the right that updates live. */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --sunk:#eef2f5; --ink:#14212b; --ink-2:#47565f; --muted:#76838d; --line:#d8e0e6;
+  --accent:#2a78d6; --accent-soft:#e3eefb; --on-accent:#ffffff;
+  --o-inv:#5f6b74; --o-inv-soft:#eceff1; --o-pilot:#0f8a63; --o-pilot-soft:#dcf4ea;
+  --o-scale:#2a78d6; --o-scale-soft:#e3eefb; --o-decline:#c9512a; --o-decline-soft:#fde8df;
+  --r-strong:#0f8a63; --r-partial:#a8700f; --r-weak:#c9512a; --r-unknown:#6b7780;
+  --font-display:"Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --font-body:"Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --font-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0e161c; --surface:#152029; --sunk:#1b2832; --ink:#e5ecf1; --ink-2:#aab7c1; --muted:#7f8c96; --line:#2a3843;
+  --accent:#5f9ee8; --accent-soft:#1c3550; --on-accent:#0b1620;
+  --o-inv:#a3adb5; --o-inv-soft:#25313a; --o-pilot:#3cc79a; --o-pilot-soft:#143a2e;
+  --o-scale:#5f9ee8; --o-scale-soft:#1c3550; --o-decline:#f08159; --o-decline-soft:#41261c;
+  --r-strong:#3cc79a; --r-partial:#e2ad52; --r-weak:#f08159; --r-unknown:#9aa5ad; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#0e161c; --surface:#152029; --sunk:#1b2832; --ink:#e5ecf1; --ink-2:#aab7c1; --muted:#7f8c96; --line:#2a3843;
+  --accent:#5f9ee8; --accent-soft:#1c3550; --on-accent:#0b1620;
+  --o-inv:#a3adb5; --o-inv-soft:#25313a; --o-pilot:#3cc79a; --o-pilot-soft:#143a2e;
+  --o-scale:#5f9ee8; --o-scale-soft:#1c3550; --o-decline:#f08159; --o-decline-soft:#41261c;
+  --r-strong:#3cc79a; --r-partial:#e2ad52; --r-weak:#f08159; --r-unknown:#9aa5ad; color-scheme:dark; }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:15px; line-height:1.55;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));}
+h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0}
+p{margin:0}
+button,input,select,textarea{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+.top{max-width:1240px; margin:0 auto; padding-block:28px 18px; display:flex; flex-wrap:wrap; gap:14px 24px; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--line)}
+.brand{display:flex; flex-direction:column; gap:6px; min-width:0; max-width:62ch}
+.wordmark{font-size:30px; font-weight:700; letter-spacing:-0.01em; line-height:1.1}
+.wordmark span{color:var(--accent)}
+.fullname{color:var(--ink-2); font-size:14.5px}
+.topright{display:flex; flex-direction:column; align-items:flex-end; gap:8px}
+.lang{display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:var(--surface)}
+.lang button{border:0; background:transparent; padding:6px 14px; cursor:pointer; font-size:13.5px}
+.lang button[aria-pressed="true"]{background:var(--accent); color:var(--on-accent); font-weight:600}
+.proto{font-family:var(--font-mono); font-size:12px; color:var(--ink-2)}
+
+.intro{max-width:1240px; margin:0 auto; padding-block:18px 8px; display:flex; flex-direction:column; gap:14px}
+.howto{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px}
+.howto li{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:12px 14px; display:flex; gap:10px; align-items:flex-start; font-size:14px}
+.howto b{flex:none; width:24px; height:24px; border-radius:50%; background:var(--accent); color:var(--on-accent); display:grid; place-items:center; font-size:13px}
+.examples{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.examples .lbl{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-right:4px}
+.chipbtn{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 12px; cursor:pointer; font-size:13.5px}
+.chipbtn:hover{border-color:var(--accent)}
+.chipbtn[aria-pressed="true"]{background:var(--accent); color:var(--on-accent); border-color:var(--accent)}
+.chipbtn.ghost{background:transparent}
+
+.layout{max-width:1240px; margin:0 auto; padding-block:12px 48px; display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:24px; align-items:start}
+@media (max-width:980px){ .layout{grid-template-columns:minmax(0,1fr)} }
+
+.form{display:flex; flex-direction:column; gap:16px; min-width:0}
+.stage{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:20px; display:flex; flex-direction:column; gap:18px}
+.stage-head{display:flex; gap:14px; align-items:flex-start}
+.num{flex:none; width:30px; height:30px; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-weight:700; display:grid; place-items:center; font-size:14px}
+.stage-head .kicker{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted)}
+.stage-head h2{font-size:18px; font-weight:600}
+.stage-head p.sub{color:var(--ink-2); font-size:14px; margin-top:4px; max-width:70ch}
+
+.field{display:flex; flex-direction:column; gap:8px; border:0; margin:0; padding:0; min-width:0}
+.field>legend,.field>label.q{font-weight:600; font-size:14.5px; padding:0; margin-bottom:2px}
+.hint{color:var(--muted); font-size:13px; max-width:75ch}
+.row2{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px}
+input[type=text],textarea{width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:9px 11px}
+textarea{resize:vertical; min-height:60px}
+
+.seg{display:flex; flex-wrap:wrap; gap:6px}
+.seg input{position:absolute; opacity:0; pointer-events:none}
+.seg label{border:1px solid var(--line); border-radius:8px; padding:7px 12px; cursor:pointer; background:var(--bg); font-size:14px}
+.seg label:hover{border-color:var(--accent)}
+.seg input:checked+label{background:var(--accent-soft); border-color:var(--accent); color:var(--ink); font-weight:600}
+.seg input:focus-visible+label{outline:2px solid var(--accent); outline-offset:2px}
+.seg.stack{flex-direction:column}
+.seg.stack label{display:block}
+.seg.stack label small{display:block; color:var(--muted); font-weight:400; font-size:12.5px}
+
+.checks{display:flex; flex-wrap:wrap; gap:8px 16px}
+.checks label{display:flex; gap:6px; align-items:center; font-size:14px; cursor:pointer}
+.checks input{accent-color:var(--accent)}
+
+.cond{border-top:1px solid var(--line); padding-top:14px; display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px 12px}
+.cond:first-child{border-top:0; padding-top:0}
+.cond .dep{margin-top:3px; width:18px; height:18px; accent-color:var(--accent)}
+.cond-name{font-weight:600; font-size:14.5px; cursor:pointer}
+.cond-ev{color:var(--muted); font-size:13px}
+.cond-body{display:flex; flex-direction:column; gap:8px; min-width:0}
+.cond.off .cond-name{color:var(--muted); font-weight:500}
+.cond.off .rate,.cond.off .follow{display:none}
+.rate .r-S input:checked+label{border-color:var(--r-strong); color:var(--r-strong); background:transparent}
+.rate .r-P input:checked+label{border-color:var(--r-partial); color:var(--r-partial); background:transparent}
+.rate .r-W input:checked+label{border-color:var(--r-weak); color:var(--r-weak); background:transparent}
+.rate .r-U input:checked+label{border-color:var(--r-unknown); color:var(--r-unknown); background:transparent}
+.rate span{display:contents}
+.follow{background:var(--sunk); border-radius:8px; padding:10px 12px; display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; font-size:13.5px}
+.follow .seg label{padding:4px 12px; font-size:13px; background:var(--surface)}
+
+.panel{position:sticky; top:16px; display:flex; flex-direction:column; gap:14px; max-height:calc(100vh - 32px); overflow:auto; min-width:0}
+@media (max-width:980px){ .panel{position:static; max-height:none} }
+.verdict{border-radius:var(--radius); padding:18px; border:1px solid var(--line); background:var(--surface); display:flex; flex-direction:column; gap:8px}
+.verdict .eyebrow{font-size:12px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted)}
+.verdict .outcome{font-size:28px; font-weight:700; line-height:1.15}
+.verdict .meaning{font-size:16px; font-weight:600}
+.verdict .why{color:var(--ink-2); font-size:14px}
+.v-inv{background:var(--o-inv-soft); border-color:transparent}      .v-inv .outcome{color:var(--o-inv)}
+.v-pilot{background:var(--o-pilot-soft); border-color:transparent}  .v-pilot .outcome{color:var(--o-pilot)}
+.v-scale{background:var(--o-scale-soft); border-color:transparent}  .v-scale .outcome{color:var(--o-scale)}
+.v-decline{background:var(--o-decline-soft); border-color:transparent} .v-decline .outcome{color:var(--o-decline)}
+.v-none .outcome{color:var(--muted); font-size:22px}
+
+.box{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px; display:flex; flex-direction:column; gap:10px}
+.box h3{font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:600}
+.box .note{font-size:13px; color:var(--muted)}
+.trace{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px}
+.trace li{display:grid; grid-template-columns:24px minmax(0,1fr); gap:10px; font-size:13.5px; color:var(--ink-2)}
+.trace .mark{font-size:12px; font-weight:700; text-align:center; border-radius:50%; width:24px; height:24px; line-height:24px}
+.trace li.hit{color:var(--ink)} .trace li.hit .mark{background:var(--ink); color:var(--surface)}
+.trace li.miss .mark{border:1px solid var(--line); color:var(--muted); line-height:22px}
+.trace li.skip{opacity:.5} .trace li.skip .mark{border:1px dashed var(--line); line-height:22px}
+.trace .q{display:block; font-weight:600; color:var(--ink)}
+.steps{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; font-size:14px}
+.change{font-size:14px; color:var(--ink-2)}
+.targets{display:flex; flex-direction:column; gap:8px}
+.trow,.thead{display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr); gap:6px}
+.thead{font-size:12px; color:var(--muted)}
+.trow input{padding:7px 9px; font-size:13.5px}
+pre.record{font-family:var(--font-mono); font-size:12px; line-height:1.55; white-space:pre-wrap; word-break:break-word; background:var(--sunk); border-radius:8px; padding:12px; margin:0; max-height:360px; overflow:auto}
+.copyrow{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.copy{border:1px solid var(--accent); background:var(--accent); color:var(--on-accent); border-radius:8px; padding:7px 14px; cursor:pointer; font-weight:600; font-size:14px}
+.copy-status{font-size:13px; color:var(--muted)}
+.mini{display:none}
+@media (max-width:980px){
+  body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--bg)}
+  .mini{display:flex; position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); padding-block:8px; justify-content:space-between; align-items:center; gap:10px; border-bottom:1px solid var(--line); font-size:14px}
+  .mini a{color:var(--accent); font-weight:600; text-decoration:none}
+  .topright{align-items:flex-start}
+}
+.foot{max-width:1240px; margin:0 auto; padding-block:0 32px; color:var(--muted); font-size:12.5px}
+</style>
+
+<header class="top">
+  <div class="brand">
+    <div class="wordmark">V<span>-</span>SWAP</div>
+    <div class="fullname" data-t="tagline"></div>
+  </div>
+  <div class="topright">
+    <div class="lang" role="group" aria-label="Language / Ngôn ngữ">
+      <button type="button" id="lang-en" data-lang="en">English</button>
+      <button type="button" id="lang-vi" data-lang="vi">Tiếng Việt</button>
+    </div>
+    <div class="proto" data-t="badge"></div>
+  </div>
+</header>
+
+<div class="mini" aria-live="polite"><span><span data-t="miniLabel"></span> <b id="miniOutcome">–</b></span><a href="#decision" data-t="miniLink"></a></div>
+
+<section class="intro">
+  <ol class="howto">
+    <li><b>1</b><span data-t="how1"></span></li>
+    <li><b>2</b><span data-t="how2"></span></li>
+    <li><b>3</b><span data-t="how3"></span></li>
+  </ol>
+  <div class="examples" id="examples"><span class="lbl" data-t="tryExample"></span></div>
+</section>
+
+<div class="layout">
+  <form class="form" id="form" novalidate>
+    <section class="stage">
+      <div class="stage-head"><div class="num" aria-hidden="true">0</div><div><h2 data-t="p0title"></h2></div></div>
+      <div class="row2">
+        <div class="field"><label class="q" for="app" data-t="appLabel"></label><input type="text" id="app"></div>
+        <div class="field"><label class="q" for="place" data-t="placeLabel"></label><input type="text" id="place"></div>
+      </div>
+      <div class="field"><label class="q" for="who" data-t="whoLabel"></label><input type="text" id="who"></div>
+    </section>
+
+    <section class="stage">
+      <div class="stage-head"><div class="num" aria-hidden="true">1</div><div><div class="kicker" data-t="p1kicker"></div><h2 data-t="p1title"></h2></div></div>
+      <fieldset class="field"><legend data-t="qProblem"></legend><p class="hint" data-t="hProblem"></p><div class="seg stack" id="problem"></div>
+        <textarea id="problemOther" hidden></textarea></fieldset>
+      <fieldset class="field"><legend data-t="qMaturity"></legend><div class="seg" id="maturity"></div><p class="hint" data-t="hMaturity"></p></fieldset>
+      <fieldset class="field"><legend data-t="qComparable"></legend><div class="seg" id="comparable"></div><p class="hint" data-t="hRecordOnly"></p></fieldset>
+      <fieldset class="field"><legend data-t="qHardware"></legend><div class="seg" id="hardware"></div><p class="hint" data-t="hHardware"></p></fieldset>
+    </section>
+
+    <section class="stage">
+      <div class="stage-head"><div class="num" aria-hidden="true">2</div><div><div class="kicker" data-t="p2kicker"></div><h2 data-t="p2title"></h2><p class="sub" data-t="p2sub"></p></div></div>
+      <div id="conds" class="field"></div>
+      <p class="hint" data-t="ratingLegend"></p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-head"><div class="num" aria-hidden="true">3</div><div><div class="kicker" data-t="p3kicker"></div><h2 data-t="p3title"></h2></div></div>
+      <fieldset class="field"><legend data-t="qBenefits"></legend><div class="checks" id="benefits"></div></fieldset>
+      <fieldset class="field"><legend data-t="qValue"></legend><div class="seg" id="value"></div></fieldset>
+      <fieldset class="field"><legend data-t="qScalable"></legend><div class="seg" id="scalable"></div><p class="hint" data-t="hRecordOnly"></p></fieldset>
+      <fieldset class="field"><legend data-t="qLocalPilot"></legend><div class="seg" id="localPilot"></div><p class="hint" data-t="hLocalPilot"></p></fieldset>
+    </section>
+  </form>
+
+  <aside class="panel" id="decision">
+    <div class="verdict v-none" id="verdict" aria-live="polite">
+      <div class="eyebrow" data-t="p4eyebrow"></div>
+      <div class="outcome" id="outcome">–</div>
+      <div class="meaning" id="meaning"></div>
+      <p class="why" id="why"></p>
+    </div>
+    <div class="box"><h3 data-t="whyTitle"></h3><p class="note" data-t="whyNote"></p><ol class="trace" id="trace"></ol></div>
+    <div class="box"><h3 data-t="stepsTitle"></h3><ul class="steps" id="steps"></ul>
+      <div class="targets" id="targets" hidden>
+        <p class="hint" data-t="targetsNote"></p>
+        <div class="thead"><span data-t="tMeasure"></span><span data-t="tNow"></span><span data-t="tTarget"></span></div>
+        <div class="trow"><input type="text" id="t1m"><input type="text" id="t1b"><input type="text" id="t1t"></div>
+        <div class="trow"><input type="text" id="t2m"><input type="text" id="t2b"><input type="text" id="t2t"></div>
+      </div>
+    </div>
+    <div class="box"><h3 data-t="changeTitle"></h3><p class="change" id="change"></p></div>
+    <div class="box"><h3 data-t="recordTitle"></h3>
+      <pre class="record" id="record" tabindex="0"></pre>
+      <div class="copyrow"><button type="button" class="copy" id="copy" data-t="copyBtn"></button><span class="copy-status" id="copyStatus" role="status"></span></div>
+    </div>
+  </aside>
+</div>
+
+<p class="foot" data-t="foot"></p>
+
+<script>
+/* ---------- words ---------- */
+const T = {
+ en:{
+  tagline:"A step-by-step check that helps a city decide whether to try, roll out or turn down a smart-waste technology in Vietnam.",
+  badge:"Prototype · rules not yet tested with officials",
+  how1:"Pick an example below, or start blank.",
+  how2:"Answer the questions in parts 1 to 3. Every answer updates the result.",
+  how3:"Read the decision on the right (below on a phone). Copy the record to keep it.",
+  tryExample:"Try an example", startBlank:"Start blank",
+  p0title:"What is proposed, and where?",
+  appLabel:"Technology", placeLabel:"Place (province, city or district)", whoLabel:"Your name and department (optional)",
+  appPh:"e.g. Smart bins that report when they are full", placePh:"e.g. Thu Duc City, Ho Chi Minh City", whoPh:"e.g. Nguyen Van A, Department of Environment",
+  p1kicker:"Part 1", p1title:"Does it fix a real problem here?",
+  qProblem:"Which problem in this place will it fix?", hProblem:"Pick a problem backed by local data. If there isn't one, choose the last option.",
+  otherPh:"Describe the problem and the data that shows it (a survey, collection records, an inspection report)",
+  qMaturity:"How far has this technology got?", hMaturity:"Use the best evidence from anywhere in the world.",
+  qComparable:"Has it worked somewhere similar to here?", hRecordOnly:"This goes in the record. It does not change the decision by itself.",
+  qHardware:"Does it need new equipment?", hHardware:"For example sensors, smart bins, cameras or trucks. Software that uses records you already have does not count.",
+  p2kicker:"Part 2", p2title:"Is this place ready for it?",
+  p2sub:"A smart-waste system can need up to eight things. Tick the ones this technology needs, then say how ready this place is for each one. The starting answers come from national data in the paper. Change them if you know your area better.",
+  evPrefix:"What the paper found: ",
+  ratingLegend:"In the paper, these four levels are called Strong, Partial, Weak and Unknown.",
+  fuWeak:"Could you fix this in a small trial in one district?", fuUnknown:"Would it cost a lot to find out by running a trial?",
+  p3kicker:"Part 3", p3title:"Is it worth it?",
+  qBenefits:"What would it improve?", qValue:"Are the benefits worth the cost?", qScalable:"Could it later work in more districts?",
+  qLocalPilot:"Has it already been trialled here?", hLocalPilot:"Only a trial here, with targets written down before it started, can lead to a full rollout.",
+  p4eyebrow:"Part 4 · Decision",
+  whyTitle:"Why this decision", whyNote:"The tool asks four questions in order and stops at the first “yes”.",
+  stepsTitle:"What to do next", changeTitle:"What would change this decision", recordTitle:"Decision record",
+  targetsNote:"Pilot targets. Write these down before the trial starts.", tMeasure:"What to measure", tNow:"Now", tTarget:"Target",
+  copyBtn:"Copy record", copied:"Copied.", copyFail:"Select the text above and copy it.",
+  miniLabel:"Decision:", miniLink:"See why ↓",
+  incomplete:"Not finished yet", stillNeeded:"Still to answer: ",
+  foot:"Built from a review of 40 studies by Duy Anh Tran (2026). The starting answers use national data, not measurements of any one place. The decision rules are a proposal and have not yet been tested with officials.",
+  yes:"Yes.", no:"No.", notAsked:"Not asked.",
+  miss_problem:"Part 1: which problem it fixes", miss_maturity:"Part 1: how far it has got", miss_hardware:"Part 1: new equipment", miss_value:"Part 3: benefits worth the cost",
+  miss_fix:c=>"Part 2: can a trial fix "+c+"?", miss_costly:c=>"Part 2: is it costly to find out about "+c+"?"
+ },
+ vi:{
+  tagline:"Bộ câu hỏi từng bước giúp chính quyền quyết định nên thử, nhân rộng hay từ chối một công nghệ quản lý rác thông minh tại Việt Nam.",
+  badge:"Bản thử nghiệm · quy tắc chưa được kiểm chứng với cán bộ",
+  how1:"Chọn một ví dụ bên dưới, hoặc bắt đầu từ đầu.",
+  how2:"Trả lời câu hỏi ở phần 1 đến 3. Mỗi câu trả lời sẽ cập nhật kết quả.",
+  how3:"Xem quyết định ở bên phải (bên dưới nếu dùng điện thoại). Sao chép biên bản để lưu lại.",
+  tryExample:"Xem ví dụ", startBlank:"Bắt đầu từ đầu",
+  p0title:"Đề xuất công nghệ gì, ở đâu?",
+  appLabel:"Công nghệ", placeLabel:"Địa phương (tỉnh, thành phố hoặc quận)", whoLabel:"Họ tên và đơn vị (không bắt buộc)",
+  appPh:"Ví dụ: Thùng rác thông minh báo khi đầy", placePh:"Ví dụ: TP. Thủ Đức, TP. Hồ Chí Minh", whoPh:"Ví dụ: Nguyễn Văn A, Sở Tài nguyên và Môi trường",
+  p1kicker:"Phần 1", p1title:"Công nghệ này có giải quyết một vấn đề có thật ở đây không?",
+  qProblem:"Công nghệ này sẽ giải quyết vấn đề nào ở địa phương?", hProblem:"Chọn vấn đề có số liệu chứng minh. Nếu chưa có, chọn lựa chọn cuối cùng.",
+  otherPh:"Mô tả vấn đề và số liệu chứng minh (khảo sát, số liệu thu gom, báo cáo kiểm tra)",
+  qMaturity:"Công nghệ này đã phát triển đến đâu?", hMaturity:"Dựa vào bằng chứng tốt nhất ở bất kỳ đâu trên thế giới.",
+  qComparable:"Nó đã hiệu quả ở nơi có điều kiện giống ở đây chưa?", hRecordOnly:"Chỉ ghi vào biên bản, không tự làm thay đổi quyết định.",
+  qHardware:"Có cần mua thiết bị mới không?", hHardware:"Ví dụ: cảm biến, thùng rác thông minh, camera, xe thu gom. Phần mềm dùng số liệu sẵn có thì không tính.",
+  p2kicker:"Phần 2", p2title:"Địa phương đã sẵn sàng chưa?",
+  p2sub:"Một hệ thống rác thông minh có thể cần tới tám điều kiện. Đánh dấu những điều kiện công nghệ này cần, rồi cho biết địa phương sẵn sàng đến đâu với từng điều kiện. Câu trả lời ban đầu lấy từ số liệu cả nước trong bài nghiên cứu. Hãy sửa lại nếu bạn hiểu rõ địa phương hơn.",
+  evPrefix:"Bài nghiên cứu cho thấy: ",
+  ratingLegend:"Trong bài nghiên cứu, bốn mức này lần lượt là Strong, Partial, Weak và Unknown.",
+  fuWeak:"Có thể khắc phục điều này trong một đợt thí điểm nhỏ ở một quận không?", fuUnknown:"Nếu thí điểm để tìm hiểu thì có tốn nhiều chi phí không?",
+  p3kicker:"Phần 3", p3title:"Có đáng để làm không?",
+  qBenefits:"Công nghệ này sẽ cải thiện điều gì?", qValue:"Lợi ích có xứng với chi phí không?", qScalable:"Sau này có thể mở rộng ra nhiều quận không?",
+  qLocalPilot:"Đã từng thí điểm ở đây chưa?", hLocalPilot:"Chỉ khi đã thí điểm tại đây, với mục tiêu được ghi lại từ trước, mới có thể nhân rộng.",
+  p4eyebrow:"Phần 4 · Quyết định",
+  whyTitle:"Vì sao có quyết định này", whyNote:"Công cụ hỏi bốn câu theo thứ tự và dừng ở câu đầu tiên có câu trả lời “có”.",
+  stepsTitle:"Việc cần làm tiếp theo", changeTitle:"Điều gì sẽ làm thay đổi quyết định", recordTitle:"Biên bản quyết định",
+  targetsNote:"Mục tiêu thí điểm. Ghi lại trước khi bắt đầu thí điểm.", tMeasure:"Chỉ số đo", tNow:"Hiện tại", tTarget:"Mục tiêu",
+  copyBtn:"Sao chép biên bản", copied:"Đã sao chép.", copyFail:"Hãy bôi đen đoạn văn bản trên và sao chép.",
+  miniLabel:"Quyết định:", miniLink:"Xem lý do ↓",
+  incomplete:"Chưa đủ thông tin", stillNeeded:"Còn thiếu: ",
+  foot:"Xây dựng từ tổng quan 40 nghiên cứu của Trần Duy Anh (2026). Câu trả lời ban đầu dựa trên số liệu cả nước, không phải đo đạc tại một địa phương cụ thể. Các quy tắc ra quyết định là đề xuất và chưa được kiểm chứng với cán bộ quản lý.",
+  yes:"Có.", no:"Không.", notAsked:"Chưa xét.",
+  miss_problem:"Phần 1: vấn đề cần giải quyết", miss_maturity:"Phần 1: mức độ phát triển", miss_hardware:"Phần 1: thiết bị mới", miss_value:"Phần 3: lợi ích so với chi phí",
+  miss_fix:c=>"Phần 2: thí điểm có khắc phục được "+c+" không?", miss_costly:c=>"Phần 2: tìm hiểu về "+c+" có tốn kém không?"
+ }
+};
+
+const PROBLEMS = [
+  {id:"sorting", en:["Few people sort waste correctly","Only 13.1% of surveyed Ho Chi Minh City residents sort as the law requires (Nguyen et al., 2026)"],
+                 vi:["Ít người phân loại rác đúng quy định","Chỉ 13,1% người dân TP.HCM được khảo sát phân loại đúng quy định (Nguyen et al., 2026)"]},
+  {id:"guidance", en:["Residents don't get guidance","48.2% never received instructions from local authorities (Nguyen et al., 2026)"],
+                  vi:["Người dân không được hướng dẫn","48,2% chưa từng nhận hướng dẫn từ chính quyền địa phương (Nguyen et al., 2026)"]},
+  {id:"volume", en:["There is more and more waste","Ho Chi Minh City rose 53% to 9,200 tonnes a day, 2010–2022 (Le et al., 2023)"],
+                vi:["Lượng rác ngày càng tăng","Rác ở TP.HCM tăng 53%, lên 9.200 tấn/ngày, giai đoạn 2010–2022 (Le et al., 2023)"]},
+  {id:"plastics", en:["Little plastic is recycled","About 33% of four main plastics were recycled in 2019 (World Bank Group, 2021)"],
+                  vi:["Nhựa được tái chế rất ít","Khoảng 33% bốn loại nhựa chính được tái chế năm 2019 (World Bank Group, 2021)"]},
+  {id:"other", en:["Another problem with local data",""], vi:["Vấn đề khác có số liệu",""]},
+  {id:"none", en:["No local problem has been shown","The proposal does not point to a problem backed by local data"],
+              vi:["Chưa chỉ ra vấn đề nào ở địa phương","Đề xuất chưa nêu vấn đề nào có số liệu ở địa phương"]}
+];
+const OPTS = {
+  maturity:{en:[["concept","Only an idea"],["prototype","Tested as a prototype"],["piloted","Trialled in a real city"],["scale","Used city-wide somewhere"]],
+            vi:[["concept","Mới là ý tưởng"],["prototype","Đã thử dạng nguyên mẫu"],["piloted","Đã thí điểm ở một thành phố"],["scale","Đã dùng toàn thành phố ở nơi khác"]]},
+  ynu:{en:[["yes","Yes"],["no","No"],["unknown","Don't know"]], vi:[["yes","Có"],["no","Không"],["unknown","Chưa rõ"]]},
+  yn:{en:[["yes","Yes"],["no","No"]], vi:[["yes","Có"],["no","Không"]]},
+  value:{en:[["positive","Yes"],["uncertain","Not sure"],["negative","No"]], vi:[["positive","Có"],["uncertain","Chưa chắc"],["negative","Không"]]},
+  pilot:{en:[["none","Not yet"],["met","Yes, and it hit its targets"],["missed","Yes, but it missed its targets"]],
+         vi:[["none","Chưa"],["met","Rồi, và đạt mục tiêu"],["missed","Rồi, nhưng không đạt mục tiêu"]]},
+  benefits:{en:[["operational","Day-to-day operations"],["environmental","The environment"],["economic","Costs"],["social","Residents and workers"]],
+            vi:[["operational","Vận hành hằng ngày"],["environmental","Môi trường"],["economic","Chi phí"],["social","Người dân và công nhân"]]},
+  rating:{en:[["S","Ready"],["P","Partly ready"],["W","Not ready"],["U","Don't know"]], vi:[["S","Sẵn sàng"],["P","Sẵn sàng một phần"],["W","Chưa sẵn sàng"],["U","Chưa rõ"]]}
+};
+const CONDS = [
+ {id:"regulation", r:"P",
+  en:{n:"Local rules", ev:"Sorting is required by law, but only 34 of 63 provinces were putting it into practice by July 2025 (Nguyen et al., 2026).", check:"confirm which local rules apply", fix:"agree which local rules the trial will follow", fixLong:"make sure local sorting rules are in place"},
+  vi:{n:"Quy định địa phương", ev:"Luật đã bắt buộc phân loại rác, nhưng đến tháng 7/2025 mới 34/63 tỉnh thành triển khai (Nguyen et al., 2026).", check:"xác định quy định địa phương nào được áp dụng", fix:"thống nhất quy định địa phương mà đợt thí điểm sẽ tuân theo", fixLong:"đảm bảo địa phương đã ban hành quy định phân loại rác"}},
+ {id:"participation", r:"W",
+  en:{n:"Residents taking part", ev:"82% support sorting, but only 13.1% do it correctly; 69.1% say habit gets in the way (Nguyen et al., 2026).", check:"survey how residents sort waste now", fix:"give residents clear sorting instructions", fixLong:"give residents clear sorting instructions"},
+  vi:{n:"Sự tham gia của người dân", ev:"82% ủng hộ phân loại rác nhưng chỉ 13,1% làm đúng; 69,1% cho rằng thói quen là rào cản (Nguyen et al., 2026).", check:"khảo sát cách người dân đang phân loại rác", fix:"hướng dẫn người dân phân loại rác rõ ràng", fixLong:"hướng dẫn người dân phân loại rác rõ ràng"}},
+ {id:"guidance", r:"W",
+  en:{n:"Guidance from local officials", ev:"48.2% of residents received no guidance from local authorities (Nguyen et al., 2026).", check:"check what guidance residents get now, and from whom", fix:"have local officers brief each household", fixLong:"have local officers brief each household"},
+  vi:{n:"Hướng dẫn từ chính quyền", ev:"48,2% người dân chưa từng được chính quyền địa phương hướng dẫn (Nguyen et al., 2026).", check:"kiểm tra người dân hiện được hướng dẫn gì và từ ai", fix:"cử cán bộ địa phương hướng dẫn từng hộ gia đình", fixLong:"cử cán bộ địa phương hướng dẫn từng hộ gia đình"}},
+ {id:"waste", r:"P",
+  en:{n:"Type of local waste", ev:"What waste is made of changes from place to place, even within one province (Pham et al., 2025).", check:"test the technology on samples of local waste", fix:"take samples of the district's waste before the trial starts", fixLong:"study what local waste is made of"},
+  vi:{n:"Đặc điểm rác ở địa phương", ev:"Thành phần rác khác nhau giữa các điểm, ngay cả trong cùng một tỉnh (Pham et al., 2025).", check:"thử công nghệ trên mẫu rác của địa phương", fix:"lấy mẫu rác của quận trước khi thí điểm", fixLong:"nghiên cứu thành phần rác của địa phương"}},
+ {id:"data", r:"P",
+  en:{n:"Data", ev:"Computer models have already predicted waste amounts using Vietnamese household data (Nguyen et al., 2021).", check:"check which collection records exist and how complete they are", fix:"clean up and share the district's collection records", fixLong:"clean up and share collection records"},
+  vi:{n:"Dữ liệu", ev:"Đã có mô hình máy tính dự báo lượng rác bằng dữ liệu hộ gia đình Việt Nam (Nguyen et al., 2021).", check:"kiểm tra hiện có những số liệu thu gom nào và đầy đủ đến đâu", fix:"chuẩn hóa và chia sẻ số liệu thu gom của quận", fixLong:"chuẩn hóa và chia sẻ số liệu thu gom"}},
+ {id:"skills", r:"P",
+  en:{n:"Technical skills", ev:"A Vietnamese university built a smart-bin prototype (Lam et al., 2021), but expertise is still limited (Van Thanh et al., 2026).", check:"confirm who will install, run and repair it", fix:"train the staff who will run it", fixLong:"train the staff who would run it"},
+  vi:{n:"Kỹ năng kỹ thuật", ev:"Một trường đại học Việt Nam đã làm thùng rác thông minh nguyên mẫu (Lam et al., 2021), nhưng chuyên môn vẫn còn hạn chế (Van Thanh et al., 2026).", check:"xác định ai sẽ lắp đặt, vận hành và sửa chữa", fix:"đào tạo nhân viên sẽ vận hành", fixLong:"đào tạo nhân viên sẽ vận hành"}},
+ {id:"cost", r:"U",
+  en:{n:"Cost and funding", ev:"The paper found no cost estimates for Vietnam.", check:"get quotes for buying and running it in one district", fix:"record every buying and running cost", fixLong:"find funding"},
+  vi:{n:"Chi phí và nguồn vốn", ev:"Bài nghiên cứu chưa tìm thấy ước tính chi phí nào cho Việt Nam.", check:"lấy báo giá mua và vận hành cho một quận", fix:"ghi lại mọi chi phí mua sắm và vận hành", fixLong:"tìm nguồn vốn"}},
+ {id:"connectivity", r:"W",
+  en:{n:"Internet and mobile coverage", ev:"Gaps in data, infrastructure and expertise hold back AI use in Vietnam (Van Thanh et al., 2026).", check:"check mobile and internet coverage at the planned sites", fix:"pick sites with good coverage, or add a local network gateway", fixLong:"improve network coverage"},
+  vi:{n:"Sóng di động và internet", ev:"Hạn chế về dữ liệu, hạ tầng và chuyên môn đang cản trở việc dùng AI ở Việt Nam (Van Thanh et al., 2026).", check:"kiểm tra sóng di động và internet tại các điểm dự kiến", fix:"chọn điểm có sóng tốt hoặc lắp thêm trạm thu phát riêng", fixLong:"cải thiện vùng phủ sóng"}}
+];
+const EXAMPLES = [
+ {key:"sensors", en:"Bins that report when full", vi:"Thùng rác báo khi đầy",
+  app:{en:"Smart bins that report when they are full, plus route planning", vi:"Thùng rác thông minh báo khi đầy, kèm lập lộ trình thu gom"},
+  place:{en:"One district in Ho Chi Minh City (example)", vi:"Một quận ở TP.HCM (ví dụ)"},
+  s:{problem:"volume", maturity:"piloted", comparable:"unknown", hardware:"yes", deps:{connectivity:"W",cost:"U",skills:"P"}, fix:{connectivity:"yes"}, costly:{cost:"yes"},
+     benefits:["operational","environmental","economic"], value:"uncertain", scalable:"yes", localPilot:"none"}},
+ {key:"forecast", en:"Predicting waste amounts", vi:"Dự báo lượng rác",
+  app:{en:"Computer forecasts of how much waste each area will produce", vi:"Dự báo bằng máy tính lượng rác mỗi khu vực sẽ thải ra"},
+  place:{en:"Ho Chi Minh City (example)", vi:"TP.HCM (ví dụ)"},
+  s:{problem:"volume", maturity:"prototype", comparable:"yes", hardware:"no", deps:{data:"P"}, fix:{}, costly:{}, benefits:["operational"], value:"positive", scalable:"yes", localPilot:"none"},
+  targets:{en:[["Forecast error vs. actual monthly tonnes","",""],["Collection plans changed using the forecast","",""]], vi:[["Sai số dự báo so với lượng rác thực tế hằng tháng","",""],["Số kế hoạch thu gom được điều chỉnh theo dự báo","",""]]}},
+ {key:"guide", en:"Sorting guide app for residents", vi:"Ứng dụng hướng dẫn phân loại",
+  app:{en:"Phone app that shows residents how to sort, with small rewards", vi:"Ứng dụng điện thoại hướng dẫn người dân phân loại rác, kèm điểm thưởng"},
+  place:{en:"One ward in Ho Chi Minh City (example)", vi:"Một phường ở TP.HCM (ví dụ)"},
+  s:{problem:"sorting", maturity:"prototype", comparable:"unknown", hardware:"no", deps:{participation:"W",guidance:"W"}, fix:{participation:"yes",guidance:"yes"}, costly:{},
+     benefits:["social","environmental"], value:"positive", scalable:"yes", localPilot:"none"},
+  targets:{en:[["Households sorting correctly","",""],["Households that got guidance","",""]], vi:[["Số hộ phân loại rác đúng quy định","",""],["Số hộ được hướng dẫn","",""]]}},
+ {key:"aibin", en:"Bins that sort with AI", vi:"Thùng rác phân loại bằng AI",
+  app:{en:"Smart bins with a camera that sorts each item using AI", vi:"Thùng rác thông minh có camera, dùng AI để phân loại từng món rác"},
+  place:{en:"One district in Ho Chi Minh City (example)", vi:"Một quận ở TP.HCM (ví dụ)"},
+  s:{problem:"sorting", maturity:"prototype", comparable:"unknown", hardware:"yes", deps:{waste:"P",participation:"W",cost:"U"}, fix:{participation:"yes"}, costly:{cost:"yes"},
+     benefits:["operational","environmental"], value:"uncertain", scalable:"unknown", localPilot:"none"}},
+ {key:"twin", en:"Digital copy of the city", vi:"Bản sao số của thành phố",
+  app:{en:"A digital twin: a live computer model of the whole city's waste system", vi:"Bản sao số (digital twin): mô hình máy tính trực tiếp của toàn bộ hệ thống rác thành phố"},
+  place:{en:"Ho Chi Minh City (example)", vi:"TP.HCM (ví dụ)"},
+  s:{problem:"volume", maturity:"concept", comparable:"no", hardware:"yes", deps:{data:"P",connectivity:"W"}, fix:{connectivity:"no"}, costly:{},
+     benefits:["operational","environmental"], value:"uncertain", scalable:"unknown", localPilot:"none"}}
+];
+const OUT = {
+  investigate:{en:["Investigate further","Don't buy anything yet. Get the missing facts first."], vi:["Tìm hiểu thêm","Chưa mua gì cả. Thu thập thông tin còn thiếu trước."], cls:"v-inv"},
+  pilot:{en:["Pilot","Try it in one district first."], vi:["Thí điểm","Thử trước ở một quận."], cls:"v-pilot"},
+  scale:{en:["Scale","Roll it out, one district at a time."], vi:["Nhân rộng","Triển khai rộng, lần lượt từng quận."], cls:"v-scale"},
+  decline:{en:["Decline","Don't go ahead with this proposal."], vi:["Không triển khai","Không tiếp tục với đề xuất này."], cls:"v-decline"}
+};
+
+/* ---------- state ---------- */
+let LANG = "en";
+try { const saved = localStorage.getItem("vswap-lang"); if (saved==="en"||saved==="vi") LANG = saved; else if ((navigator.language||"").toLowerCase().startsWith("vi")) LANG="vi"; } catch(e){}
+const S = {};
+let current = null; // current example
+const $ = id => document.getElementById(id);
+const tx = k => T[LANG][k];
+const cn = c => c[LANG].n;
+const lc = s => LANG==="en" ? s.charAt(0).toLowerCase()+s.slice(1) : s.charAt(0).toLowerCase()+s.slice(1);
+const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+const joinAnd = a => { const w = LANG==="en"?" and ":" và "; return a.length<2 ? a.join("") : a.slice(0,-1).join(", ")+w+a[a.length-1]; };
+const joinReasons = a => { const w = LANG==="en"?"; and ":"; ngoài ra, "; return a.length<2 ? a.join("") : a.slice(0,-1).join("; ")+w+a[a.length-1]; };
+
+/* ---------- building the form ---------- */
+function seg(containerId, name, opts){
+  const c = $(containerId); c.innerHTML = "";
+  opts.forEach(([v,l,sub]) => {
+    const id = name+"-"+v;
+    const inp=document.createElement("input"); inp.type="radio"; inp.name=name; inp.id=id; inp.value=v; inp.checked = S[name]===v;
+    const lab=document.createElement("label"); lab.htmlFor=id; lab.textContent=l;
+    if (sub){ const sm=document.createElement("small"); sm.textContent=sub; lab.appendChild(sm); }
+    inp.addEventListener("change", () => { S[name]=v; $("problemOther").hidden = S.problem!=="other"; update(); });
+    c.append(inp, lab);
+  });
+}
+function buildForm(){
+  seg("problem","problem", PROBLEMS.map(p=>[p.id, p[LANG][0], p[LANG][1]]));
+  seg("maturity","maturity", OPTS.maturity[LANG]);
+  seg("comparable","comparable", OPTS.ynu[LANG]);
+  seg("hardware","hardware", OPTS.yn[LANG]);
+  seg("value","value", OPTS.value[LANG]);
+  seg("scalable","scalable", OPTS.ynu[LANG]);
+  seg("localPilot","localPilot", OPTS.pilot[LANG]);
+  const b=$("benefits"); b.innerHTML="";
+  OPTS.benefits[LANG].forEach(([v,l]) => {
+    const lab=document.createElement("label"); const cb=document.createElement("input"); cb.type="checkbox"; cb.id="ben-"+v; cb.checked=S.benefits.includes(v);
+    cb.addEventListener("change", () => { S.benefits = OPTS.benefits.en.map(x=>x[0]).filter(k=>$("ben-"+k).checked); update(); });
+    lab.append(cb, document.createTextNode(l)); b.appendChild(lab);
+  });
+  const wrap=$("conds"); wrap.innerHTML="";
+  CONDS.forEach(c => {
+    const row=document.createElement("div"); row.className="cond"; row.id="cond-"+c.id;
+    const dep=document.createElement("input"); dep.type="checkbox"; dep.className="dep"; dep.id="dep-"+c.id;
+    const body=document.createElement("div"); body.className="cond-body";
+    const nm=document.createElement("label"); nm.className="cond-name"; nm.htmlFor=dep.id; nm.textContent=cn(c);
+    const ev=document.createElement("p"); ev.className="cond-ev"; ev.textContent=tx("evPrefix")+c[LANG].ev;
+    const rate=document.createElement("div"); rate.className="seg rate"; rate.setAttribute("role","radiogroup"); rate.setAttribute("aria-label", cn(c));
+    OPTS.rating[LANG].forEach(([v,l]) => {
+      const sp=document.createElement("span"); sp.className="r-"+v;
+      const i=document.createElement("input"); i.type="radio"; i.name="rate-"+c.id; i.id="rate-"+c.id+"-"+v; i.value=v;
+      const lb=document.createElement("label"); lb.htmlFor=i.id; lb.textContent=l;
+      i.addEventListener("change", () => { S.deps[c.id]=v; update(); });
+      sp.append(i, lb); rate.appendChild(sp);
+    });
+    const fol=document.createElement("div"); fol.className="follow"; fol.id="follow-"+c.id;
+    body.append(nm, ev, rate, fol); row.append(dep, body); wrap.appendChild(row);
+    dep.addEventListener("change", () => { if (dep.checked) S.deps[c.id] = S.deps[c.id] || c.r; else delete S.deps[c.id]; update(); });
+  });
+}
+function followUp(c, rating){
+  const f=$("follow-"+c.id); f.innerHTML="";
+  let q, key;
+  if (rating==="W"){ q=tx("fuWeak"); key="fix"; } else if (rating==="U"){ q=tx("fuUnknown"); key="costly"; } else { f.hidden=true; return; }
+  f.hidden=false;
+  const t=document.createElement("span"); t.textContent=q;
+  const g=document.createElement("div"); g.className="seg";
+  OPTS.yn[LANG].forEach(([v,l]) => {
+    const i=document.createElement("input"); i.type="radio"; i.name=key+"-"+c.id; i.id=key+"-"+c.id+"-"+v; i.value=v; i.checked = S[key][c.id]===v;
+    const lb=document.createElement("label"); lb.htmlFor=i.id; lb.textContent=l;
+    i.addEventListener("change", () => { S[key][c.id]=v; update(); });
+    g.append(i, lb);
+  });
+  f.append(t, g);
+}
+const setRadio = (name, v) => document.querySelectorAll(`input[name="${name}"]`).forEach(i => i.checked = i.value===v);
+
+/* ---------- loading examples ---------- */
+function load(ex){
+  current = ex;
+  const base = {app:"",place:"",who:"",problem:null,problemOther:"",maturity:null,comparable:null,hardware:null,deps:{},fix:{},costly:{},benefits:[],value:null,scalable:null,localPilot:"none",targetsEdited:false};
+  Object.keys(S).forEach(k => delete S[k]);
+  Object.assign(S, base, ex ? JSON.parse(JSON.stringify(ex.s)) : {});
+  S.app = ex ? ex.app[LANG] : ""; S.place = ex ? ex.place[LANG] : "";
+  $("app").value=S.app; $("place").value=S.place; $("who").value=""; $("problemOther").value="";
+  fillTargets();
+  document.querySelectorAll(".chipbtn[data-key]").forEach(b => b.setAttribute("aria-pressed", ex && b.dataset.key===ex.key ? "true":"false"));
+  buildForm(); update();
+}
+function fillTargets(){
+  const t = current && current.targets ? current.targets[LANG] : [];
+  ["1","2"].forEach((n,i) => { const r=t[i]||["","",""]; $("t"+n+"m").value=r[0]; $("t"+n+"b").value=r[1]; $("t"+n+"t").value=r[2]; });
+}
+
+/* ---------- the four rules ---------- */
+function evaluate(){
+  const missing=[];
+  if (!S.problem) missing.push(tx("miss_problem"));
+  if (!S.maturity) missing.push(tx("miss_maturity"));
+  if (!S.hardware) missing.push(tx("miss_hardware"));
+  if (!S.value) missing.push(tx("miss_value"));
+  const deps=CONDS.filter(c=>S.deps[c.id]);
+  const weak=deps.filter(c=>S.deps[c.id]==="W"), unknown=deps.filter(c=>S.deps[c.id]==="U");
+  weak.forEach(c => { if (!S.fix[c.id]) missing.push(T[LANG].miss_fix(lc(cn(c)))); });
+  unknown.forEach(c => { if (!S.costly[c.id]) missing.push(T[LANG].miss_costly(lc(cn(c)))); });
+  const unfixable=weak.filter(c=>S.fix[c.id]==="no"), costly=unknown.filter(c=>S.costly[c.id]==="yes");
+  const protoOnly = S.maturity==="concept"||S.maturity==="prototype";
+  const names = a => joinAnd(a.map(c=>lc(cn(c))));
+  const EN = LANG==="en";
+
+  const r1=[];
+  if (S.problem==="none") r1.push(EN?"it doesn't fix a problem backed by local data":"nó không giải quyết vấn đề nào có số liệu ở địa phương");
+  if (unfixable.length) r1.push(EN?"it needs "+names(unfixable)+", which isn't ready and can't be fixed in a trial":"nó cần "+names(unfixable)+", điều kiện này chưa sẵn sàng và không thể khắc phục trong thí điểm");
+  if (S.value==="negative") r1.push(EN?"the benefits aren't worth the cost":"lợi ích không xứng với chi phí");
+  const r2ok = S.localPilot==="met" && weak.length===0;
+  const r2txt = S.localPilot==="met"
+     ? (weak.length ? (EN?"A trial here hit its targets, but "+names(weak)+" is still not ready":"Đã thí điểm đạt mục tiêu, nhưng "+names(weak)+" vẫn chưa sẵn sàng")
+                    : (EN?"A trial here hit the targets set before it started":"Đã thí điểm tại đây và đạt mục tiêu đặt ra từ trước"))
+     : (EN?"It hasn't had a successful trial here yet":"Chưa có đợt thí điểm thành công nào ở đây");
+  const r3=[];
+  if (protoOnly && S.hardware==="yes") r3.push(EN?"it is only "+(S.maturity==="concept"?"an idea":"a prototype")+" and needs new equipment":"nó mới chỉ là "+(S.maturity==="concept"?"ý tưởng":"nguyên mẫu")+" và cần thiết bị mới");
+  if (costly.length) r3.push(EN?"nobody knows the "+names(costly)+" yet, and finding out through a trial would cost a lot":"chưa ai biết rõ "+names(costly)+", và thí điểm để tìm hiểu sẽ rất tốn kém");
+  if (S.localPilot==="missed") r3.push(EN?"a trial here missed its targets and the reason isn't known yet":"đợt thí điểm ở đây không đạt mục tiêu và chưa rõ lý do");
+  const r4txt = EN?"It fixes a real problem, and what's left can be tested cheaply in one district":"Nó giải quyết một vấn đề có thật, và những điểm còn lại có thể kiểm tra với chi phí thấp ở một quận";
+
+  let outcome=null, rule=null, reason="";
+  const because = a => (EN?"Because ":"Vì ")+joinReasons(a)+".";
+  if (!missing.length){
+    if (r1.length){ outcome="decline"; rule=1; reason=because(r1); }
+    else if (r2ok){ outcome="scale"; rule=2; reason=r2txt+"."; }
+    else if (r3.length){ outcome="investigate"; rule=3; reason=because(r3); }
+    else { outcome="pilot"; rule=4; reason=r4txt+"."; }
+  }
+  return {missing,deps,weak,unknown,unfixable,costly,protoOnly,r1,r2ok,r2txt,r3,r4txt,outcome,rule,reason};
+}
+
+function nextSteps(e){
+  const EN=LANG==="en", o=[];
+  if (e.outcome==="investigate"){
+    o.push(EN?"Don't buy any equipment yet.":"Chưa mua thiết bị.");
+    e.costly.forEach(c => o.push(cn(c)+": "+c[LANG].check+"."));
+    if (e.protoOnly && S.hardware==="yes") o.push(EN?"Find proof it works beyond a prototype, such as a trial report from a similar city or a small test on local waste.":"Tìm bằng chứng công nghệ hoạt động được ngoài nguyên mẫu, ví dụ báo cáo thí điểm ở một thành phố tương tự hoặc thử nhỏ trên rác của địa phương.");
+    if (S.localPilot==="missed") o.push(EN?"Find out why the trial here missed its targets before running another.":"Tìm hiểu vì sao đợt thí điểm không đạt mục tiêu trước khi làm đợt mới.");
+    o.push(EN?"Then run this check again.":"Sau đó đánh giá lại bằng công cụ này.");
+  } else if (e.outcome==="pilot"){
+    o.push(EN?"Run a trial in one district for a fixed period.":"Thí điểm ở một quận trong một khoảng thời gian cố định.");
+    o.push(EN?"Write down the targets below before the trial starts.":"Ghi mục tiêu vào bảng bên dưới trước khi bắt đầu thí điểm.");
+    e.weak.forEach(c => o.push((EN?"During the trial, also ":"Trong lúc thí điểm, đồng thời ")+c[LANG].fix+"."));
+    e.unknown.forEach(c => o.push((EN?"Keep track during the trial: ":"Theo dõi trong lúc thí điểm: ")+c[LANG].fix+"."));
+    o.push(EN?"Run this check again with the trial results.":"Đánh giá lại bằng công cụ này khi có kết quả thí điểm.");
+  } else if (e.outcome==="scale"){
+    o.push(EN?"Expand one district at a time, not all at once.":"Mở rộng lần lượt từng quận, không làm đồng loạt.");
+    o.push(EN?"Set buying standards and a maintenance budget before you buy.":"Đặt tiêu chuẩn mua sắm và ngân sách bảo trì trước khi mua.");
+    o.push(EN?"In each new district, track how much waste is produced, collected (SDG 11.6.1) and recycled (SDG 12.5.1).":"Ở mỗi quận mới, theo dõi lượng rác phát sinh, được thu gom (SDG 11.6.1) và được tái chế (SDG 12.5.1).");
+  } else if (e.outcome==="decline"){
+    o.push(EN?"Write down the reason and close the proposal.":"Ghi lại lý do và đóng đề xuất.");
+    if (S.problem==="none") o.push(EN?"Ask whoever proposed it to show a local problem it would fix before trying again.":"Yêu cầu bên đề xuất chỉ ra vấn đề cụ thể ở địa phương mà công nghệ sẽ giải quyết trước khi đề xuất lại.");
+    e.unfixable.forEach(c => o.push((EN?"Spend on this first: ":"Ưu tiên đầu tư trước: ")+c[LANG].fixLong+"."));
+    if (S.value==="negative") o.push(EN?"Note what would need to change for the benefits to be worth the cost.":"Ghi lại điều gì cần thay đổi để lợi ích xứng với chi phí.");
+  }
+  return o;
+}
+function changeText(e){
+  const EN=LANG==="en";
+  if (e.outcome==="investigate") return EN?"If the missing facts look good, the next check should give Pilot. If they show it can't work here, the answer becomes Decline.":"Nếu thông tin còn thiếu cho kết quả tốt, lần đánh giá sau sẽ ra Thí điểm. Nếu cho thấy không thể áp dụng ở đây, kết quả sẽ là Không triển khai.";
+  if (e.outcome==="pilot") return EN?"If the trial hits its targets, the next check gives Scale. If it misses them, the answer becomes Investigate further.":"Nếu thí điểm đạt mục tiêu, lần đánh giá sau sẽ ra Nhân rộng. Nếu không đạt, kết quả sẽ là Tìm hiểu thêm.";
+  if (e.outcome==="scale") return EN?"If results in new districts fall below the trial targets, stop and find out why.":"Nếu kết quả ở các quận mới thấp hơn mục tiêu thí điểm, hãy dừng lại và tìm hiểu nguyên nhân.";
+  if (e.outcome==="decline"){
+    const bits=[];
+    if (S.problem==="none") bits.push(EN?"local data on a problem it would fix":"có số liệu về một vấn đề mà nó giải quyết được");
+    if (e.unfixable.length) bits.push(EN?"progress on "+joinAnd(e.unfixable.map(c=>lc(cn(c)))):joinAnd(e.unfixable.map(c=>lc(cn(c))))+" được cải thiện");
+    if (S.value==="negative") bits.push(EN?"a lower cost or a bigger benefit":"chi phí thấp hơn hoặc lợi ích lớn hơn");
+    return EN ? "Look again when there is "+bits.join(", or ")+"." : "Xem xét lại khi "+bits.join(", hoặc ")+".";
+  }
+  return "–";
+}
+
+/* ---------- drawing the page ---------- */
+function applyStatic(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("[data-t]").forEach(el => { const v=T[LANG][el.dataset.t]; if (typeof v==="string") el.textContent=v; });
+  $("app").placeholder=tx("appPh"); $("place").placeholder=tx("placePh"); $("who").placeholder=tx("whoPh"); $("problemOther").placeholder=tx("otherPh");
+  [["t1m",0],["t1b",1],["t1t",2],["t2m",0],["t2b",1],["t2t",2]].forEach(([id,i]) => $(id).setAttribute("aria-label",[tx("tMeasure"),tx("tNow"),tx("tTarget")][i]));
+  $("lang-en").setAttribute("aria-pressed", LANG==="en"); $("lang-vi").setAttribute("aria-pressed", LANG==="vi");
+  const ex=$("examples"); ex.querySelectorAll("button").forEach(b=>b.remove());
+  EXAMPLES.forEach(x => { const b=document.createElement("button"); b.type="button"; b.className="chipbtn"; b.dataset.key=x.key; b.textContent=x[LANG];
+    b.setAttribute("aria-pressed", current && current.key===x.key ? "true":"false"); b.addEventListener("click", () => load(x)); ex.appendChild(b); });
+  const clr=document.createElement("button"); clr.type="button"; clr.className="chipbtn ghost"; clr.textContent=tx("startBlank"); clr.addEventListener("click", () => load(null)); ex.appendChild(clr);
+}
+function render(e){
+  CONDS.forEach(c => {
+    const on=!!S.deps[c.id];
+    $("dep-"+c.id).checked=on; $("cond-"+c.id).classList.toggle("off", !on);
+    setRadio("rate-"+c.id, on?S.deps[c.id]:null);
+    if (on) followUp(c, S.deps[c.id]); else $("follow-"+c.id).hidden=true;
+  });
+  $("problemOther").hidden = S.problem!=="other";
+  const o = e.outcome ? OUT[e.outcome] : null;
+  $("verdict").className = "verdict "+(o?o.cls:"v-none");
+  $("outcome").textContent = o ? o[LANG][0] : tx("incomplete");
+  $("meaning").textContent = o ? o[LANG][1] : "";
+  $("meaning").hidden = !o;
+  $("miniOutcome").textContent = o ? o[LANG][0] : tx("incomplete");
+  $("why").textContent = o ? e.reason : tx("stillNeeded")+e.missing.join("; ")+".";
+
+  const EN=LANG==="en";
+  const rows=[
+    {n:1, q:EN?"Should we say no?":"Có nên từ chối không?", hit:e.r1.length>0, ans: e.r1.length ? cap(joinReasons(e.r1))+"." : (EN?"It fixes a real problem, nothing it needs is impossible to fix, and the benefits may be worth it.":"Nó giải quyết một vấn đề có thật, không có điều kiện nào là không thể khắc phục, và lợi ích có thể xứng đáng.")},
+    {n:2, q:EN?"Is it ready to roll out?":"Đã sẵn sàng nhân rộng chưa?", hit:e.r2ok, ans:e.r2txt+"."},
+    {n:3, q:EN?"Do we need more facts first?":"Có cần thêm thông tin trước không?", hit:e.r3.length>0, ans: e.r3.length ? cap(joinReasons(e.r3))+"." : (EN?"Nothing important is missing.":"Không thiếu thông tin quan trọng nào.")},
+    {n:4, q:EN?"Otherwise: try it in one district.":"Nếu không: thí điểm ở một quận.", hit:e.rule===4, ans:e.r4txt+"."}
+  ];
+  const tr=$("trace"); tr.innerHTML="";
+  rows.forEach(r => {
+    const st = !e.outcome ? "skip" : r.n<e.rule ? "miss" : r.n===e.rule ? "hit" : "skip";
+    const li=document.createElement("li"); li.className=st;
+    const m=document.createElement("span"); m.className="mark"; m.textContent=String(r.n);
+    const body=document.createElement("span");
+    const q=document.createElement("span"); q.className="q"; q.textContent=r.q;
+    const prefix = st==="hit" ? (r.n===4?"":tx("yes")+" ") : st==="miss" ? tx("no")+" " : "";
+    body.append(q, document.createTextNode(st==="skip" ? tx("notAsked") : prefix+r.ans));
+    li.append(m, body); tr.appendChild(li);
+  });
+
+  const sl=$("steps"); sl.innerHTML="";
+  (e.outcome ? nextSteps(e) : [EN?"Answer the remaining questions to see what to do next.":"Trả lời các câu hỏi còn lại để xem việc cần làm."]).forEach(x => { const li=document.createElement("li"); li.textContent=x; sl.appendChild(li); });
+  $("targets").hidden = e.outcome!=="pilot";
+  $("change").textContent = e.outcome ? changeText(e) : "–";
+  $("record").textContent = recordText(e);
+}
+
+function recordText(e){
+  const EN=LANG==="en";
+  const d=new Date(); const pad=n=>String(n).padStart(2,"0");
+  const date = EN ? d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()) : pad(d.getDate())+"/"+pad(d.getMonth()+1)+"/"+d.getFullYear();
+  const pick=(arr,v)=>(arr.find(x=>x[0]===v)||[,EN?"Not answered":"Chưa trả lời"])[1];
+  const prob=PROBLEMS.find(p=>p.id===S.problem);
+  const L=[];
+  const R = EN ? {title:"V-SWAP DECISION RECORD", date:"Date", app:"Technology", place:"Place", who:"Assessed by", none:"Not given",
+      p1:"PART 1 · DOES IT FIX A REAL PROBLEM HERE?", prob:"Problem", mat:"How far it has got", comp:"Worked somewhere similar", hw:"Needs new equipment",
+      p2:"PART 2 · IS THIS PLACE READY? (only what it needs)", nonesel:"Nothing selected", fixY:" (a trial can fix this)", fixN:" (a trial cannot fix this)", costY:" (costly to find out)", costN:" (can be checked in a trial)",
+      p3:"PART 3 · IS IT WORTH IT?", ben:"Would improve", val:"Benefits worth the cost", sc:"Could expand", lp:"Trialled here",
+      p4:"PART 4 · DECISION", inc:"NOT FINISHED", steps:"WHAT TO DO NEXT", targets:"PILOT TARGETS (written before the trial)", now:"now", target:"target", chg:"WHAT WOULD CHANGE THIS DECISION",
+      foot:"Prototype of the proposed V-SWAP framework. The rules have not yet been tested with officials."}
+    : {title:"BIÊN BẢN QUYẾT ĐỊNH V-SWAP", date:"Ngày", app:"Công nghệ", place:"Địa phương", who:"Người đánh giá", none:"Chưa ghi",
+      p1:"PHẦN 1 · CÓ GIẢI QUYẾT VẤN ĐỀ CÓ THẬT Ở ĐÂY KHÔNG?", prob:"Vấn đề", mat:"Mức độ phát triển", comp:"Đã hiệu quả ở nơi tương tự", hw:"Cần thiết bị mới",
+      p2:"PHẦN 2 · ĐỊA PHƯƠNG ĐÃ SẴN SÀNG CHƯA? (chỉ những điều kiện cần)", nonesel:"Chưa chọn điều kiện nào", fixY:" (thí điểm có thể khắc phục)", fixN:" (thí điểm không thể khắc phục)", costY:" (tìm hiểu tốn kém)", costN:" (có thể kiểm tra khi thí điểm)",
+      p3:"PHẦN 3 · CÓ ĐÁNG ĐỂ LÀM KHÔNG?", ben:"Sẽ cải thiện", val:"Lợi ích xứng với chi phí", sc:"Có thể mở rộng", lp:"Đã thí điểm ở đây",
+      p4:"PHẦN 4 · QUYẾT ĐỊNH", inc:"CHƯA ĐỦ THÔNG TIN", steps:"VIỆC CẦN LÀM TIẾP THEO", targets:"MỤC TIÊU THÍ ĐIỂM (ghi trước khi thí điểm)", now:"hiện tại", target:"mục tiêu", chg:"ĐIỀU GÌ SẼ LÀM THAY ĐỔI QUYẾT ĐỊNH",
+      foot:"Bản thử nghiệm của khung V-SWAP đề xuất. Các quy tắc chưa được kiểm chứng với cán bộ quản lý."};
+  L.push(R.title);
+  L.push(R.date+": "+date);
+  L.push(R.app+": "+(S.app||R.none));
+  L.push(R.place+": "+(S.place||R.none));
+  if (S.who) L.push(R.who+": "+S.who);
+  L.push("", R.p1);
+  L.push("  "+R.prob+": "+(prob ? prob[LANG][0]+(prob.id==="other" ? (S.problemOther? " — "+S.problemOther : "") : prob[LANG][1] ? " — "+prob[LANG][1] : "") : pick([],null)));
+  L.push("  "+R.mat+": "+pick(OPTS.maturity[LANG],S.maturity));
+  L.push("  "+R.comp+": "+pick(OPTS.ynu[LANG],S.comparable));
+  L.push("  "+R.hw+": "+pick(OPTS.yn[LANG],S.hardware));
+  L.push("", R.p2);
+  if (!e.deps.length) L.push("  "+R.nonesel);
+  e.deps.forEach(c => { const r=S.deps[c.id]; let x="";
+    if (r==="W" && S.fix[c.id]) x = S.fix[c.id]==="yes"?R.fixY:R.fixN;
+    if (r==="U" && S.costly[c.id]) x = S.costly[c.id]==="yes"?R.costY:R.costN;
+    L.push("  "+cn(c)+": "+pick(OPTS.rating[LANG],r)+x); });
+  L.push("", R.p3);
+  L.push("  "+R.ben+": "+(S.benefits.length ? S.benefits.map(b=>pick(OPTS.benefits[LANG],b)).join(", ") : R.none));
+  L.push("  "+R.val+": "+pick(OPTS.value[LANG],S.value));
+  L.push("  "+R.sc+": "+pick(OPTS.ynu[LANG],S.scalable));
+  L.push("  "+R.lp+": "+pick(OPTS.pilot[LANG],S.localPilot));
+  L.push("", R.p4+": "+(e.outcome ? OUT[e.outcome][LANG][0].toUpperCase() : R.inc));
+  L.push("  "+(e.outcome ? OUT[e.outcome][LANG][1]+" "+e.reason : tx("stillNeeded")+e.missing.join("; ")));
+  if (e.outcome){
+    L.push("", R.steps); nextSteps(e).forEach(s => L.push("  - "+s));
+    if (e.outcome==="pilot"){
+      const rows=["1","2"].map(n=>[$("t"+n+"m").value,$("t"+n+"b").value,$("t"+n+"t").value]).filter(r=>r.some(x=>x.trim()));
+      if (rows.length){ L.push("", R.targets); rows.forEach(r => L.push("  - "+r[0]+": "+R.now+" "+(r[1]||"?")+", "+R.target+" "+(r[2]||"?"))); }
+    }
+    L.push("", R.chg, "  "+changeText(e));
+  }
+  L.push("", R.foot);
+  return L.join("\n");
+}
+
+function update(){ render(evaluate()); }
+
+function setLang(l){
+  if (l===LANG) return;
+  const old=LANG; LANG=l;
+  try { localStorage.setItem("vswap-lang", l); } catch(e){}
+  if (current){
+    if (S.app===current.app[old]) { S.app=current.app[l]; $("app").value=S.app; }
+    if (S.place===current.place[old]) { S.place=current.place[l]; $("place").value=S.place; }
+    if (!S.targetsEdited) fillTargets();
+  }
+  applyStatic(); buildForm(); update();
+}
+
+function init(){
+  applyStatic();
+  $("lang-en").addEventListener("click", () => setLang("en"));
+  $("lang-vi").addEventListener("click", () => setLang("vi"));
+  ["app","place","who"].forEach(id => $(id).addEventListener("input", ev => { S[id]=ev.target.value; update(); }));
+  $("problemOther").addEventListener("input", ev => { S.problemOther=ev.target.value; update(); });
+  ["t1m","t1b","t1t","t2m","t2b","t2t"].forEach(id => $(id).addEventListener("input", () => { S.targetsEdited=true; update(); }));
+  $("form").addEventListener("submit", ev => ev.preventDefault());
+  $("copy").addEventListener("click", () => {
+    const done = ok => { $("copyStatus").textContent = ok ? tx("copied") : tx("copyFail"); };
+    try { navigator.clipboard.writeText($("record").textContent).then(()=>done(true), ()=>{ selectRecord(); done(false); }); }
+    catch(err){ selectRecord(); done(false); }
+  });
+  load(EXAMPLES[0]);
+}
+function selectRecord(){ try{ const r=document.createRange(); r.selectNodeContents($("record")); const s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }catch(e){} }
+init();
+</script>
