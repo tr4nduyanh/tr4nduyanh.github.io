@@ -1270,10 +1270,21 @@
         ["A choice I made", G("One line on what to cover or how.")],
       ],
       media: [
-        { label: "House Adventure event video", ratio: "16/9", type: "video" },
-        { label: "Event coverage", ratio: "3/2", type: "photo" },
+        {
+          src: "img/ha-trailer.webp?v=5fb5a062",
+          w: 1600,
+          h: 1000,
+          ratio: "16/10",
+          type: "photo",
+          href: "https://www.instagram.com/p/DfpL2SOtYv0/",
+          alt: "Title card for our house’s văn nghệ trailer, with a play button. The trailer itself plays on Instagram.",
+          caption: "Văn nghệ House trailer: I filmed it and wrote the caption.",
+        },
       ],
-      evidence: [{ label: "Instagram: @feat_adventure", url: "https://www.instagram.com/feat_adventure/" }],
+      evidence: [
+        { label: "Watch the trailer on Instagram", url: "https://www.instagram.com/p/DfpL2SOtYv0/" },
+        { label: "Instagram: @feat_adventure", url: "https://www.instagram.com/feat_adventure/" },
+      ],
       metrics: [
         { label: "posts", value: "10+" },
         { label: "average views per post", value: "~10,000" },
@@ -1288,17 +1299,37 @@
       kind: "Video",
       title: "Video storytelling",
       aliases: ["video"],
-      summary: "Videos I edited.",
-      role: "Editor",
-      tags: ["video", "YouTube", "video editing", "storytelling", "media", "editing"],
-      sections: [
-        ["For", G("Which event?")],
-        ["My role", G("Editing, filming, scripting?")],
-        ["Tools", G("Editing app used.")],
-        ["A choice I made", G("One editing choice.")],
+      summary: "The trailer for our house’s văn nghệ. I filmed it and wrote the caption.",
+      role: "Filming · caption",
+      tags: [
+        "video",
+        "trailer",
+        "filming",
+        "caption",
+        "storytelling",
+        "media",
+        "instagram",
+        "văn nghệ",
+        "House Adventure",
       ],
-      media: [{ label: "Video poster frame", ratio: "16/9", type: "video" }],
-      evidence: [{ label: "YouTube link", url: null }],
+      sections: [
+        ["For", "Our house’s văn nghệ"],
+        ["My role", "Filming and the caption"],
+        ["A choice I made", G("One filming choice.")],
+      ],
+      media: [
+        {
+          src: "img/ha-trailer.webp?v=5fb5a062",
+          w: 1600,
+          h: 1000,
+          ratio: "16/10",
+          type: "photo",
+          href: "https://www.instagram.com/p/DfpL2SOtYv0/",
+          alt: "Title card for our house’s văn nghệ trailer, with a play button. The trailer itself plays on Instagram.",
+          caption: "Tap to watch the trailer on Instagram.",
+        },
+      ],
+      evidence: [{ label: "Watch the trailer on Instagram", url: "https://www.instagram.com/p/DfpL2SOtYv0/" }],
       metrics: [],
       related: ["media-scripts", "ha-media"],
     },
@@ -1757,7 +1788,7 @@
       const img = `<img src="${m.src}" alt="${esc(m.alt || m.label)}"${m.w ? ` width="${m.w}" height="${m.h}"` : ""} loading="lazy" decoding="async">`;
       return `<figure class="shot">
       ${m.frame ? `<div class="shot-bar" aria-hidden="true"><i></i><i></i><i></i><span>${esc(m.frame)}</span></div>` : ""}
-      <div class="shot-img" style="aspect-ratio:${m.ratio}">${img}</div>
+      ${m.href ? `<a class="shot-img" href="${m.href}" target="_blank" rel="noopener" style="aspect-ratio:${m.ratio}">${img}</a>` : `<div class="shot-img" style="aspect-ratio:${m.ratio}">${img}</div>`}
       ${m.caption ? `<figcaption>${esc(m.caption)}</figcaption>` : ""}
     </figure>`;
     }
@@ -3376,15 +3407,14 @@
     </section>
     <section class="rm-sec" aria-labelledby="st-stage"><h2 class="rm-h" id="st-stage">On stage, through my lens</h2>
       <div class="film">
-        ${frame({ kind: "video", label: "House Adventure event video" })}
+        <a class="fm fm-play" href="https://www.instagram.com/p/DfpL2SOtYv0/" target="_blank" rel="noopener"><div class="fm-b"><img src="img/ha-trailer.webp?v=5fb5a062" width="1600" height="1000" alt="Title card for our house’s văn nghệ trailer, with a play button. The trailer itself plays on Instagram." loading="lazy" decoding="async"></div><span class="fm-cap">Văn nghệ House trailer · 🎥 + ✍️ me · Instagram ↗</span></a>
         ${frame({ src: "img/ha-vannghe.webp?v=9eacff3a", w: 1600, h: 1066, alt: "Class A07 on stage at the school’s Hội thi Văn nghệ, in matching black A7 jerseys, holding up hand-painted signs reading “A07 chúc mừng 20/11” while a student plays guitar.", cap: "Hội thi Văn nghệ · 20/11 · 📷 me" })}
         ${frame({ src: "img/ha-stage.webp?v=80037d99", w: 1600, h: 1066, alt: "Students in white uniforms on stage at Văn nghệ Family, Lawrence S. Ting School, throwing colourful scarves into the air and cheering.", cap: "Văn nghệ Family · 📷 me" })}
-        ${frame({ kind: "photo", label: "Behind the scenes" })}
       </div>
     </section>
     <section class="rm-sec" aria-labelledby="st-more"><h2 class="rm-h" id="st-more">More from the studio</h2>
       <div class="rgrid">
-        ${rcard("media-video", { k: "Video", line: "Video editing and storytelling.", slot: ["video", "A video I edited"] })}
+        ${rcard("media-video", { k: "Video", line: "A trailer I filmed and captioned.", img: ["img/ha-trailer.webp?v=5fb5a062", 1600, 1000, ""] })}
         ${rcard("media-scripts", { k: "Writing", line: "Scripts and storyboards behind our pieces.", slot: ["scan", "A script or storyboard page"] })}
       </div>
     </section>

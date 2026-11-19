@@ -8792,6 +8792,36 @@ dialog::backdrop {
   color: transparent;
   padding-right: 0.04em;
 }
+.film {
+  grid-auto-columns: minmax(260px, 1fr);
+}
+.fm-play {
+  text-decoration: none;
+  color: inherit;
+  scroll-snap-align: start;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.fm-play .fm-b img {
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 0.3s;
+}
+.fm-play:hover .fm-b img {
+  transform: scale(1.04);
+  filter: brightness(1.12);
+}
+.fm-cap {
+  font: 500 11.5px var(--mono);
+  letter-spacing: 0.04em;
+  color: #cfd8d3;
+  padding: 0 2px;
+}
+.fm-play:focus-visible {
+  outline: 3px solid #9ee0bb;
+  outline-offset: 3px;
+}
 /* --- Bee screen --- */
 .bz {
   margin: 24px 0 0;
